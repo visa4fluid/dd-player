@@ -5,7 +5,8 @@
   "description": "Digital signage player and local media orchestration runtime",
   "type": "module",
   "workspaces": [
-    "apps/webos"
+    "apps/webos",
+    "apps/tizen"
   ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -23,13 +24,19 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "clean": "rm -rf dist apps/webos/dist apps/webos/pkg",
+    "clean": "rm -rf dist apps/webos/dist apps/webos/pkg apps/tizen/dist apps/tizen/pkg",
     "dev:webos": "npm run dev -w @fluid-player/webos",
     "build:webos": "npm run build -w @fluid-player/webos",
     "preview:webos": "npm run preview -w @fluid-player/webos",
     "typecheck:webos": "npm run typecheck -w @fluid-player/webos",
     "package:webos": "npm run build:webos && ares-package apps/webos/dist -o apps/webos/pkg",
-    "simulate:webos": "npm run build:webos && dotenv -- sh -c 'ares-launch -s \"$WEBOS_SIMULATOR_VERSION\" -sp \"$WEBOS_SIMULATOR_PATH\" apps/webos/dist'"
+    "simulate:webos": "npm run build:webos && dotenv -- sh -c 'ares-launch -s \"$WEBOS_SIMULATOR_VERSION\" -sp \"$WEBOS_SIMULATOR_PATH\" apps/webos/dist'",
+    "dev:tizen": "npm run dev -w @fluid-player/tizen",
+    "build:tizen": "npm run build -w @fluid-player/tizen",
+    "preview:tizen": "npm run preview -w @fluid-player/tizen",
+    "typecheck:tizen": "npm run typecheck -w @fluid-player/tizen",
+    "package:tizen": "npm run package -w @fluid-player/tizen",
+    "simulate:tizen": "npm run build:tizen && dotenv -- node apps/tizen/scripts/simulate.mjs"
   },
   "engines": {
     "node": ">=20"

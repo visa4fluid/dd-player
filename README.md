@@ -129,6 +129,11 @@ npm run build
 | `npm run preview:webos` | Anteprima locale del bundle webOS |
 | `npm run package:webos` | Build + `ares-package` → `apps/webos/pkg/` |
 | `npm run simulate:webos` | Build + avvio sul webOS TV Simulator |
+| `npm run dev:tizen` | Avvia Vite per lo shell Tizen (hot reload) |
+| `npm run build:tizen` | Build produzione in `apps/tizen/dist/` |
+| `npm run preview:tizen` | Anteprima locale del bundle Tizen |
+| `npm run package:tizen` | Build + `.wgt` → `apps/tizen/pkg/` |
+| `npm run simulate:tizen` | Build + package + avvio Samsung TV Web Simulator |
 
 ### Struttura
 
@@ -136,10 +141,11 @@ npm run build
 |------|--------|
 | `src/` | Codice comune TypeScript (DDD / business logic) |
 | `apps/` | Shell per piattaforma (`web`, `pc`, `android`, `tizen`, `webos`) |
-| `apps/webos/` | Entry point webOS TV (Vite + `appinfo.json`) |
+| `apps/webos/` | Entry point webOS TV (Vite + `appinfo.json`) — [README](./apps/webos/README.md) |
+| `apps/tizen/` | Entry point Tizen TV (Vite + `config.xml`) — [README](./apps/tizen/README.md) |
 | `docs/` | Documentazione di design |
 
-Dettaglio piattaforma webOS: [sezione webOS](#webos).
+Dettaglio piattaforme: [webOS](#webos) · [apps/webos/README.md](./apps/webos/README.md), [Tizen](#tizen) · [apps/tizen/README.md](./apps/tizen/README.md).
 
 ### JSDoc (obbligatoria su API pubblica)
 
@@ -281,6 +287,98 @@ Server su `http://localhost:5173` (anche in LAN). Non sostituisce il Simulator p
    ```
 
 > Il Simulator non replica al 100% una TV (DRM, alcuni media e API Luna assenti o diversi). Per validazione finale usare una TV in Developer Mode.
+
+---
+
+## Tizen
+
+Lo shell Samsung TV vive in [`apps/tizen`](./apps/tizen). Stesso modello di webOS: Vite bundla UI + core (`src/`), poi `config.xml` e l’icona finiscono in `dist/` per Simulator / TV.
+
+```
+apps/tizen/
+├── config.xml        # metadati obbligatori Tizen (id, content, privilege, …)
+├── icon.png          # icona launcher (117×117)
+├── index.html        # entry HTML (`content` in config.xml)
+├── package.json      # workspace @fluid-player/tizen
+├── vite.config.ts    # build, alias @fluid → ../../src, copy metadati in dist
+├── tsconfig.json
+├── scripts/
+│   ├── package-wgt.mjs
+│   └── simulate.mjs
+└── src/
+    ├── main.ts       # bootstrap: monta l’app e usa il core
+    └── style.css
+```
+
+### Componenti
+
+| Componente | Dove | Ruolo |
+|------------|------|--------|
+| **Core condiviso** | `src/` (alias `@fluid/*`) | Logica TypeScript comune |
+| **Entry Tizen** | `apps/tizen/src/main.ts` | Punto di ingresso UI sul device/Simulator |
+| **`config.xml`** | `apps/tizen/` → copiato in `dist/` | Identità app (`tizen:application`, privilege, profile) |
+| **Vite** | `vite.config.ts` | Dev server porta `5174`, build `chrome69`, `base: './'` |
+| **`.wgt`** | `apps/tizen/pkg/FluidPlayer.wgt` | Pacchetto web Tizen (zip di `dist/`) |
+| **Tizen Studio / TV Simulator** | Installazione esterna Samsung | Ambiente TV sul PC (non è un pacchetto npm) |
+
+Flusso:
+
+```
+src/  +  apps/tizen/src  ──Vite build──►  apps/tizen/dist/  ──zip──►  .wgt  ──Install──►  Simulator
+                              ▲
+                         config.xml + icon
+```
+
+### Sviluppo in browser
+
+```bash
+npm run dev:tizen
+```
+
+Server su `http://localhost:5174`. Non sostituisce il Simulator per API `tizen.*` / telecomando.
+
+### Far girare l’app sul Simulator
+
+1. **Prerequisiti**
+   - Node.js ≥ 20, `zip` in PATH
+   - `npm install` nella root
+   - [Tizen Studio](https://developer.tizen.org/development/tizen-studio/download) + **TV Extension** + **Samsung TV Web Simulator** (Package Manager)
+
+2. **`.env`**
+
+   ```bash
+   TIZEN_STUDIO_PATH=/absolute/path/to/tizen-studio
+   ```
+
+3. **Build + Simulator (app in automatico)**
+
+   ```bash
+   npm run simulate:tizen
+   ```
+
+   Build, crea il `.wgt`, apre il Samsung TV Web Simulator e lancia
+   `apps/tizen/dist/index.html` via `--file` (senza Install Application manuale).
+
+   Fallback a mano:
+
+   ```bash
+   npm run build:tizen
+   cd "$TIZEN_STUDIO_PATH/tools/sec-tv-simulator"
+   ./simulator --platform tizentv --file "$OLDPWD/apps/tizen/dist/index.html"
+   ```
+
+4. **Package firmato (TV fisica / Emulator)**
+
+   Serve un certificate profile da Tizen Certificate Manager, poi:
+
+   ```bash
+   npm run build:tizen
+   tizen package -t wgt -s <profile> -- apps/tizen/dist
+   tizen install -n FluidPlayer.wgt -- apps/tizen/dist
+   tizen run -p FluidPlayr.FluidPlayer
+   ```
+
+> Il Web Simulator non replica al 100% una TV (API privilegiate, media, DRM). Per validazione finale usare Emulator o TV in Developer Mode.
 
 ---
 

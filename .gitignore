@@ -6,6 +6,7 @@ dist/
 apps/*/dist/
 apps/*/pkg/
 *.ipk
+*.wgt
 
 # TypeScript / ESLint
 *.tsbuildinfo
