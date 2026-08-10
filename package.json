@@ -1,0 +1,46 @@
+{
+  "name": "fluid-player",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Digital signage player and local media orchestration runtime",
+  "type": "module",
+  "workspaces": [
+    "apps/webos"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "clean": "rm -rf dist apps/webos/dist apps/webos/pkg",
+    "dev:webos": "npm run dev -w @fluid-player/webos",
+    "build:webos": "npm run build -w @fluid-player/webos",
+    "preview:webos": "npm run preview -w @fluid-player/webos",
+    "typecheck:webos": "npm run typecheck -w @fluid-player/webos",
+    "package:webos": "npm run build:webos && ares-package apps/webos/dist -o apps/webos/pkg",
+    "simulate:webos": "npm run build:webos && dotenv -- sh -c 'ares-launch -s \"$WEBOS_SIMULATOR_VERSION\" -sp \"$WEBOS_SIMULATOR_PATH\" apps/webos/dist'"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@webos-tools/cli": "^3.2.1",
+    "dotenv-cli": "^10.0.0",
+    "eslint": "^9.33.0",
+    "eslint-plugin-jsdoc": "^54.1.1",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.40.0",
+    "vite": "^7.1.2"
+  }
+}

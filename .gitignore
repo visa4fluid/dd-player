@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+apps/*/dist/
+apps/*/pkg/
+*.ipk
+
+# TypeScript / ESLint
+*.tsbuildinfo
+.eslintcache
+
+# Vite / caches
+.vite/
+.cache/
+.turbo/
+
+# Tests
+coverage/
+
+# Environment (keep .env.example tracked)
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.idea/
+*.swp
+*~

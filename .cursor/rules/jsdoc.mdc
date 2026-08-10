@@ -1,0 +1,37 @@
+---
+description: Require JSDoc on TypeScript public API in src/
+globs: src/**/*.ts
+alwaysApply: false
+---
+
+# JSDoc
+
+Quando crei o modifichi file in `src/`, documenta con JSDoc l’API pubblica:
+
+- classi ed export pubblici
+- metodi e funzioni pubblici (descrizione, `@param`, `@returns` quando utili)
+- tipi/interfacce esportati se non autoesplicativi
+
+In TypeScript **non** ripetere i tipi già espressi nella signature (`@param {string}` non serve).
+
+Non aggiungere JSDoc su dettagli privati ovvi, re-export banali o codice puramente interno.
+
+Esempio:
+
+```typescript
+/**
+ * Esempio di saluto per smoke test del toolchain.
+ */
+export class HelloWorld {
+  /**
+   * Restituisce un messaggio di saluto fisso.
+   *
+   * @returns La stringa `hello world`.
+   */
+  helloWorld(): string {
+    return 'hello world';
+  }
+}
+```
+
+Dopo modifiche a `src/`, verifica con `npm run lint`.
