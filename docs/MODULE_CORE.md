@@ -2,14 +2,17 @@
 
 Il core di Fluid Player è organizzato secondo **Domain-Driven Design (DDD)**: ogni modulo corrisponde a un bounded context con un proprio modello e responsabilità chiare.
 
+**Layout sorgente:** i moduli core vivono in [`src/module/`](../src/module/), ciascuno in una sottocartella minuscola (es. `src/module/device/`, `src/module/system/`). Naming file: [CONVENTIONS.md](./CONVENTIONS.md).
+
 ---
 
 ## Pattern: DDD
 
 - Ogni modulo core è un **bounded context**
 - Il dominio del modulo non dipende da UI, filesystem concreto o vendor di database
-- La comunicazione tra moduli avviene tramite contratti espliciti (servizi / eventi), non accedendo allo storage altrui
-- Le estensioni a runtime si agganciano ai servizi esposti, non allo storage interno dei moduli
+- La comunicazione tra moduli avviene tramite contratti espliciti (application services / eventi), non accedendo allo storage altrui
+- Le estensioni a runtime si agganciano all’**application** esposta, non all’infrastructure interna dei moduli
+- La **presentation** (UIX) vive fuori dal core, tipicamente in `apps/`
 
 Dettaglio dei singoli domini: da approfondire. Qui si fissa la mappa dei moduli e i layer trasversali.
 
@@ -19,7 +22,8 @@ Dettaglio dei singoli domini: da approfondire. Qui si fissa la mappa dei moduli 
 
 | Modulo | Ruolo (bozza) |
 |--------|----------------|
-| **system** | Ciclo di vita, device, bootstrap; **System Manager** (sistema corrente + superfici); sync cloud di schermi/standalone e opzione download playlist del system |
+| **device** | Dispositivo fisico host: identità HW, CPU/RAM/storage, capability; servizi accessori di gestione del device |
+| **system** | Ciclo di vita app / bootstrap logico; **System Manager** (sistema corrente + superfici); sync cloud di schermi/standalone e opzione download playlist del system |
 | **auth** | Identità, credenziali, pairing, token/sessioni (locale e Fluid Next) |
 | **playlist** | Playlist, item, timing, loop; **Playlist Manager** = stato runtime del dominio + comandi di launch verso system |
 | **standalone** | Riproduzione autonoma (fuori playlist); **Standalone Manager** = stato runtime del dominio + comandi di launch verso system |
@@ -29,9 +33,54 @@ Dettaglio dei singoli domini: da approfondire. Qui si fissa la mappa dei moduli 
 
 Il dettaglio funzionale di ciascun modulo sarà definito progressivamente.
 
+### device — host fisico
+
+**device** rappresenta il **dispositivo fisico** su cui gira Fluid Player (PC, webOS TV, Tizen TV, Android, …). Non confondere con **system**: quest’ultimo è il *sistema Fluid* logico (schermi/superfici); **device** è la macchina host.
+
+#### Dati di dominio (profilo hardware)
+
+| Ambito | Esempi |
+|--------|--------|
+| **Identità** | ID stabile del device, piattaforma (`webos` / `tizen` / `pc` / …), modello, vendor/brand, firmware / OS version |
+| **CPU** | Architettura, modello/nome dove disponibile, core (se esposto dalla piattaforma) |
+| **RAM** | Memoria totale e disponibile |
+| **Storage** | Capacità e spazio libero sulle unità rilevanti al player |
+| **Display / AV capability** | Risoluzione, UHD/8K, HDR, tipo pannello (quando la piattaforma lo espone) |
+| **Rete (snapshot)** | Tipo collegamento, stato — senza sostituire **communication** |
+
+I valori arrivano da adapter in **infrastructure** (webOS Luna / `webOS.deviceInfo`, Tizen `productinfo` + `systeminfo`, Node su PC, …). Il **domain** resta agnostico rispetto al vendor.
+
+#### Application
+
+| Servizio / use case | Ruolo |
+|---------------------|--------|
+| **Profilo / snapshot** | Espone il profilo hardware corrente e consente un refresh (probe) |
+| **Identità** | Legge/assicura l’identificativo stabile del device |
+| **Gestione accessoria** | Operazioni sul device host (reboot, power display, volume, …) delegate a porte implementate in infrastructure |
+
+```
+infrastructure (adapter webOS | tizen | pc | …)
+        │  probe HW / comandi device / storage
+        ▼
+device.application  ←──  altri moduli / estensioni
+        │
+        ▼
+device.domain
+```
+
+- Gli altri moduli **non** parlano alle API vendor: passano dall’**application** di **device** (es. `DeviceInfoManagerInterface`).
+- **communication** resta owner dei canali di rete; **device** può solo riportare uno snapshot dello stato rete come proprietà host.
+- **system** usa eventualmente l’application di **device** per telemetria / vincoli (es. risoluzione), non per possedere il modello hardware.
+
+#### Infrastructure (device)
+
+- Adapter di persistenza (snapshot cached, id locale)
+- Adapter di piattaforma per probe HW e comandi accessori
+- Metadati minimi legati al device (non confondere con **settings** di prodotto)
+
 ### system — System Manager e superfici
 
-**system** include un **System Manager** che gestisce il **sistema corrente** configurato sul player: quale “system” Fluid è attivo in locale, quali schermi/superfici espone, e come si allinea al cloud quando autenticati.
+**system** include un **System Manager** (layer **application**) che gestisce il **sistema corrente** configurato sul player: quale “system” Fluid è attivo in locale, quali schermi/superfici espone, e come si allinea al cloud quando autenticati.
 
 #### Superfici
 
@@ -43,7 +92,7 @@ Le **superfici** sono destinazioni di output (zone/display) che accettano conten
 | **pause** | Mette in pausa la riproduzione corrente |
 | **stop** | Interrompe e rilascia la riproduzione sulla superficie |
 
-Playlist e standalone non controllano il rendering in proprio: i rispettivi **manager** chiedono a **system** (via Services) cosa lanciare / mettere in pausa / fermare sulle superfici.
+Playlist e standalone non controllano il rendering in proprio: i rispettivi **manager** (application) chiedono a **system** cosa lanciare / mettere in pausa / fermare sulle superfici.
 
 #### System Manager — sistema corrente
 
@@ -51,7 +100,7 @@ Playlist e standalone non controllano il rendering in proprio: i rispettivi **ma
 |----------------|----------------|
 | Sistema corrente configurato sul player | Sì (source of truth runtime di system) |
 | Elenco / visualizzazione schermi disponibili del system | Sì |
-| Interfaccia play / pause / stop sulle superfici | Sì (tramite Services di system) |
+| Interfaccia play / pause / stop sulle superfici | Sì (tramite application di system) |
 | Cosa sta girando in playlist / standalone | No → manager dei rispettivi moduli |
 
 #### Download dal cloud (system → contenuti legati)
@@ -71,18 +120,18 @@ auth (sessione Fluid Next OK)
 communication ──► Fluid Next
         │
         ▼
-System Manager
+System Manager (application)
         ├──► system corrente + schermi disponibili
         ├──► scarica tutti gli standalone del system  →  modulo standalone
         └──► propone / consente download playlist del system  →  modulo playlist
 ```
 
-- Gli asset scaricati vengono consegnati ai moduli di dominio (**standalone**, **playlist**) tramite i rispettivi Services; **system** non diventa owner del modello playlist/standalone.
+- Gli asset scaricati vengono consegnati ai moduli di dominio (**standalone**, **playlist**) tramite la rispettiva **application**; **system** non diventa owner del modello playlist/standalone.
 - Senza autenticazione cloud il System Manager opera solo sul system configurato in locale.
 
 ### playlist & standalone — manager di runtime
 
-Ogni modulo di programmazione ha un **manager** che è la source of truth di *cosa sta girando* nel proprio bounded context.
+Ogni modulo di programmazione ha un **manager** (application) che è la source of truth di *cosa sta girando* nel proprio bounded context.
 
 | Responsabilità | Chi |
 |----------------|-----|
@@ -93,11 +142,11 @@ Ogni modulo di programmazione ha un **manager** che è la source of truth di *co
 Flusso tipico:
 
 ```
-Playlist Manager / Standalone Manager
+Playlist Manager / Standalone Manager  (application)
         │  decide cosa deve andare in onda
         │  (dominio di appartenenza + stato runtime)
         ▼
-   system.Services  →  superficie  →  play | pause | stop
+   system.application  →  superficie  →  play | pause | stop
 ```
 
 - **system** esegue l’operazione sulla superficie; non mantiene il modello di business “quale playlist / quale standalone è attivo”.
@@ -105,7 +154,7 @@ Playlist Manager / Standalone Manager
 
 ### communication — canali di rete
 
-**communication** espone i servizi che permettono al software di parlare con l’esterno su due piani:
+**communication** espone (in **application**) i servizi che permettono al software di parlare con l’esterno su due piani:
 
 | Piano | Ambito | Uso tipico |
 |-------|--------|------------|
@@ -118,67 +167,111 @@ Il modulo fornisce i **canali e i servizi di trasporto/sessione**; la logica di 
 
 ## Layer interni (per ogni modulo)
 
-Ogni modulo core raggruppa gli stessi due layer (dal basso verso l’alto):
+Ogni modulo core segue lo stesso stack (dipendenze verso l’interno):
 
 ```
-┌─ <nome modulo> ─────────────────────────┐
-│  Services                               │
-│  (API del modulo + funzioni cross)      │
-├─────────────────────────────────────────┤
-│  Persistence (agnostica)                │
-│  (dati del modulo, porte astratte)      │
-└─────────────────────────────────────────┘
+┌─ <nome modulo> ─────────────────────────────────────────────┐
+│  application                                                │
+│  (use case, manager, interfacce pubbliche del BC)           │
+├─────────────────────────────────────────────────────────────┤
+│  domain                                                     │
+│  (modello, regole, value object / aggregate del BC)         │
+├─────────────────────────────────────────────────────────────┤
+│  infrastructure                                             │
+│  (adapter: persistenza, piattaforma, rete concreta, …)      │
+└─────────────────────────────────────────────────────────────┘
+
+presentation (UIX)  →  fuori dal modulo core, tipicamente in apps/
+```
+
+Layout cartelle:
+
+```
+src/module/<nome>/
+├── domain/
+├── application/
+└── infrastructure/
 ```
 
 Vista d’insieme dei moduli:
 
 ```
-┌─ system ────────┐  ┌─ auth ──────────┐  ┌─ playlist ──────┐
-│ Services        │  │ Services        │  │ Services        │
-│ Persistence     │  │ Persistence     │  │ Persistence     │
-└─────────────────┘  └─────────────────┘  └─────────────────┘
+┌─ device ────────────┐  ┌─ system ────────────┐  ┌─ auth ──────────────┐
+│ application         │  │ application         │  │ application         │
+│ domain              │  │ domain              │  │ domain              │
+│ infrastructure      │  │ infrastructure      │  │ infrastructure      │
+└─────────────────────┘  └─────────────────────┘  └─────────────────────┘
 
-┌─ standalone ────┐  ┌─ external flows ┐  ┌─ settings ──────┐
-│ Services        │  │ Services        │  │ Services        │
-│ Persistence     │  │ Persistence     │  │ Persistence     │
-└─────────────────┘  └─────────────────┘  └─────────────────┘
+┌─ playlist ──────────┐  ┌─ standalone ────────┐  ┌─ external flows ────┐
+│ application         │  │ application         │  │ application         │
+│ domain              │  │ domain              │  │ domain              │
+│ infrastructure      │  │ infrastructure      │  │ infrastructure      │
+└─────────────────────┘  └─────────────────────┘  └─────────────────────┘
 
-┌─ communication ─────────────────────────────────────────────┐
-│ Services                                                    │
-│ Persistence                                                 │
-└─────────────────────────────────────────────────────────────┘
+┌─ settings ──────────┐  ┌─ communication ─────────────────────────────┐
+│ application         │  │ application                                 │
+│ domain              │  │ domain                                      │
+│ infrastructure      │  │ infrastructure                              │
+└─────────────────────┘  └─────────────────────────────────────────────┘
+
+presentation / UIX  →  apps/webos, apps/tizen, …
 ```
 
-### Persistence (agnostica)
+### domain
 
-- Responsabile di **persistere e rileggere** i dati del modulo
-- Espone porte/repository astratti (interfacce), non implementazioni concrete
-- L’implementazione reale (SQLite, filesystem, key-value, …) vive negli adapter di infrastruttura
+- Modello del bounded context (entità, value object, regole)
+- Nessuna dipendenza da UI, DB, filesystem o API vendor
+- Non conosce gli adapter di infrastructure
+
+### application
+
+- Use case e **manager** del modulo (API verso altri BC e verso le estensioni)
+- Dipende dal **domain**; dichiara porte (interfacce) implementate da infrastructure
+- Esempio in device: `DeviceInfoManagerInterface`
+- Capacità **cross** riusabili dall’intero core passano da qui
+
+### infrastructure
+
+- Implementazioni concrete: repository, filesystem, adapter webOS/Tizen/PC, client HTTP, …
+- Implementa le porte definite in application (o porte di dominio, se presenti)
 - Ogni modulo possiede il proprio spazio di persistenza; non scrive nello storage di un altro modulo
 
-### Services (sopra la persistenza del modulo)
+### presentation
 
-- Espone le funzionalità del modulo verso gli altri moduli e verso le estensioni
-- Mette a disposizione anche capacità **cross** riusabili dall’intero core
-- Non espone la Persistence interna: gli altri moduli e le estensioni passano dai Services
-- Usa la Persistence del proprio modulo tramite porte
+- **Non** fa parte del package del modulo core
+- Shell e UIX in `apps/` (webOS, Tizen, …) e eventuali dashboard remote
+- Consuma solo i contratti **application** del core
 
 ---
 
 ## Regole di dipendenza
 
-1. Il **dominio** di un modulo non importa adapter concreti  
-2. La **persistenza** del modulo è dietro porte; gli adapter la implementano  
-3. I **services** cross sono l’unico strato condiviso sopra la persistenza per funzionalità comuni  
-4. Un modulo non legge/scrive direttamente lo storage di un altro modulo  
-5. **communication** fornisce i canali di rete (P2P sottorete + cloud); non contiene la business logic degli altri contesti  
-6. **auth** possiede credenziali e sessioni; **communication** le consuma tramite i Services di auth; il canale cloud Fluid Next è **inibito** senza autenticazione valida sulle API Fluid Next  
-7. **system** possiede System Manager, superfici e l’interfaccia play / pause / stop; gli altri moduli di riproduzione usano le superfici solo tramite i Services di system  
-8. **playlist** e **standalone** hanno ciascuno un **manager** che possiede lo stato runtime del proprio dominio; **system** riceve solo i comandi di launch/pause/stop, non la ownership di “cosa sta girando” a livello di business  
-9. Il download cloud del **system** implica il pull automatico degli **standalone** di quel system e la possibilità di scaricare le **playlist** associate; i dati restano nei moduli standalone/playlist
+1. **domain** non importa application, infrastructure né presentation  
+2. **application** dipende da domain e da porte astratte; non da adapter concreti  
+3. **infrastructure** implementa le porte e può usare domain; non è consumata direttamente dagli altri moduli  
+4. Gli altri moduli e le estensioni entrano solo da **application**  
+5. **presentation** (in `apps/`) parla al core solo tramite application  
+6. Un modulo non legge/scrive direttamente lo storage di un altro modulo  
+7. **communication** fornisce i canali di rete (P2P sottorete + cloud); non contiene la business logic degli altri contesti  
+8. **auth** possiede credenziali e sessioni; **communication** le consuma tramite l’application di auth; il canale cloud Fluid Next è **inibito** senza autenticazione valida sulle API Fluid Next  
+9. **system** possiede System Manager, superfici e l’interfaccia play / pause / stop; gli altri moduli di riproduzione usano le superfici solo tramite l’application di system  
+10. **playlist** e **standalone** hanno ciascuno un **manager** (application) che possiede lo stato runtime del proprio dominio; **system** riceve solo i comandi di launch/pause/stop  
+11. Il download cloud del **system** implica il pull automatico degli **standalone** di quel system e la possibilità di scaricare le **playlist** associate; i dati restano nei moduli standalone/playlist  
+12. **device** possiede il modello del dispositivo fisico host; non confonderlo con **system**. Gli adapter di piattaforma stanno in infrastructure; gli altri moduli consumano solo l’application di device  
+
+---
+
+## Naming dei file
+
+Convenzione di progetto (dettaglio: [CONVENTIONS.md](./CONVENTIONS.md)):
+
+| Contesto | File |
+|----------|------|
+| Classi / interfacce (domain, application, infrastructure) | **PascalCase** — es. `DeviceInfoManagerInterface.ts` |
+| UIX / componenti grafici (presentation) | **kebab-case** — es. `play-button.tsx` |
 
 ---
 
 ## Stato
 
-Mappa moduli e layer definita. Responsabilità dettagliate, aggregate ed eventi di dominio: TODO.
+Mappa moduli e layer `domain` / `application` / `infrastructure` (+ presentation in `apps/`) definita. Responsabilità dettagliate, aggregate ed eventi di dominio: TODO.

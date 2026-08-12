@@ -1,0 +1,36 @@
+---
+description: Convenzioni di naming file (PascalCase tipi, kebab-case UIX)
+alwaysApply: true
+---
+
+# Naming file
+
+Quando crei o rinomini file nel progetto:
+
+## Classi e interfacce (domain / application / infrastructure)
+
+- Nome file in **PascalCase** (camelCase con iniziale maiuscola).
+- Il nome del file coincide con la classe o interfaccia principale esportata.
+- Esempi: `DeviceInfoManagerInterface.ts`, `HelloWorld.ts`, `PlaylistManager.ts`.
+- `index.ts` (barrel) resta in minuscolo.
+
+## UIX e componenti grafici (presentation in `apps/`)
+
+- Nome file in **kebab-case**: tutto minuscolo, parole separate da `-`.
+- Esempi: `play-button.tsx`, `surface-grid.ts`, `status-bar.css`.
+- L’export del componente può restare PascalCase in codice (`PlayButton`), ma il **path del file** è kebab-case.
+
+## Struttura moduli
+
+```
+src/module/<nome>/{domain,application,infrastructure}/
+```
+
+Presentation non va dentro il modulo core.
+
+## Non fare
+
+- File di dominio/application in kebab-case (`device-info-manager.ts`).
+- Componenti UIX in PascalCase (`PlayButton.tsx`).
+- Moduli core fuori da `src/module/`.
+- Layer `presentation` dentro `src/module/<nome>/`.

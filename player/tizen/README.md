@@ -1,6 +1,6 @@
 # Fluid Player — shell Tizen
 
-Web app Samsung Tizen TV: Vite bundla UI + core comune (`../../src`), poi copia `config.xml` e l’icona in `dist/` per Web Simulator / TV (pacchetto `.wgt`).
+Web app Samsung Tizen TV: Vite bundla UI + core comune (`../../src`, moduli in `../../src/module`), poi copia `config.xml` e l’icona in `dist/` per Web Simulator / TV (pacchetto `.wgt`).
 
 Workspace npm: `@fluid-player/tizen`.
 

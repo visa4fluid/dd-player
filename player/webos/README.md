@@ -1,6 +1,6 @@
 # Fluid Player — shell webOS
 
-Web app LG webOS TV: Vite bundla UI + core comune (`../../src`), poi copia `appinfo.json` e le icone in `dist/` per Simulator / TV.
+Web app LG webOS TV: Vite bundla UI + core comune (`../../src`, moduli in `../../src/module`), poi copia `appinfo.json` e le icone in `dist/` per Simulator / TV.
 
 Workspace npm: `@fluid-player/webos`.
 

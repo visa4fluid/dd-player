@@ -40,27 +40,29 @@ In pratica: **local-first** in runtime, cloud come sorgente opzionale di contenu
 │                                                                          │
 │  ┌── Core (DDD) ──────────────────────────────────────────────────────┐  │
 │  │                                                                    │  │
-│  │  ┌─ system ────────┐  ┌─ auth ──────────┐  ┌─ playlist ──────┐   │  │
-│  │  │ Services        │  │ Services        │  │ Services        │   │  │
-│  │  │ Persistence     │  │ Persistence     │  │ Persistence     │   │  │
-│  │  └─────────────────┘  └─────────────────┘  └─────────────────┘   │  │
+│  │  ┌─ device ────────────┐  ┌─ system ────────────┐  ┌─ auth ──────────┐ │  │
+│  │  │ application         │  │ application         │  │ application     │ │  │
+│  │  │ domain              │  │ domain              │  │ domain          │ │  │
+│  │  │ infrastructure      │  │ infrastructure      │  │ infrastructure  │ │  │
+│  │  └─────────────────────┘  └─────────────────────┘  └─────────────────┘ │  │
 │  │                                                                    │  │
-│  │  ┌─ standalone ────┐  ┌─ external flows ┐  ┌─ settings ──────┐   │  │
-│  │  │ Services        │  │ Services        │  │ Services        │   │  │
-│  │  │ Persistence     │  │ Persistence     │  │ Persistence     │   │  │
-│  │  └─────────────────┘  └─────────────────┘  └─────────────────┘   │  │
+│  │  ┌─ playlist ──────────┐  ┌─ standalone ────────┐  ┌─ settings ────┐ │  │
+│  │  │ application         │  │ application         │  │ application   │ │  │
+│  │  │ domain              │  │ domain              │  │ domain        │ │  │
+│  │  │ infrastructure      │  │ infrastructure      │  │ infrastructure│ │  │
+│  │  └─────────────────────┘  └─────────────────────┘  └───────────────┘ │  │
 │  │                                                                    │  │
-│  │  ┌─ communication ─────────────────────────────────────────────┐  │  │
-│  │  │ Services                                                    │  │  │
-│  │  │ Persistence                                                 │  │  │
-│  │  └─────────────────────────────────────────────────────────────┘  │  │
+│  │  ┌─ external flows ────┐  ┌─ communication ──────────────────────┐ │  │
+│  │  │ application         │  │ application                          │ │  │
+│  │  │ domain              │  │ domain                               │ │  │
+│  │  │ infrastructure      │  │ infrastructure                       │ │  │
+│  │  └─────────────────────┘  └──────────────────────────────────────┘ │  │
 │  │                                                                    │  │
-│  │         Services: funzionalità cross tra moduli                    │  │
-│  │         Persistence: storage agnostico per modulo                  │  │
+│  │  presentation / UIX → apps/ (webos, tizen, …)                      │  │
 │  └────────────────────────────────────────────────────────────────────┘  │
 │                                                                          │
 │  ┌── Estensioni (runtime) ────────────────────────────────────────────┐  │
-│  │  si agganciano ai Services dei moduli, non alla Persistence        │  │
+│  │  si agganciano all’application dei moduli, non all’infrastructure  │  │
 │  └────────────────────────────────────────────────────────────────────┘  │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
@@ -73,6 +75,7 @@ Il core è modellato con **Domain-Driven Design**: moduli = bounded context, cia
 
 | Modulo | Ambito |
 |--------|--------|
+| **device** | Dispositivo fisico host: ID, CPU, RAM, storage, capability; servizi accessori di gestione |
 | **system** | **System Manager**: sistema corrente, superfici (play/pause/stop); da cloud scarica schermi + standalone legati e consente il download delle playlist di quel system |
 | **auth** | Identità, credenziali, sessioni locali e verso Fluid Next |
 | **playlist** | Playlist automatiche; un **manager** conosce cosa gira nel proprio dominio e chiede a system cosa lanciare |
@@ -81,16 +84,19 @@ Il core è modellato con **Domain-Driven Design**: moduli = bounded context, cia
 | **settings** | Configurazione del player |
 | **communication** | Servizi di rete: peer-to-peer in sottorete; cloud Fluid Next solo se autenticati sulle relative API |
 
-Ogni modulo raggruppa gli stessi due layer:
+Ogni modulo raggruppa gli stessi tre layer:
 
-1. **Persistence** (in basso) — salva e carica i dati del modulo in modo agnostico rispetto a DB/filesystem  
-2. **Services** (sopra) — espone funzionalità del modulo e capacità **cross** riusabili dagli altri moduli  
+1. **domain** — modello e regole del bounded context  
+2. **application** — use case / manager / API verso gli altri moduli  
+3. **infrastructure** — adapter (persistenza, piattaforma, rete concreta)  
+
+La **presentation** (UIX) sta in `apps/`, non dentro il modulo core.
 
 Dettaglio: [MODULE_CORE.md](./docs/MODULE_CORE.md).
 
 ### Estensioni
 
-Moduli caricabili **a runtime** che ampliano le capacità del software senza modificare il core. Si agganciano ai **Services** esposti, non alla Persistence interna dei moduli.
+Moduli caricabili **a runtime** che ampliano le capacità del software senza modificare il core. Si agganciano all’**application** esposta, non all’infrastructure interna dei moduli.
 
 Dettagli: [EXTENSION.md](./docs/EXTENSION.md).
 
@@ -100,7 +106,8 @@ Dettagli: [EXTENSION.md](./docs/EXTENSION.md).
 
 | Documento | Contenuto |
 |-----------|-----------|
-| [MODULE_CORE.md](./docs/MODULE_CORE.md) | Moduli core DDD, persistenza, services |
+| [MODULE_CORE.md](./docs/MODULE_CORE.md) | Moduli core DDD (`src/module/` + domain/application/infrastructure) |
+| [CONVENTIONS.md](./docs/CONVENTIONS.md) | Naming file (PascalCase tipi, kebab-case UIX) |
 | [EXTENSION.md](./docs/EXTENSION.md) | Estensioni runtime (es. scoreboard sportivi) |
 | [COMMUNICATION.md](./docs/COMMUNICATION.md) | Peer-to-peer in sottorete e comunicazione cloud |
 | [PROPOSAL.md](./docs/PROPOSAL.md) | Proposta architetturale (bozza tecnica) |
@@ -110,6 +117,9 @@ Dettagli: [EXTENSION.md](./docs/EXTENSION.md).
 ## Sviluppo
 
 Prerequisito: **Node.js ≥ 20**.
+
+Convenzioni di naming file: [CONVENTIONS.md](./docs/CONVENTIONS.md)  
+(regola Cursor: [`.cursor/rules/file-naming.mdc`](./.cursor/rules/file-naming.mdc)).
 
 ```bash
 npm install
@@ -139,7 +149,8 @@ npm run build
 
 | Path | Ruolo |
 |------|--------|
-| `src/` | Codice comune TypeScript (DDD / business logic) |
+| `src/` | Codice comune TypeScript (entry, util condivise) |
+| `src/module/` | Moduli core DDD (`device`, `system`, `auth`, …) |
 | `apps/` | Shell per piattaforma (`web`, `pc`, `android`, `tizen`, `webos`) |
 | `apps/webos/` | Entry point webOS TV (Vite + `appinfo.json`) — [README](./apps/webos/README.md) |
 | `apps/tizen/` | Entry point Tizen TV (Vite + `config.xml`) — [README](./apps/tizen/README.md) |

@@ -62,7 +62,7 @@ Servizi per la comunicazione online con la piattaforma cloud.
 La comunicazione con Fluid Next è **vincolata all’autenticazione sulle API Fluid Next**.
 
 - Nessuna chiamata cloud senza sessione/credenziali valide gestite da **auth**
-- **communication** usa i Services di **auth** per ottenere e applicare i token alle richieste
+- **communication** usa l’application di **auth** per ottenere e applicare i token alle richieste
 - Se l’autenticazione manca o scade, il piano cloud è sospeso (nessun sync/comando remoto) fino a un nuovo login/refresh riuscito
 - Il piano **peer-to-peer** non dipende da questo vincolo
 
@@ -95,10 +95,11 @@ Il funzionamento **offline** del player non dipende da questo piano: in assenza 
 
 ## Layer del modulo
 
-Come gli altri moduli core:
+Come gli altri moduli core (`domain` / `application` / `infrastructure`):
 
-1. **Persistence** — stato delle sessioni di rete, peer noti, config canali (agnostica)
-2. **Services** — API di invio/ricezione, discovery P2P, client cloud
+1. **domain** — concetti di sessione/canale se modellati nel BC  
+2. **application** — API di invio/ricezione, discovery P2P, client cloud  
+3. **infrastructure** — transport concreto, persistenza peer/sessioni, config canali  
 
 ---
 

@@ -2,14 +2,14 @@
 
 Le **estensioni** sono moduli caricabili **a runtime** che ampliano Fluid Player senza modificare il core.
 
-Si agganciano ai **Services** dei moduli core (system, communication, auth, …), non alla Persistence interna.
+Si agganciano all’**application** dei moduli core (system, communication, auth, …), non all’infrastructure interna.
 
 ---
 
 ## Principi
 
 - Caricamento / scaricamento a runtime
-- Contratto stabile verso i Services del core
+- Contratto stabile verso l’application del core
 - Ogni estensione resta owner del proprio dominio sportivo / funzionale
 - Uso del cloud solo tramite **communication**, e solo se **auth** ha una sessione Fluid Next valida
 
@@ -17,7 +17,7 @@ Si agganciano ai **Services** dei moduli core (system, communication, auth, …)
 
 ## Moduli scoreboard
 
-Estensioni per la gestione di una **partita** dello sport di competenza: stato del match ed **eventi** tipici di quel gioco. Possono alimentare le superfici (via Services di **system**) per overlay, ticker, tabelloni, ecc.
+Estensioni per la gestione di una **partita** dello sport di competenza: stato del match ed **eventi** tipici di quel gioco. Possono alimentare le superfici (via application di **system**) per overlay, ticker, tabelloni, ecc.
 
 | Estensione | Sport | Dominio |
 |------------|-------|---------|
@@ -26,15 +26,17 @@ Estensioni per la gestione di una **partita** dello sport di competenza: stato d
 | **scoreboard-basket** | Basket | Partita di basket ed eventi correlati |
 | **scoreboard-rugby** | Rugby | Partita di rugby ed eventi correlati |
 
-Ogni estensione scoreboard ha la **stessa struttura a layer** dei moduli core (non cambia il modello modulare):
+Ogni estensione scoreboard ha la **stessa struttura a layer** dei moduli core:
 
 ```
 ┌─ <scoreboard-*> ────────────────────────┐
-│  Services                               │
+│  application                            │
 │   · API dominio sportivo                │
 │   · Current Match (partita a runtime)   │
 ├─────────────────────────────────────────┤
-│  Persistence (agnostica)                │
+│  domain                                 │
+├─────────────────────────────────────────┤
+│  infrastructure                         │
 └─────────────────────────────────────────┘
 ```
 
@@ -44,18 +46,20 @@ Vista delle quattro estensioni:
 ┌─ Estensioni (runtime) ──────────────────────────────────────────────────┐
 │                                                                         │
 │  ┌─ scoreboard-soccer ──┐  ┌─ scoreboard-volley ──┐                     │
-│  │ Services             │  │ Services             │                     │
+│  │ application          │  │ application          │                     │
 │  │  · Current Match     │  │  · Current Match     │                     │
-│  │ Persistence          │  │ Persistence          │                     │
+│  │ domain               │  │ domain               │                     │
+│  │ infrastructure       │  │ infrastructure       │                     │
 │  └──────────────────────┘  └──────────────────────┘                     │
 │                                                                         │
 │  ┌─ scoreboard-basket ──┐  ┌─ scoreboard-rugby ───┐                     │
-│  │ Services             │  │ Services             │                     │
+│  │ application          │  │ application          │                     │
 │  │  · Current Match     │  │  · Current Match     │                     │
-│  │ Persistence          │  │ Persistence          │                     │
+│  │ domain               │  │ domain               │                     │
+│  │ infrastructure       │  │ infrastructure       │                     │
 │  └──────────────────────┘  └──────────────────────┘                     │
 │                                                                         │
-│              │ usano i Services del core                                │
+│              │ usano l’application del core                             │
 │              ▼                                                          │
 │     system · auth · communication · …                                   │
 └─────────────────────────────────────────────────────────────────────────┘
@@ -63,14 +67,14 @@ Vista delle quattro estensioni:
 
 ### Current Match (servizio runtime)
 
-All’interno del layer **Services** di ogni scoreboard, il servizio **Current Match** gestisce la **partita corrente a runtime**:
+All’interno del layer **application** di ogni scoreboard, il servizio **Current Match** gestisce la **partita corrente a runtime**:
 
 | Responsabilità | Current Match |
 |----------------|---------------|
 | Quale partita è attiva ora | Sì (source of truth runtime dell’estensione) |
 | Punteggio, periodo/tempo, stato live | Sì |
 | Applicazione eventi (goal, ammonizione, canestro, …) | Sì |
-| Persistenza storica / cache partita | No → layer **Persistence** dell’estensione |
+| Persistenza storica / cache partita | No → **infrastructure** dell’estensione |
 | Rendering sulle superfici | No → comandi verso **system** |
 
 Flusso tipico:
@@ -79,10 +83,10 @@ Flusso tipico:
 evento / comando regia
         │
         ▼
-Current Match (Services)  →  aggiorna stato partita corrente
+Current Match (application)  →  aggiorna stato partita corrente
         │
-        ├──► Persistence   (salvataggio agnostico)
-        └──► system        (aggiornamento superfici, se necessario)
+        ├──► infrastructure / domain   (salvataggio + modello)
+        └──► system                    (aggiornamento superfici, se necessario)
 ```
 
 ---
@@ -92,9 +96,9 @@ Current Match (Services)  →  aggiorna stato partita corrente
 Ogni scoreboard:
 
 1. **Possiede** il dominio della partita (modello sportivo + eventi)
-2. Espone nei **Services** il servizio **Current Match** per lo stato runtime della partita corrente
-3. Usa la **Persistence** agnostica per salvare/caricare dati della partita (locale o dopo download cloud)
-4. **Non** sostituisce system: per mostrare qualcosa sulle superfici invia comandi tramite i Services di **system**
+2. Espone in **application** il servizio **Current Match** per lo stato runtime della partita corrente
+3. Usa **infrastructure** per salvare/caricare dati della partita (locale o dopo download cloud)
+4. **Non** sostituisce system: per mostrare qualcosa sulle superfici invia comandi tramite l’application di **system**
 5. **Può scaricare la partita dal cloud** Fluid Next **solo se l’utente/device è autenticato** (vincolo di **auth** + canale **communication**)
 ### Download partita da cloud
 
@@ -142,10 +146,10 @@ Esempi: meta, trasformazione, calcio di punizione, drop, cartellino (giallo/ross
 | **system** | Play / pause / stop (o update) di overlay/contenuti sulle superfici |
 | **auth** | Verifica sessione prima del download partita da Fluid Next |
 | **communication** | Trasporto verso cloud (e, se utile, P2P in sottorete) |
-| **settings** | Preferenze locali dell’estensione (se esposte via services) |
+| **settings** | Preferenze locali dell’estensione (se esposte via application) |
 
 ---
 
 ## Stato
 
-Quattro estensioni distinte con layer Services + Persistence (come il core), servizio **Current Match** a runtime, vincolo download-con-auth. Schema eventi dettagliato e UI di regia: TODO.
+Quattro estensioni distinte con layer domain / application / infrastructure (come il core), servizio **Current Match** a runtime, vincolo download-con-auth. Schema eventi dettagliato e UI di regia: TODO.
