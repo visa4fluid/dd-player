@@ -9,7 +9,7 @@ const pkgDir = resolve(appRoot, 'pkg');
 const wgtPath = resolve(pkgDir, 'FluidPlayer.wgt');
 
 if (!existsSync(resolve(distDir, 'config.xml')) || !existsSync(resolve(distDir, 'index.html'))) {
-  console.error('Missing apps/tizen/dist (run build first).');
+  console.error('Missing player/tizen/dist (run build first).');
   process.exit(1);
 }
 
@@ -31,5 +31,5 @@ if (zip.status !== 0) {
 
 console.log(`Created ${relative(process.cwd(), wgtPath)} (unsigned)`);
 console.log(
-  'Per TV/Emulator firmato: tizen package -t wgt -s <profile> -- apps/tizen/dist',
+  'Per TV/Emulator firmato: tizen package -t wgt -s <profile> -- player/tizen/dist',
 );

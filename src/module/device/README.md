@@ -7,10 +7,19 @@ Naming: [CONVENTIONS.md](../../../docs/CONVENTIONS.md).
 
 ```
 device/
-├── domain/           # modello hardware / identità
-├── application/      # use case (es. DeviceInfoManagerInterface)
-└── infrastructure/   # adapter persistenza + piattaforma (webOS, Tizen, …)
+├── domain/
+├── application/      # DeviceInfoInterface
+├── infrastructure/
+│   ├── HostHelper.ts
+│   ├── android/AndroidDeviceInfo.ts
+│   ├── tizen/TizenDeviceInfo.ts
+│   └── webos/WebosDeviceInfo.ts
+└── test/
+    └── unit/
+        ├── application/
+        ├── domain/
+        └── infrastructure/
 ```
 
-Presentation: non in questo modulo → `apps/`.  
-Nessuna implementazione TypeScript in queste cartelle per ora.
+I test unitari specchiano i layer del modulo (`test/unit/<layer>/`).  
+Presentation: non in questo modulo → `player/` (compone l’adapter della piattaforma).

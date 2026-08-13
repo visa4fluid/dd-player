@@ -7,7 +7,7 @@ Workspace npm: `@fluid-player/tizen`.
 ## Struttura
 
 ```
-apps/tizen/
+player/tizen/
 ├── config.xml        # metadati Tizen (application id, privilege, profile tv-samsung)
 ├── icon.png          # launcher ~117×117
 ├── index.html
@@ -67,10 +67,10 @@ Deve contenere `tools/sec-tv-simulator/simulator` (o `simulator.sh`).
 ```bash
 npm install
 npm run dev:tizen        # http://localhost:5174 — iterazione UI senza Simulator
-npm run build:tizen      # → apps/tizen/dist/
+npm run build:tizen      # → player/tizen/dist/
 npm run preview:tizen
 npm run typecheck:tizen
-npm run package:tizen    # → apps/tizen/pkg/FluidPlayer.wgt (unsigned)
+npm run package:tizen    # → player/tizen/pkg/FluidPlayer.wgt (unsigned)
 npm run simulate:tizen   # build + .wgt + Simulator con app automatica (--file)
 ```
 
@@ -90,7 +90,7 @@ Fallback:
 
 ```bash
 cd "$TIZEN_STUDIO_PATH/tools/sec-tv-simulator"
-./simulator --platform tizentv --file /absolute/path/to/apps/tizen/dist/index.html
+./simulator --platform tizentv --file /absolute/path/to/player/tizen/dist/index.html
 ```
 
 Errori tipo `Cannot open ZIP archive './child.js'` sono rumore interno NW.js del Simulator, non del progetto.
@@ -101,8 +101,8 @@ Il `.wgt` di `package:tizen` è **unsigned** (ok per Web Simulator). Per TV fisi
 
 ```bash
 npm run build:tizen
-tizen package -t wgt -s <certificate-profile> -- apps/tizen/dist
-tizen install -n FluidPlayer.wgt -- apps/tizen/dist
+tizen package -t wgt -s <certificate-profile> -- player/tizen/dist
+tizen install -n FluidPlayer.wgt -- player/tizen/dist
 tizen run -p FluidPlayr.FluidPlayer
 ```
 

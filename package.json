@@ -5,8 +5,9 @@
   "description": "Digital signage player and local media orchestration runtime",
   "type": "module",
   "workspaces": [
-    "apps/webos",
-    "apps/tizen"
+    "player/webos",
+    "player/tizen",
+    "player/android"
   ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -24,30 +25,43 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "clean": "rm -rf dist apps/webos/dist apps/webos/pkg apps/tizen/dist apps/tizen/pkg",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:device": "vitest run src/module/device/test",
+    "test:device:coverage": "vitest run --coverage src/module/device/test",
+    "clean": "rm -rf dist coverage player/webos/dist player/webos/pkg player/tizen/dist player/tizen/pkg player/android/dist player/android/native/.gradle player/android/native/build player/android/native/app/build",
     "dev:webos": "npm run dev -w @fluid-player/webos",
     "build:webos": "npm run build -w @fluid-player/webos",
     "preview:webos": "npm run preview -w @fluid-player/webos",
     "typecheck:webos": "npm run typecheck -w @fluid-player/webos",
-    "package:webos": "npm run build:webos && ares-package apps/webos/dist -o apps/webos/pkg",
-    "simulate:webos": "npm run build:webos && dotenv -- sh -c 'ares-launch -s \"$WEBOS_SIMULATOR_VERSION\" -sp \"$WEBOS_SIMULATOR_PATH\" apps/webos/dist'",
+    "package:webos": "npm run build:webos && ares-package player/webos/dist -o player/webos/pkg",
+    "simulate:webos": "npm run build:webos && dotenv -- sh -c 'ares-launch -s \"$WEBOS_SIMULATOR_VERSION\" -sp \"$WEBOS_SIMULATOR_PATH\" player/webos/dist'",
     "dev:tizen": "npm run dev -w @fluid-player/tizen",
     "build:tizen": "npm run build -w @fluid-player/tizen",
     "preview:tizen": "npm run preview -w @fluid-player/tizen",
     "typecheck:tizen": "npm run typecheck -w @fluid-player/tizen",
     "package:tizen": "npm run package -w @fluid-player/tizen",
-    "simulate:tizen": "npm run build:tizen && dotenv -- node apps/tizen/scripts/simulate.mjs"
+    "simulate:tizen": "npm run build:tizen && dotenv -- node player/tizen/scripts/simulate.mjs",
+    "dev:android": "npm run dev -w @fluid-player/android",
+    "build:android": "npm run build -w @fluid-player/android",
+    "preview:android": "npm run preview -w @fluid-player/android",
+    "typecheck:android": "npm run typecheck -w @fluid-player/android",
+    "package:android": "npm run build:android && node player/android/scripts/sync-assets.mjs",
+    "simulate:android": "npm run package:android && node player/android/scripts/simulate.mjs"
   },
   "engines": {
     "node": ">=20"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "^3.2.7",
     "@webos-tools/cli": "^3.2.1",
     "dotenv-cli": "^10.0.0",
     "eslint": "^9.33.0",
     "eslint-plugin-jsdoc": "^54.1.1",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.40.0",
-    "vite": "^7.1.2"
+    "vite": "^7.1.2",
+    "vitest": "^3.2.4"
   }
 }

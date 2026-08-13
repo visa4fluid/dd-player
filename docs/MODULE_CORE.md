@@ -12,7 +12,7 @@ Il core di Fluid Player è organizzato secondo **Domain-Driven Design (DDD)**: o
 - Il dominio del modulo non dipende da UI, filesystem concreto o vendor di database
 - La comunicazione tra moduli avviene tramite contratti espliciti (application services / eventi), non accedendo allo storage altrui
 - Le estensioni a runtime si agganciano all’**application** esposta, non all’infrastructure interna dei moduli
-- La **presentation** (UIX) vive fuori dal core, tipicamente in `apps/`
+- La **presentation** (UIX) vive fuori dal core, tipicamente in `player/`
 
 Dettaglio dei singoli domini: da approfondire. Qui si fissa la mappa dei moduli e i layer trasversali.
 
@@ -181,7 +181,7 @@ Ogni modulo core segue lo stesso stack (dipendenze verso l’interno):
 │  (adapter: persistenza, piattaforma, rete concreta, …)      │
 └─────────────────────────────────────────────────────────────┘
 
-presentation (UIX)  →  fuori dal modulo core, tipicamente in apps/
+presentation (UIX)  →  fuori dal modulo core, tipicamente in player/
 ```
 
 Layout cartelle:
@@ -190,7 +190,8 @@ Layout cartelle:
 src/module/<nome>/
 ├── domain/
 ├── application/
-└── infrastructure/
+├── infrastructure/
+└── test/unit/{domain,application,infrastructure}/
 ```
 
 Vista d’insieme dei moduli:
@@ -214,7 +215,7 @@ Vista d’insieme dei moduli:
 │ infrastructure      │  │ infrastructure                              │
 └─────────────────────┘  └─────────────────────────────────────────────┘
 
-presentation / UIX  →  apps/webos, apps/tizen, …
+presentation / UIX  →  player/webos, player/tizen, …
 ```
 
 ### domain
@@ -239,7 +240,7 @@ presentation / UIX  →  apps/webos, apps/tizen, …
 ### presentation
 
 - **Non** fa parte del package del modulo core
-- Shell e UIX in `apps/` (webOS, Tizen, …) e eventuali dashboard remote
+- Shell e UIX in `player/` (webOS, Tizen, …) e eventuali dashboard remote
 - Consuma solo i contratti **application** del core
 
 ---
@@ -250,7 +251,7 @@ presentation / UIX  →  apps/webos, apps/tizen, …
 2. **application** dipende da domain e da porte astratte; non da adapter concreti  
 3. **infrastructure** implementa le porte e può usare domain; non è consumata direttamente dagli altri moduli  
 4. Gli altri moduli e le estensioni entrano solo da **application**  
-5. **presentation** (in `apps/`) parla al core solo tramite application  
+5. **presentation** (in `player/`) parla al core solo tramite application  
 6. Un modulo non legge/scrive direttamente lo storage di un altro modulo  
 7. **communication** fornisce i canali di rete (P2P sottorete + cloud); non contiene la business logic degli altri contesti  
 8. **auth** possiede credenziali e sessioni; **communication** le consuma tramite l’application di auth; il canale cloud Fluid Next è **inibito** senza autenticazione valida sulle API Fluid Next  
@@ -274,4 +275,4 @@ Convenzione di progetto (dettaglio: [CONVENTIONS.md](./CONVENTIONS.md)):
 
 ## Stato
 
-Mappa moduli e layer `domain` / `application` / `infrastructure` (+ presentation in `apps/`) definita. Responsabilità dettagliate, aggregate ed eventi di dominio: TODO.
+Mappa moduli e layer `domain` / `application` / `infrastructure` (+ presentation in `player/`) definita. Responsabilità dettagliate, aggregate ed eventi di dominio: TODO.

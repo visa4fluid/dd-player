@@ -3,10 +3,11 @@ node_modules/
 
 # Build outputs
 dist/
-apps/*/dist/
-apps/*/pkg/
+player/*/dist/
+player/*/pkg/
 *.ipk
 *.wgt
+*.apk
 
 # TypeScript / ESLint
 *.tsbuildinfo
@@ -34,6 +35,14 @@ yarn-error.log*
 # OS
 .DS_Store
 Thumbs.db
+
+# Android Gradle
+player/android/native/.gradle/
+player/android/native/build/
+player/android/native/app/build/
+player/android/native/local.properties
+player/android/native/app/src/main/assets/public/**
+!player/android/native/app/src/main/assets/public/.gitkeep
 
 # Editors
 .idea/

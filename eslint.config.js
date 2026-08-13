@@ -3,11 +3,12 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['dist/**', 'apps/**', 'node_modules/**'],
+    ignores: ['dist/**', 'player/**', 'node_modules/**', 'coverage/**'],
   },
   ...tseslint.configs.recommended,
   {
     files: ['src/**/*.ts'],
+    ignores: ['src/**/test/**'],
     extends: [jsdoc.configs['flat/recommended-typescript-error']],
     settings: {
       jsdoc: {

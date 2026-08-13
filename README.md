@@ -35,36 +35,37 @@ In pratica: **local-first** in runtime, cloud come sorgente opzionale di contenu
 ## Composizione del software
 
 ```
-┌──────────────────────────────────────────────────────────────────────────┐
-│                             Fluid Player                                 │
-│                                                                          │
-│  ┌── Core (DDD) ──────────────────────────────────────────────────────┐  │
-│  │                                                                    │  │
-│  │  ┌─ device ────────────┐  ┌─ system ────────────┐  ┌─ auth ──────────┐ │  │
-│  │  │ application         │  │ application         │  │ application     │ │  │
-│  │  │ domain              │  │ domain              │  │ domain          │ │  │
-│  │  │ infrastructure      │  │ infrastructure      │  │ infrastructure  │ │  │
-│  │  └─────────────────────┘  └─────────────────────┘  └─────────────────┘ │  │
-│  │                                                                    │  │
-│  │  ┌─ playlist ──────────┐  ┌─ standalone ────────┐  ┌─ settings ────┐ │  │
-│  │  │ application         │  │ application         │  │ application   │ │  │
-│  │  │ domain              │  │ domain              │  │ domain        │ │  │
-│  │  │ infrastructure      │  │ infrastructure      │  │ infrastructure│ │  │
-│  │  └─────────────────────┘  └─────────────────────┘  └───────────────┘ │  │
-│  │                                                                    │  │
-│  │  ┌─ external flows ────┐  ┌─ communication ──────────────────────┐ │  │
-│  │  │ application         │  │ application                          │ │  │
-│  │  │ domain              │  │ domain                               │ │  │
-│  │  │ infrastructure      │  │ infrastructure                       │ │  │
-│  │  └─────────────────────┘  └──────────────────────────────────────┘ │  │
-│  │                                                                    │  │
-│  │  presentation / UIX → apps/ (webos, tizen, …)                      │  │
-│  └────────────────────────────────────────────────────────────────────┘  │
-│                                                                          │
-│  ┌── Estensioni (runtime) ────────────────────────────────────────────┐  │
-│  │  si agganciano all’application dei moduli, non all’infrastructure  │  │
-│  └────────────────────────────────────────────────────────────────────┘  │
-└──────────────────────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────────────────────────┐
+│                                    Fluid Player                                   │
+│                                                                                   │
+│  ┌─ Core (DDD) ────────────────────────────────────────────────────────────────┐  │
+│  │                                                                             │  │
+│  │  ┌─ device ────────────┐  ┌─ system ────────────┐  ┌─ auth ──────────────┐  │  │
+│  │  │ application         │  │ application         │  │ application         │  │  │
+│  │  │ domain              │  │ domain              │  │ domain              │  │  │
+│  │  │ infrastructure      │  │ infrastructure      │  │ infrastructure      │  │  │
+│  │  └─────────────────────┘  └─────────────────────┘  └─────────────────────┘  │  │
+│  │                                                                             │  │
+│  │  ┌─ playlist ──────────┐  ┌─ standalone ────────┐  ┌─ settings ──────────┐  │  │
+│  │  │ application         │  │ application         │  │ application         │  │  │
+│  │  │ domain              │  │ domain              │  │ domain              │  │  │
+│  │  │ infrastructure      │  │ infrastructure      │  │ infrastructure      │  │  │
+│  │  └─────────────────────┘  └─────────────────────┘  └─────────────────────┘  │  │
+│  │                                                                             │  │
+│  │  ┌─ external flows ────┐  ┌─ communication ──────────────────────────────┐  │  │
+│  │  │ application         │  │ application                                  │  │  │
+│  │  │ domain              │  │ domain                                       │  │  │
+│  │  │ infrastructure      │  │ infrastructure                               │  │  │
+│  │  └─────────────────────┘  └──────────────────────────────────────────────┘  │  │
+│  │                                                                             │  │
+│  │  presentation / UIX → player/ (webos, tizen, …)                             │  │
+│  └─────────────────────────────────────────────────────────────────────────────┘  │
+│                                                                                   │
+│  ┌─ Estensioni (runtime) ──────────────────────────────────────────────────────┐  │
+│  │ si agganciano all'application dei moduli,                                   │  │
+│  │ non all'infrastructure                                                      │  │
+│  └─────────────────────────────────────────────────────────────────────────────┘  │
+└───────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Pattern: DDD
@@ -90,7 +91,7 @@ Ogni modulo raggruppa gli stessi tre layer:
 2. **application** — use case / manager / API verso gli altri moduli  
 3. **infrastructure** — adapter (persistenza, piattaforma, rete concreta)  
 
-La **presentation** (UIX) sta in `apps/`, non dentro il modulo core.
+La **presentation** (UIX) sta in `player/`, non dentro il modulo core.
 
 Dettaglio: [MODULE_CORE.md](./docs/MODULE_CORE.md).
 
@@ -133,17 +134,28 @@ npm run build
 | `npm run typecheck` | Controllo tipi TypeScript (`src/` → nessun emit) |
 | `npm run lint` | ESLint su `src/`, incluse le regole JSDoc |
 | `npm run lint:fix` | Come `lint`, con fix automatici dove possibile |
+| `npm run test` | Test unitari (Vitest) |
+| `npm run test:watch` | Test unitari in watch |
+| `npm run test:coverage` | Test unitari + coverage (testo + `coverage/`) |
+| `npm run test:device` | Solo test del modulo `device` |
+| `npm run test:device:coverage` | Coverage solo del modulo `device` |
 | `npm run build` | Compila `src/` in `dist/` |
 | `npm run dev:webos` | Avvia Vite per lo shell webOS (hot reload) |
-| `npm run build:webos` | Build produzione in `apps/webos/dist/` (pronta per package) |
+| `npm run build:webos` | Build produzione in `player/webos/dist/` (pronta per package) |
 | `npm run preview:webos` | Anteprima locale del bundle webOS |
-| `npm run package:webos` | Build + `ares-package` → `apps/webos/pkg/` |
+| `npm run package:webos` | Build + `ares-package` → `player/webos/pkg/` |
 | `npm run simulate:webos` | Build + avvio sul webOS TV Simulator |
 | `npm run dev:tizen` | Avvia Vite per lo shell Tizen (hot reload) |
-| `npm run build:tizen` | Build produzione in `apps/tizen/dist/` |
+| `npm run build:tizen` | Build produzione in `player/tizen/dist/` |
 | `npm run preview:tizen` | Anteprima locale del bundle Tizen |
-| `npm run package:tizen` | Build + `.wgt` → `apps/tizen/pkg/` |
+| `npm run package:tizen` | Build + `.wgt` → `player/tizen/pkg/` |
 | `npm run simulate:tizen` | Build + package + avvio Samsung TV Web Simulator |
+| `npm run dev:android` | Avvia Vite per lo shell Android (hot reload) |
+| `npm run build:android` | Build produzione in `player/android/dist/` |
+| `npm run preview:android` | Anteprima locale del bundle Android |
+| `npm run typecheck:android` | Controllo tipi dello shell Android |
+| `npm run package:android` | Build Vite + copia in `assets` del WebView |
+| `npm run simulate:android` | Installa l’APK sull’emulatore e avvia HelloWorld |
 
 ### Struttura
 
@@ -151,12 +163,13 @@ npm run build
 |------|--------|
 | `src/` | Codice comune TypeScript (entry, util condivise) |
 | `src/module/` | Moduli core DDD (`device`, `system`, `auth`, …) |
-| `apps/` | Shell per piattaforma (`web`, `pc`, `android`, `tizen`, `webos`) |
-| `apps/webos/` | Entry point webOS TV (Vite + `appinfo.json`) — [README](./apps/webos/README.md) |
-| `apps/tizen/` | Entry point Tizen TV (Vite + `config.xml`) — [README](./apps/tizen/README.md) |
+| `player/` | Shell per piattaforma (`web`, `pc`, `android`, `tizen`, `webos`) |
+| `player/webos/` | Entry point webOS TV (Vite + `appinfo.json`) — [README](./player/webos/README.md) |
+| `player/tizen/` | Entry point Tizen TV (Vite + `config.xml`) — [README](./player/tizen/README.md) |
+| `player/android/` | Entry point Android WebView (Vite) — [README](./player/android/README.md) |
 | `docs/` | Documentazione di design |
 
-Dettaglio piattaforme: [webOS](#webos) · [apps/webos/README.md](./apps/webos/README.md), [Tizen](#tizen) · [apps/tizen/README.md](./apps/tizen/README.md).
+Dettaglio piattaforme: [webOS](#webos) · [player/webos/README.md](./player/webos/README.md), [Tizen](#tizen) · [player/tizen/README.md](./player/tizen/README.md), [Android](#android) · [player/android/README.md](./player/android/README.md).
 
 ### JSDoc (obbligatoria su API pubblica)
 
@@ -174,10 +187,10 @@ Cosa evitare: JSDoc su dettagli privati ovvi o re-export banali.
 
 ## webOS
 
-Lo shell LG TV vive in [`apps/webos`](./apps/webos). È una **web app** packaging-ready: Vite bundla UI + core comune (`src/`), poi `appinfo.json` e le icone vengono copiati in `dist/` per Simulator / TV.
+Lo shell LG TV vive in [`player/webos`](./player/webos). È una **web app** packaging-ready: Vite bundla UI + core comune (`src/`), poi `appinfo.json` e le icone vengono copiati in `dist/` per Simulator / TV.
 
 ```
-apps/webos/
+player/webos/
 ├── appinfo.json      # metadati obbligatori webOS (id, main, icon, …)
 ├── icon.png          # icona 80×80
 ├── largeIcon.png     # icona 130×130
@@ -195,8 +208,8 @@ apps/webos/
 | Componente | Dove | Ruolo |
 |------------|------|--------|
 | **Core condiviso** | `src/` (alias `@fluid/*`) | Logica TypeScript comune a tutte le piattaforme |
-| **Entry webOS** | `apps/webos/src/main.ts` | Punto di ingresso UI sul device/Simulator |
-| **`appinfo.json`** | `apps/webos/` → copiato in `dist/` | Identità app (`id`, `title`, `main`, icone, risoluzione) |
+| **Entry webOS** | `player/webos/src/main.ts` | Punto di ingresso UI sul device/Simulator |
+| **`appinfo.json`** | `player/webos/` → copiato in `dist/` | Identità app (`id`, `title`, `main`, icone, risoluzione) |
 | **Icone** | `icon.png`, `largeIcon.png` | Richieste da `ares-package` / launcher TV |
 | **Vite** | `vite.config.ts` | Dev server, build `chrome68`, `base: './'` |
 | **webOS CLI** | `@webos-tools/cli` (devDependency) | `ares-package`, `ares-launch`, … |
@@ -205,7 +218,7 @@ apps/webos/
 Flusso:
 
 ```
-src/  +  apps/webos/src  ──Vite build──►  apps/webos/dist/  ──ares-launch -s──►  Simulator
+src/  +  player/webos/src  ──Vite build──►  player/webos/dist/  ──ares-launch -s──►  Simulator
                               ▲
                     appinfo.json + icone
 ```
@@ -248,7 +261,7 @@ Server su `http://localhost:5173` (anche in LAN). Non sostituisce il Simulator p
 
 4. **Apri l’app nel Simulator già avviato**
 
-   Nel Simulator: **File → Launch App** → seleziona `apps/webos/dist`  
+   Nel Simulator: **File → Launch App** → seleziona `player/webos/dist`  
    (deve contenere `appinfo.json`).
 
    Oppure, se il tuo ambiente non ha il problema sandbox:
@@ -289,12 +302,12 @@ Server su `http://localhost:5173` (anche in LAN). Non sostituisce il Simulator p
    npm run simulate:webos
    ```
 
-   Chiudi eventuali finestre Simulator già aperte prima di rilanciare, così parte un’istanza pulita con `apps/webos/dist`.
+   Chiudi eventuali finestre Simulator già aperte prima di rilanciare, così parte un’istanza pulita con `player/webos/dist`.
 
 5. **Package `.ipk` (TV fisica)**
 
    ```bash
-   npm run package:webos    # apps/webos/pkg/
+   npm run package:webos    # player/webos/pkg/
    ```
 
 > Il Simulator non replica al 100% una TV (DRM, alcuni media e API Luna assenti o diversi). Per validazione finale usare una TV in Developer Mode.
@@ -303,10 +316,10 @@ Server su `http://localhost:5173` (anche in LAN). Non sostituisce il Simulator p
 
 ## Tizen
 
-Lo shell Samsung TV vive in [`apps/tizen`](./apps/tizen). Stesso modello di webOS: Vite bundla UI + core (`src/`), poi `config.xml` e l’icona finiscono in `dist/` per Simulator / TV.
+Lo shell Samsung TV vive in [`player/tizen`](./player/tizen). Stesso modello di webOS: Vite bundla UI + core (`src/`), poi `config.xml` e l’icona finiscono in `dist/` per Simulator / TV.
 
 ```
-apps/tizen/
+player/tizen/
 ├── config.xml        # metadati obbligatori Tizen (id, content, privilege, …)
 ├── icon.png          # icona launcher (117×117)
 ├── index.html        # entry HTML (`content` in config.xml)
@@ -326,16 +339,16 @@ apps/tizen/
 | Componente | Dove | Ruolo |
 |------------|------|--------|
 | **Core condiviso** | `src/` (alias `@fluid/*`) | Logica TypeScript comune |
-| **Entry Tizen** | `apps/tizen/src/main.ts` | Punto di ingresso UI sul device/Simulator |
-| **`config.xml`** | `apps/tizen/` → copiato in `dist/` | Identità app (`tizen:application`, privilege, profile) |
+| **Entry Tizen** | `player/tizen/src/main.ts` | Punto di ingresso UI sul device/Simulator |
+| **`config.xml`** | `player/tizen/` → copiato in `dist/` | Identità app (`tizen:application`, privilege, profile) |
 | **Vite** | `vite.config.ts` | Dev server porta `5174`, build `chrome69`, `base: './'` |
-| **`.wgt`** | `apps/tizen/pkg/FluidPlayer.wgt` | Pacchetto web Tizen (zip di `dist/`) |
+| **`.wgt`** | `player/tizen/pkg/FluidPlayer.wgt` | Pacchetto web Tizen (zip di `dist/`) |
 | **Tizen Studio / TV Simulator** | Installazione esterna Samsung | Ambiente TV sul PC (non è un pacchetto npm) |
 
 Flusso:
 
 ```
-src/  +  apps/tizen/src  ──Vite build──►  apps/tizen/dist/  ──zip──►  .wgt  ──Install──►  Simulator
+src/  +  player/tizen/src  ──Vite build──►  player/tizen/dist/  ──zip──►  .wgt  ──Install──►  Simulator
                               ▲
                          config.xml + icon
 ```
@@ -368,14 +381,14 @@ Server su `http://localhost:5174`. Non sostituisce il Simulator per API `tizen.*
    ```
 
    Build, crea il `.wgt`, apre il Samsung TV Web Simulator e lancia
-   `apps/tizen/dist/index.html` via `--file` (senza Install Application manuale).
+   `player/tizen/dist/index.html` via `--file` (senza Install Application manuale).
 
    Fallback a mano:
 
    ```bash
    npm run build:tizen
    cd "$TIZEN_STUDIO_PATH/tools/sec-tv-simulator"
-   ./simulator --platform tizentv --file "$OLDPWD/apps/tizen/dist/index.html"
+   ./simulator --platform tizentv --file "$OLDPWD/player/tizen/dist/index.html"
    ```
 
 4. **Package firmato (TV fisica / Emulator)**
@@ -384,13 +397,126 @@ Server su `http://localhost:5174`. Non sostituisce il Simulator per API `tizen.*
 
    ```bash
    npm run build:tizen
-   tizen package -t wgt -s <profile> -- apps/tizen/dist
-   tizen install -n FluidPlayer.wgt -- apps/tizen/dist
+   tizen package -t wgt -s <profile> -- player/tizen/dist
+   tizen install -n FluidPlayer.wgt -- player/tizen/dist
    tizen run -p FluidPlayr.FluidPlayer
    ```
 
 > Il Web Simulator non replica al 100% una TV (API privilegiate, media, DRM). Per validazione finale usare Emulator o TV in Developer Mode.
 
+---
+
+## Android
+
+Lo shell Android vive in [`player/android`](./player/android). Stesso modello di webOS/Tizen: Vite bundla UI + **core** (`src/`, moduli in `src/module/`) in `dist/`. HelloWorld è lo smoke test; `#stage` è la finestra dove arriveranno superfici, HTML dinamico e media. L’host Kotlin carica quel bundle in un WebView a schermo intero (`Fluid Player` sul launcher TV).
+
+```
+player/android/
+├── index.html
+├── package.json      # workspace @fluid-player/android
+├── vite.config.ts    # alias @fluid → ../../src
+├── tsconfig.json
+├── scripts/
+│   ├── sync-assets.mjs   # dist/ → native assets
+│   └── simulate.mjs      # installDebug + am start
+├── native/               # host Kotlin / Gradle (WebView)
+└── src/
+    ├── main.ts           # bootstrap: HelloWorld dal core
+    └── style.css
+```
+
+### Componenti
+
+| Componente | Dove | Ruolo |
+|------------|------|--------|
+| **Core condiviso** | `src/` (alias `@fluid/*`) | Manager, device, playlist, system, communication |
+| **Entry Android** | `player/android/src/main.ts` | Punto di ingresso UI (WebView / browser) |
+| **Vite** | `vite.config.ts` | Dev server porta `5175`, build `chrome100`, `base: './'` |
+| **`dist/`** | `player/android/dist/` | Bundle copiato negli asset del WebView |
+| **Host Kotlin** | `player/android/native/` | APK Leanback: WebView + `WebViewAssetLoader` |
+| **Android Studio / SDK / AVD** | Installazione esterna Google | Emulatore TV sul PC (non è un pacchetto npm) |
+
+Flusso:
+
+```
+src/  +  player/android/src  ──Vite build──►  dist/  ──sync-assets──►  native assets
+                                                              │
+                                                              └── Gradle installDebug ──►  emulatore
+```
+
+### Sviluppo in browser
+
+```bash
+npm run dev:android
+```
+
+Server su `http://localhost:5175`. Non sostituisce l’emulatore: lì gira l’APK (bundle in `assets/`, non il dev server).
+
+```bash
+npm run build:android
+npm run preview:android
+```
+
+### Far girare l’app sull’emulatore
+
+1. **Prerequisiti**
+   - Node.js ≥ 20, `npm install` nella root
+   - [Android Studio](https://developer.android.com/studio) + **Android SDK**
+   - **JDK 17** con `javac` (Temurin / Adoptium). Gradle 8.11 non accetta il JBR di Studio se è Java 25+; un JRE senza `javac` non basta
+   - **KVM** su Linux (`kvm-ok` ok, utente nel gruppo `kvm`) — senza di esso l’immagine x86 dell’emulatore non parte
+   - Pacchetti SDK (SDK Manager): **Android SDK Platform**, **Android TV** system image (es. API 36 `android-tv` x86_64), **Platform-Tools**, **Emulator**, **cmdline-tools**
+
+2. **Variabili e path**
+
+   In `.env` (vedi [`.env.example`](./.env.example)) e/o in `~/.bashrc`:
+
+   ```bash
+   export ANDROID_HOME="$HOME/Android/Sdk"
+   export PATH="$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PATH"
+   export JAVA_HOME="/path/to/jdk-17"
+   ```
+
+   `simulate:android` usa `ANDROID_HOME` (default `$HOME/Android/Sdk`) e, per Gradle, `~/Program/jdk-17` se c’è `javac`, altrimenti `JAVA_HOME`, altrimenti lo JBR di Studio.
+
+   Opzionale, path SDK per Gradle (file gitignorato):
+
+   ```bash
+   echo "sdk.dir=$HOME/Android/Sdk" > player/android/native/local.properties
+   ```
+
+3. **Crea un AVD Android TV**
+
+   In Android Studio: **Device Manager → Create Device → TV** (es. 1080p) → system image **Android TV** (API 36).  
+   Nome libero (es. `Flud_HD_Tv`). Serve un’immagine **TV**, non un telefono.
+
+4. **Avvia l’emulatore** (`adb devices` deve mostrare `emulator-…. device`)
+
+   ```bash
+   emulator -avd Flud_HD_Tv -gpu host
+   ```
+
+   Sostituisci `Flud_HD_Tv` con il nome del tuo AVD (`emulator -list-avds`).
+
+5. **Build, installa, avvia HelloWorld**
+
+   ```bash
+   npm run simulate:android
+   ```
+
+   Build Vite → copia in `native/app/src/main/assets/public/` → `installDebug` → `am start` su `com.fluidplayer.app/.MainActivity`.
+
+   Solo bundle + copia asset, senza install:
+
+   ```bash
+   npm run package:android
+   ```
+
+6. **Debug WebView (sorgenti)**
+
+   Con l’app già sull’emulatore, Chrome sul PC → `chrome://inspect/#devices` → inspect su `com.fluidplayer.app`.  
+   Origine: `https://appassets.androidplatform.net/assets/public/` (non `file://`). I `.map` in `dist/` collegano il bundle ai TypeScript.
+
+> L’emulatore TV non replica al 100% un device (HDMI, storage, API vendor). Per validazione finale usare un Android TV / stick fisico.
 ---
 
 ## Principi

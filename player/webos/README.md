@@ -7,7 +7,7 @@ Workspace npm: `@fluid-player/webos`.
 ## Struttura
 
 ```
-apps/webos/
+player/webos/
 ├── appinfo.json      # metadati webOS (id, main, icon, risoluzione)
 ├── icon.png          # 80×80
 ├── largeIcon.png     # 130×130
@@ -52,7 +52,7 @@ WEBOS_SIMULATOR_PATH=/absolute/path/to/webOS_TV_26_Simulator_1.5.0
 
 Su Ubuntu 24+ / elementary l’AppImage spesso fallisce su `chrome-sandbox`. Due opzioni:
 
-1. Avvia il Simulator a mano, poi **File → Launch App** → `apps/webos/dist`.
+1. Avvia il Simulator a mano, poi **File → Launch App** → `player/webos/dist`.
 2. Wrapper minuscolo `*.appimage` nella cartella del Simulator (la CLI cerca il nome in minuscolo) che rilancia l’AppImage con `--ozone-platform=x11 --no-sandbox`. Dettaglio nella [root README](../../README.md#webos).
 
 ## Comandi (dalla root del repo)
@@ -60,10 +60,10 @@ Su Ubuntu 24+ / elementary l’AppImage spesso fallisce su `chrome-sandbox`. Due
 ```bash
 npm install
 npm run dev:webos        # http://localhost:5173 — iterazione UI senza Simulator
-npm run build:webos      # → apps/webos/dist/
+npm run build:webos      # → player/webos/dist/
 npm run preview:webos
 npm run typecheck:webos
-npm run package:webos    # → apps/webos/pkg/ (.ipk via ares-package)
+npm run package:webos    # → player/webos/pkg/ (.ipk via ares-package)
 npm run simulate:webos   # build + ares-launch sul Simulator
 ```
 

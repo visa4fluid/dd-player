@@ -11,10 +11,12 @@ Quando crei o rinomini file nel progetto:
 
 - Nome file in **PascalCase** (camelCase con iniziale maiuscola).
 - Il nome del file coincide con la classe o interfaccia principale esportata.
+- Quel file esporta **solo** quella classe o interfaccia (niente helper, type guard o costanti extra).
+- Funzioni di supporto: modulo helper dedicato (`HostHelper.ts`, `WebosHelper.ts`), non metodi statici/globali della classe.
 - Esempi: `DeviceInfoManagerInterface.ts`, `HelloWorld.ts`, `PlaylistManager.ts`.
 - `index.ts` (barrel) resta in minuscolo.
 
-## UIX e componenti grafici (presentation in `apps/`)
+## UIX e componenti grafici (presentation in `player/`)
 
 - Nome file in **kebab-case**: tutto minuscolo, parole separate da `-`.
 - Esempi: `play-button.tsx`, `surface-grid.ts`, `status-bar.css`.
@@ -24,6 +26,7 @@ Quando crei o rinomini file nel progetto:
 
 ```
 src/module/<nome>/{domain,application,infrastructure}/
+src/module/<nome>/test/unit/{domain,application,infrastructure}/
 ```
 
 Presentation non va dentro il modulo core.

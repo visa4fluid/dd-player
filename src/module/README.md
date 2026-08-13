@@ -8,10 +8,11 @@ Ogni modulo vive in una sottocartella minuscola con layer:
 src/module/<nome>/
 ├── domain/
 ├── application/
-└── infrastructure/
+├── infrastructure/
+└── test/unit/{domain,application,infrastructure}/
 ```
 
-Presentation / UIX: fuori dal core, in `apps/`.
+Presentation / UIX: fuori dal core, in `player/`.
 
 Allineato a [MODULE_CORE.md](../../docs/MODULE_CORE.md). Naming: [CONVENTIONS.md](../../docs/CONVENTIONS.md).
 

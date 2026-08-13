@@ -1,0 +1,18 @@
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  test: {
+    include: ['src/**/test/unit/**/*.test.ts'],
+    environment: 'node',
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html', 'lcov'],
+      reportsDirectory: 'coverage',
+      include: [
+        'src/module/**/infrastructure/**/*.ts',
+        'src/module/**/domain/**Guard.ts',
+      ],
+      exclude: ['src/**/test/**'],
+    },
+  },
+});
