@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>app-header — demo</title>
+    <link rel="stylesheet" href="./demo.css" />
+    <script type="module" src="./demo.ts"></script>
+  </head>
+  <body>
+    <app-header id="main-header" title="Regista" fixed elevation="2">
+      <button slot="start" class="icon" type="button" aria-label="Menu">☰</button>
+      <button slot="end" class="icon" type="button" aria-label="Area di lavoro">▦</button>
+      <button slot="end" class="icon" type="button" aria-label="Settings">⚙</button>
+      <button slot="end" class="icon" type="button" aria-label="Autenticazione">👤</button>
+    </app-header>
+
+    <main class="page">
+      <h1>app-header</h1>
+      <p class="lead">
+        Componente Lit ispirato a Polymer <code>app-header</code> e Vuetify <code>v-app-bar</code>.
+        La barra in alto è viva: i controlli sotto cambiano proprietà e comportamenti.
+      </p>
+
+      <section class="panel">
+        <h2>Proprietà visive</h2>
+        <label>title <input id="title" type="text" value="Regista" /></label>
+        <label>color <input id="color" type="color" value="#152832" /></label>
+        <label>
+          density
+          <select id="density">
+            <option value="compact">compact (48)</option>
+            <option value="comfortable">comfortable (56)</option>
+            <option value="default" selected>default (64)</option>
+            <option value="prominent">prominent (128)</option>
+          </select>
+        </label>
+        <label>elevation <input id="elevation" type="range" min="0" max="5" value="2" /></label>
+        <label class="check"><input id="flat" type="checkbox" /> flat</label>
+        <label class="check"><input id="fixed" type="checkbox" checked /> fixed</label>
+        <label>
+          location
+          <select id="location">
+            <option value="top" selected>top</option>
+            <option value="bottom">bottom</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="panel">
+        <h2>Scroll (Polymer + Vuetify)</h2>
+        <label class="check"><input id="reveals" type="checkbox" /> reveals — ricompare scrollando in su</label>
+        <label class="check"><input id="condenses" type="checkbox" /> condenses — si accorcia</label>
+        <label class="check"><input id="elevate" type="checkbox" /> scroll-behavior elevate / waterfall</label>
+        <label class="check"><input id="hide" type="checkbox" /> scroll-behavior hide</label>
+        <label>scroll-threshold <input id="threshold" type="number" min="0" value="0" /></label>
+        <p class="hint">Scorri il riquadro. Con <code>reveals</code> o <code>hide</code> la barra sparisce in discesa.</p>
+        <div id="scroller" class="scroller">
+          <app-header id="scroll-header" title="Scroll demo" color="#1e3a44" fixed scroll-target="#scroller">
+            <span slot="start" class="chip">start</span>
+            <span slot="end" class="chip">end</span>
+          </app-header>
+          <p>Riga 1 — contenuto sotto la barra.</p>
+          <p>Riga 2 — continua a scorrere.</p>
+          <p>Riga 3 — hide / reveals osservano la direzione.</p>
+          <p>Riga 4 — elevate aggiunge l’ombra dopo la soglia.</p>
+          <p>Riga 5 — condenses riduce prominent verso 64px.</p>
+          <p>Riga 6.</p>
+          <p>Riga 7.</p>
+          <p>Riga 8.</p>
+          <p>Riga 9.</p>
+          <p>Riga 10.</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Immagine di sfondo</h2>
+        <app-header
+          title="Sala"
+          image="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1400&q=60"
+          density="prominent"
+          elevation="3"
+        >
+          <span slot="end" class="chip">live</span>
+        </app-header>
+      </section>
+
+      <section class="panel">
+        <h2>Slot extension</h2>
+        <app-header title="Playlist" elevation="1">
+          <span slot="extension" class="tabs">
+            <button type="button">Core</button>
+            <button type="button">Extra</button>
+            <button type="button">Workspace</button>
+          </span>
+        </app-header>
+      </section>
+    </main>
+  </body>
+</html>

@@ -17,7 +17,7 @@
 
 ### UIX e componenti grafici
 
-- Vale per componenti UI, fogli di stile dedicati al componente, story/fixture di presentazione in `player/`.
+- Vale per componenti UI, fogli di stile dedicati al componente, story/fixture di presentazione in `target/`.
 - Non usare PascalCase nei path UIX anche se il simbolo esportato in codice è PascalCase (es. file `play-button.tsx` → export `PlayButton`).
 
 ### Struttura moduli core
@@ -34,7 +34,7 @@ src/module/<nome>/
         └── infrastructure/
 ```
 
-Presentation: `player/…` (non dentro il modulo). Dettaglio: [MODULE_CORE.md](./MODULE_CORE.md).
+Presentation: `target/…` (non dentro il modulo). Dettaglio: [MODULE_CORE.md](./MODULE_CORE.md).
 
 ### Fuori scope
 

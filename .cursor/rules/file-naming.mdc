@@ -16,7 +16,7 @@ Quando crei o rinomini file nel progetto:
 - Esempi: `DeviceInfoManagerInterface.ts`, `HelloWorld.ts`, `PlaylistManager.ts`.
 - `index.ts` (barrel) resta in minuscolo.
 
-## UIX e componenti grafici (presentation in `player/`)
+## UIX e componenti grafici (presentation in `target/`)
 
 - Nome file in **kebab-case**: tutto minuscolo, parole separate da `-`.
 - Esempi: `play-button.tsx`, `surface-grid.ts`, `status-bar.css`.

@@ -22,4 +22,4 @@ device/
 ```
 
 I test unitari specchiano i layer del modulo (`test/unit/<layer>/`).  
-Presentation: non in questo modulo → `player/` (compone l’adapter della piattaforma).
+Presentation: non in questo modulo → `target/` (compone l’adapter della piattaforma).

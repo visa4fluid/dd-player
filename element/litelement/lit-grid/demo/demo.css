@@ -1,0 +1,144 @@
+:root {
+  color: #e8eef2;
+  background: #0f1c24;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  --md-sys-color-primary: #7ec8bc;
+  --md-sys-color-on-primary: #003732;
+  --md-sys-color-surface: #152832;
+  --md-sys-color-on-surface: #e8eef2;
+  --md-sys-color-on-surface-variant: #9bb6b0;
+  --md-sys-color-outline: #4a6a72;
+  --md-sys-color-outline-variant: #2a4550;
+  --md-sys-color-surface-container: #122028;
+  --md-sys-color-surface-container-high: #1a3038;
+  --md-sys-color-surface-container-highest: #1e3a44;
+  --md-icon-font: "Material Symbols Outlined";
+}
+
+html,
+body {
+  margin: 0;
+}
+
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 20px 96px;
+}
+
+h1,
+h2 {
+  font-weight: 600;
+}
+
+.lead,
+.hint {
+  color: #9bb6b0;
+  line-height: 1.5;
+}
+
+.panel {
+  margin: 28px 0;
+  padding: 16px;
+  border: 1px solid #2a4550;
+  border-radius: 12px;
+  background: #122028;
+  display: grid;
+  gap: 16px;
+}
+
+.controls {
+  display: grid;
+  gap: 12px;
+}
+
+.switch-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: 10px;
+  font-size: 0.9rem;
+}
+
+.switch-row md-switch {
+  margin-top: 2px;
+}
+
+.prop {
+  display: grid;
+  gap: 2px;
+}
+
+.prop-name {
+  font-weight: 600;
+}
+
+.prop-name code,
+.prop-desc code {
+  font-size: 0.85em;
+}
+
+.prop-desc {
+  color: #9bb6b0;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+
+md-outlined-text-field,
+md-slider {
+  width: 100%;
+}
+
+.stage {
+  box-sizing: border-box;
+  overflow: auto;
+  height: 520px;
+  padding: 12px;
+  border: 1px solid #2a4550;
+  border-radius: 8px;
+  background: #0f1c24;
+}
+
+lit-grid {
+  --paper-grid-background-placeholder: rgba(126, 200, 188, 0.28);
+}
+
+.tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid rgba(126, 200, 188, 0.35);
+  background: #1a3340;
+  color: #7ec8bc;
+  font-size: 0.85rem;
+}
+
+.tile .grip {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+  line-height: 18px;
+  cursor: nwse-resize;
+  color: #7ec8bc;
+  z-index: 2;
+}
+
+.dump {
+  margin: 0;
+  padding: 12px;
+  border-radius: 8px;
+  background: #0f1c24;
+  color: #9bb6b0;
+  font-size: 0.8rem;
+  overflow: auto;
+}

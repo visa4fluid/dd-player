@@ -1,0 +1,26 @@
+{
+  "name": "@fluid-element/lit-tooltip",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "LitElement lit-tooltip (Polymer paper-tooltip)",
+  "exports": {
+    ".": "./src/index.ts",
+    "./lit-tooltip.js": "./src/lit-tooltip.ts"
+  },
+  "scripts": {
+    "demo": "vite --config vite.config.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "lit": "^3.3.1"
+  },
+  "devDependencies": {
+    "happy-dom": "^20.0.0",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.2",
+    "vitest": "^3.2.4"
+  }
+}

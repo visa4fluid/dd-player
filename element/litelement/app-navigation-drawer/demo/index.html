@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>app-navigation-drawer — demo</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="./demo.css" />
+    <script type="module" src="./demo.ts"></script>
+  </head>
+  <body>
+    <div class="shell">
+      <header class="toolbar">
+        <span class="brand">Regista</span>
+        <md-icon-button id="toggle-drawer" aria-label="Apri / chiudi drawer">
+          <md-icon>menu</md-icon>
+        </md-icon-button>
+      </header>
+
+      <div class="body">
+        <app-navigation-drawer
+          id="drawer"
+          permanent
+          rail
+          rail-width="56"
+          width="256"
+          elevation="1"
+        >
+          <md-list class="nav">
+            <md-list-item type="button" class="nav-item is-active" title="Host">
+              <md-icon slot="start">computer</md-icon>
+              <div slot="headline" class="nav-label">Host</div>
+            </md-list-item>
+            <md-list-item type="button" class="nav-item" title="System">
+              <md-icon slot="start">settings</md-icon>
+              <div slot="headline" class="nav-label">System</div>
+            </md-list-item>
+            <md-list-item type="button" class="nav-item" title="Playlist">
+              <md-icon slot="start">playlist_play</md-icon>
+              <div slot="headline" class="nav-label">Playlist</div>
+            </md-list-item>
+            <md-divider class="nav-divider"></md-divider>
+            <md-list-item type="button" class="nav-item" title="Orologio">
+              <md-icon slot="start">schedule</md-icon>
+              <div slot="headline" class="nav-label">Orologio</div>
+            </md-list-item>
+            <md-list-item type="button" class="nav-item" title="Meteo">
+              <md-icon slot="start">cloud</md-icon>
+              <div slot="headline" class="nav-label">Meteo</div>
+            </md-list-item>
+          </md-list>
+        </app-navigation-drawer>
+
+        <main class="page">
+          <h1>app-navigation-drawer</h1>
+          <p class="lead">
+            Componente Lit ispirato a Polymer <code>app-drawer</code> e Vuetify
+            <code>v-navigation-drawer</code>. I controlli della demo usano Material Web.
+          </p>
+
+          <section class="panel">
+            <h2>Modo</h2>
+            <label class="switch-row"><md-switch id="permanent" selected></md-switch> permanent</label>
+            <label class="switch-row"><md-switch id="temporary"></md-switch> temporary</label>
+            <label class="switch-row"><md-switch id="rail" selected></md-switch> rail</label>
+            <label class="switch-row"><md-switch id="expand-on-hover"></md-switch> expand-on-hover</label>
+            <label class="switch-row"><md-switch id="expanded"></md-switch> expanded</label>
+            <label class="switch-row"><md-switch id="opened" selected></md-switch> opened</label>
+            <label class="switch-row"><md-switch id="persistent"></md-switch> persistent — no close su scrim / Esc</label>
+            <label class="switch-row"><md-switch id="force-narrow"></md-switch> force-narrow</label>
+            <label class="switch-row"><md-switch id="swipe-open"></md-switch> swipe-open</label>
+            <label class="switch-row"><md-switch id="floating"></md-switch> floating</label>
+            <label class="switch-row"><md-switch id="modal"></md-switch> modal — scrim sulla rail espansa</label>
+          </section>
+
+          <section class="panel">
+            <h2>Aspetto</h2>
+            <md-outlined-select id="location" label="location">
+              <md-select-option value="start" selected><div slot="headline">start / left</div></md-select-option>
+              <md-select-option value="end"><div slot="headline">end / right</div></md-select-option>
+            </md-outlined-select>
+            <label class="color-field">
+              color
+              <input id="color" type="color" value="#152832" />
+            </label>
+            <label class="field">
+              <span>elevation <span id="elevation-value">1</span></span>
+              <md-slider id="elevation" min="0" max="5" step="1" value="1" labeled></md-slider>
+            </label>
+            <md-outlined-text-field id="width" label="width" type="number" value="256" min="160" max="400"></md-outlined-text-field>
+            <md-outlined-text-field id="rail-width" label="rail-width" type="number" value="56" min="48" max="96"></md-outlined-text-field>
+          </section>
+
+          <section class="panel">
+            <h2>Overlay a destra</h2>
+            <p class="hint">Secondo drawer temporaneo, indipendente dalla rail.</p>
+            <md-filled-tonal-button id="open-end">Apri drawer end</md-filled-tonal-button>
+            <app-navigation-drawer
+              id="end-drawer"
+              temporary
+              location="end"
+              width="280"
+              elevation="3"
+            >
+              <p class="aside-note">Pannello temporaneo a destra.</p>
+              <md-text-button data-close-end>
+                <md-icon slot="icon">close</md-icon>
+                Chiudi
+              </md-text-button>
+            </app-navigation-drawer>
+          </section>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

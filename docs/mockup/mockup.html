@@ -1,0 +1,4177 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Regista — Mockup</title>
+    <style>
+      :root {
+        --md-sys-color-primary: #7ec8bc;
+        --md-sys-color-on-primary: #003732;
+        --md-sys-color-surface: #152832;
+        --md-sys-color-on-surface: #e8eef2;
+        --md-sys-color-on-surface-variant: #8aa0ab;
+        --md-sys-color-surface-container: #1a3340;
+        --md-sys-color-surface-container-highest: #1a3340;
+        --md-sys-color-outline: rgba(126, 200, 188, 0.35);
+        --md-icon-font: "Material Symbols Outlined";
+        --md-ref-typeface-brand: "Roboto", sans-serif;
+        --md-ref-typeface-plain: "Roboto", sans-serif;
+      }
+      html, body, #app {
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        font-family: "Roboto", sans-serif;
+      }
+      button,
+      input,
+      textarea,
+      select {
+        font-family: inherit;
+      }
+      .bg-background { background: #0f1c24; }
+      .pa-2 { padding: 8px; }
+      .pa-3 { padding: 12px; }
+      .mb-2 { margin-bottom: 8px; }
+      .text-medium-emphasis { color: #8aa0ab; }
+      .text-body-2 { font-size: 14px; line-height: 1.4; }
+      .text-caption { font-size: 12px; line-height: 1.35; }
+      .regista-shell {
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        height: 100%;
+        background: #0f1c24;
+      }
+      .regista-column {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-width: 0;
+        min-height: 0;
+      }
+      .regista-main {
+        flex: 1;
+        min-width: 0;
+        min-height: 0;
+        overflow: hidden;
+      }
+      app-navigation-drawer {
+        align-self: stretch;
+        height: 100%;
+      }
+      app-navigation-drawer[location='end'],
+      app-navigation-drawer[location='right'] {
+        order: 2;
+      }
+      app-navigation-drawer::part(panel) {
+        height: 100%;
+        min-height: 100%;
+        border: 0;
+        border-radius: 0;
+      }
+      app-navigation-drawer::part(content) {
+        flex: 1;
+        min-height: 0;
+      }
+      app-header md-icon-button,
+      app-header md-icon,
+      app-navigation-drawer md-icon {
+        --md-icon-button-icon-color: #7ec8bc;
+        color: #7ec8bc;
+      }
+      app-header md-icon-button.is-on md-icon {
+        font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+      .nav {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        box-sizing: border-box;
+        height: 100%;
+        padding: 8px 4px;
+      }
+      .nav-btn {
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        border: 1px solid #0a161c;
+        border-radius: 4px;
+        background: linear-gradient(180deg, #2a4d5c 0%, #1c3a48 52%, #15303c 100%);
+        color: #7ec8bc;
+        cursor: pointer;
+        box-shadow:
+          inset 1px 1px 0 rgba(255, 255, 255, 0.16),
+          inset -1px -1px 0 rgba(0, 0, 0, 0.35),
+          0 2px 0 #0a161c,
+          0 3px 5px rgba(0, 0, 0, 0.45);
+      }
+      .nav-btn:hover {
+        background: linear-gradient(180deg, #326072 0%, #224554 52%, #1a3844 100%);
+      }
+      .nav-btn md-icon {
+        font-size: 22px;
+      }
+      .nav-btn.is-active {
+        background: linear-gradient(180deg, #0c161c 0%, #122430 100%);
+        box-shadow:
+          inset 1px 2px 4px rgba(0, 0, 0, 0.7),
+          inset -1px -1px 0 rgba(126, 200, 188, 0.08),
+          0 0 0 1px rgba(0, 0, 0, 0.45);
+        transform: translateY(2px);
+      }
+      .nav-btn.is-active md-icon {
+        font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+      .v-navigation-drawer__content {
+        overflow-y: auto;
+        scrollbar-width: none;
+      }
+      .v-navigation-drawer__content::-webkit-scrollbar { display: none; }
+      .rail-group-divider {
+        display: block;
+        box-sizing: border-box;
+        height: 1px;
+        width: 24px;
+        max-width: 24px;
+        min-width: 0;
+        margin: 10px auto;
+        padding: 0;
+        align-self: center;
+        flex: 0 0 auto;
+        background: rgba(126, 200, 188, 0.45);
+      }
+      .pane-grid { display: grid; flex: 1; height: auto; min-height: 0; }
+      .nav-portion-close {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        z-index: 4;
+        display: grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        border: 0;
+        border-radius: 4px;
+        background: transparent;
+        color: #8aa0ab;
+        cursor: pointer;
+      }
+      .nav-portion-close:hover {
+        color: #e8eef2;
+        background: #1a3340;
+      }
+      .nav-portion-close md-icon {
+        font-size: 18px;
+      }
+      .system-device-bar {
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 10px 40px 10px 12px;
+        border-bottom: 1px solid rgba(126, 200, 188, 0.16);
+        background: #13242c;
+        --md-sys-color-primary: #7ec8bc;
+        --md-sys-color-on-primary: #003732;
+        --md-sys-color-on-surface: #e8eef2;
+        --md-sys-color-on-surface-variant: #8aa0ab;
+        --md-outlined-select-text-field-container-shape: 4px;
+        --md-outlined-select-text-field-container-height: 36px;
+        --md-outlined-field-top-space: 4px;
+        --md-outlined-field-bottom-space: 4px;
+        --md-outlined-select-text-field-label-text-size: 11px;
+        --md-outlined-select-text-field-input-text-size: 12px;
+        --md-outlined-select-text-field-outline-color: rgba(126, 200, 188, 0.28);
+        --md-outlined-select-text-field-hover-outline-color: #7ec8bc;
+        --md-outlined-select-text-field-focus-outline-color: #7ec8bc;
+        --md-outlined-select-text-field-label-text-color: #8aa0ab;
+        --md-outlined-select-text-field-input-text-color: #e8eef2;
+        --md-outlined-select-text-field-trailing-icon-color: #7ec8bc;
+        --md-menu-container-color: #1c3540;
+        --md-menu-item-label-text-color: #e8eef2;
+      }
+      .system-device-bar md-outlined-select {
+        width: 100%;
+        min-height: 36px;
+      }
+      .system-device-assoc {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 18px;
+        font-size: 12px;
+        color: #8aa0ab;
+      }
+      .system-device-assoc.is-on {
+        color: #7ec8bc;
+      }
+      .system-device-assoc .widget-dot {
+        flex: 0 0 auto;
+      }
+      .pane-grid.cols-1 { grid-template-columns: 1fr; }
+      .pane-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+      .pane-grid.rows-2 { grid-template-rows: 1fr 1fr; }
+      .pane-grid.quad { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+      .pane {
+        min-height: 0;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        background: #152832;
+      }
+      .pane.is-active { box-shadow: none; }
+      .pane-toolbar {
+        flex: 0 0 auto;
+        padding-right: 36px;
+      }
+      .pane-title {
+        flex: 0 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.2;
+        color: #e8eef2;
+      }
+      .pane-toolbar .pane-pager {
+        flex: 0 0 auto;
+        font-size: 12px;
+        line-height: 1;
+        white-space: nowrap;
+        --lit-pagination-size: 20px;
+        --lit-pagination-gap: 0;
+        --lit-pagination-container-gap: 0;
+        --lit-pagination-icon-size: 14px;
+        --lit-pagination-field-direction: row;
+        --lit-pagination-field-align: center;
+        --lit-pagination-field-gap: 0;
+        --lit-pagination-field-height: 20px;
+        --lit-pagination-field-min-width: 0;
+        --lit-pagination-field-margin: 0 0 0 2px;
+        --lit-pagination-input-height: 18px;
+        --lit-pagination-select-width: 40px;
+        --lit-pagination-label-size: 11px;
+        --lit-pagination-items-label-display: none;
+      }
+      .workspace-toolbar {
+        flex: 0 0 auto;
+      }
+      .pane-title-icon {
+        font-size: 18px;
+        color: #7ec8bc;
+      }
+      .pane-body {
+        flex: 1;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+      }
+      .pane-body.is-paged {
+        overflow: hidden;
+        gap: 8px;
+      }
+      .pane-pager {
+        flex: 0 0 auto;
+        --lit-pagination-selected-background: #1a3340;
+        --lit-pagination-selected-color: #e8eef2;
+      }
+      .pane-list-scroll {
+        flex: 1;
+        min-height: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-gutter: stable;
+        scrollbar-width: thin;
+        scrollbar-color: #3d9a8a #13242c;
+      }
+      .pane-list-scroll::-webkit-scrollbar {
+        width: 8px;
+      }
+      .pane-list-scroll::-webkit-scrollbar-button {
+        display: none;
+        width: 0;
+        height: 0;
+        background: transparent;
+      }
+      .pane-list-scroll::-webkit-scrollbar-button:vertical:end:increment {
+        display: block;
+        width: 8px;
+        height: 24px;
+        background: #152832;
+      }
+      .pane-list-scroll::-webkit-scrollbar-track {
+        background: #13242c;
+        border-left: 1px solid rgba(126, 200, 188, 0.16);
+      }
+      .pane-list-scroll::-webkit-scrollbar-thumb {
+        background: #3d9a8a;
+        border-radius: 8px;
+        border: 2px solid #13242c;
+      }
+      .pane-list-scroll::-webkit-scrollbar-thumb:hover {
+        background: #7ec8bc;
+      }
+      .module-empty {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        text-align: center;
+        color: #8aa0ab;
+      }
+      .module-empty md-icon {
+        font-size: 36px;
+        color: #7ec8bc;
+        opacity: 0.7;
+      }
+      .module-empty-title {
+        font-size: 14px;
+        color: #e8eef2;
+      }
+      .device-list {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 0;
+        background: transparent;
+      }
+      .list-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 36px;
+        padding: 4px 6px 4px 10px;
+        border: 1px solid rgba(126, 200, 188, 0.35);
+        border-radius: 6px;
+        background: #1a3340;
+      }
+      .list-row.is-on {
+        border-color: rgba(126, 200, 188, 0.55);
+      }
+      button.list-row {
+        width: 100%;
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+      }
+      .list-row-data {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+      }
+      div.list-row-data { cursor: default; }
+      .list-row-name {
+        flex: 1 1 88px;
+        min-width: 72px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 13px;
+        color: #e8eef2;
+      }
+      .list-row-meta {
+        flex: 0 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: #7ec8bc;
+        font-size: 12px;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+      }
+      .list-row-meta.is-muted { color: #8aa0ab; }
+      .list-row-acts {
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        gap: 2px;
+      }
+      .device-list .device-action {
+        display: inline-grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        border: 0;
+        border-radius: 14px;
+        background: transparent;
+        color: #7ec8bc;
+        cursor: pointer;
+      }
+      .device-list .device-action md-icon {
+        font-size: 18px;
+        color: #7ec8bc;
+      }
+      .widget-item {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        min-height: 0;
+        height: 100%;
+        overflow: hidden;
+      }
+      .widget-item.is-min .widget-card {
+        flex: none;
+        height: 100%;
+      }
+      .widget-card.v-card,
+      .widget-card {
+        position: relative;
+        flex: 1;
+        display: flex !important;
+        flex-direction: column !important;
+        min-width: 0;
+        min-height: 0;
+        height: 100%;
+        overflow: hidden !important;
+        background: #0c181f !important;
+        color: #e8eef2;
+        border: 1px solid rgba(126, 200, 188, 0.28);
+        border-radius: 8px 8px 0 0 !important;
+        box-shadow: none !important;
+      }
+      .widget-head {
+        display: flex;
+        align-items: center;
+        box-sizing: border-box;
+        gap: 8px;
+        height: 36px;
+        min-height: 36px;
+        padding: 2px 10px;
+        background: #1a3340;
+        border-bottom: 1px solid rgba(126, 200, 188, 0.22);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        cursor: grab;
+        user-select: none;
+      }
+      .widget-item.is-min .widget-head {
+        border-bottom: 0;
+      }
+      .widget-item.is-min .widget-body,
+      .widget-item.is-min .grip {
+        display: none;
+      }
+      .widget-item.is-off .widget-card {
+        border-color: rgba(138, 160, 171, 0.28);
+      }
+      .widget-item.is-off .widget-head {
+        background: #162228;
+        cursor: grab;
+      }
+      .widget-item.is-off .widget-head-device-name,
+      .widget-item.is-off .widget-head-icon-wrap,
+      .widget-item.is-off .widget-head-icon-wrap md-icon {
+        color: #8aa0ab;
+      }
+      .widget-item.is-off .widget-body {
+        pointer-events: none;
+        filter: grayscale(0.55);
+        opacity: 0.55;
+      }
+      .widget-traffic {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+        margin-left: auto;
+      }
+      .widget-light {
+        width: 12px;
+        height: 12px;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.28);
+      }
+      .widget-light.is-close { background: #ff5f57; }
+      .widget-light.is-min { background: #febc2e; }
+      .widget-light:hover { filter: brightness(1.08); }
+      .widget-head-icon-wrap {
+        display: inline-grid;
+        place-items: center;
+        width: 20px;
+        height: 20px;
+        color: #7ec8bc;
+        overflow: visible;
+      }
+      lit-tooltip {
+        --lit-tooltip-background: #152832;
+        --lit-tooltip-text-color: #e8eef2;
+        --lit-tooltip-opacity: 1;
+        --lit-tooltip-font-size: 12px;
+        --paper-tooltip-background: #152832;
+        --paper-tooltip-text-color: #e8eef2;
+      }
+      .widget-head-icon-wrap md-icon {
+        font-size: 18px;
+        color: #7ec8bc;
+      }
+      .widget-head-copy {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 1px;
+        min-width: 0;
+        flex: 1;
+      }
+      .widget-head-devices {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+      }
+      .widget-head-desc {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 10px;
+        line-height: 1.1;
+        color: #8aa0ab;
+      }
+      .widget-head-device {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        min-width: 0;
+        flex: 1;
+      }
+      .widget-head-host {
+        flex-shrink: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 10px;
+        color: #8aa0ab;
+      }
+      .widget-head-device-name {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 12px;
+        color: #e8eef2;
+      }
+      .widget-body {
+        flex: 1 1 auto;
+        min-width: 0;
+        min-height: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding: 6px 10px 8px;
+        background: #0c181f;
+        scrollbar-width: thin;
+        scrollbar-color: #3d9a8a #13242c;
+      }
+      .widget-body::-webkit-scrollbar {
+        width: 8px;
+      }
+      .widget-body::-webkit-scrollbar-button {
+        display: none;
+        width: 0;
+        height: 0;
+        background: transparent;
+      }
+      .widget-body::-webkit-scrollbar-button:vertical:end:increment {
+        display: block;
+        width: 8px;
+        height: 24px;
+        background: #0c181f;
+      }
+      .widget-body:has(.scheduler)::-webkit-scrollbar-button:vertical:end:increment {
+        background: #0a1014;
+      }
+      .widget-body::-webkit-scrollbar-track {
+        background: #13242c;
+        border-left: 1px solid rgba(126, 200, 188, 0.16);
+      }
+      .widget-body::-webkit-scrollbar-thumb {
+        background: #3d9a8a;
+        border-radius: 8px;
+        border: 2px solid #13242c;
+      }
+      .widget-body::-webkit-scrollbar-thumb:hover {
+        background: #7ec8bc;
+      }
+      .widget-body:has(.preview-stage) {
+        display: flex;
+        flex-direction: column;
+        padding: 6px;
+      }
+      .preview-stage {
+        flex: 0 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        grid-auto-rows: minmax(120px, 1fr);
+        gap: 6px;
+        min-width: 0;
+        min-height: 100%;
+        overflow: hidden;
+      }
+      .preview-empty {
+        display: grid;
+        place-items: center;
+        color: #8aa0ab;
+        font-size: 12px;
+      }
+      .preview-window {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        min-height: 0;
+        background: #071116;
+        border: 1px solid rgba(126, 200, 188, 0.22);
+      }
+      .preview-window.is-off {
+        opacity: 0.55;
+      }
+      .preview-bezel {
+        flex: 1;
+        min-height: 0;
+        padding: 4px;
+        background: #101c22;
+      }
+      .preview-screen {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        min-height: 0;
+        overflow: hidden;
+        color: #e8eef2;
+        background: #081014;
+      }
+      .preview-screen.is-led {
+        background: linear-gradient(120deg, #0a2018, #12382c, #0d281c, #152a22);
+        background-size: 220% 220%;
+        animation: preview-shimmer 8s ease-in-out infinite alternate;
+      }
+      .preview-screen.is-sideline {
+        background: linear-gradient(160deg, #10232c 0%, #1a3a46 42%, #0d1c22 100%);
+        background-size: 180% 180%;
+        animation: preview-shimmer 10s ease-in-out infinite alternate;
+      }
+      .preview-screen.is-idle {
+        background: repeating-linear-gradient(
+          45deg,
+          #0b151a,
+          #0b151a 8px,
+          #0e1a20 8px,
+          #0e1a20 16px
+        );
+      }
+      .preview-screen.is-composite {
+        display: grid;
+        grid-template: 1fr / 1fr;
+        background: #081014;
+      }
+      .preview-layer {
+        position: relative;
+        min-width: 0;
+        min-height: 0;
+        overflow: hidden;
+      }
+      .preview-layer.is-fullscreen {
+        grid-area: 1 / 1;
+        background: linear-gradient(120deg, #0a2018, #12382c, #0d281c, #152a22);
+        background-size: 220% 220%;
+        animation: preview-shimmer 8s ease-in-out infinite alternate;
+      }
+      .preview-composite {
+        grid-area: 1 / 1;
+        z-index: 1;
+        display: grid;
+        grid-template:
+          "main totem" 1fr
+          "ticker ticker" 22px
+          / 1fr 30%;
+        gap: 3px;
+        padding: 4px;
+        min-height: 0;
+      }
+      .preview-layer.is-main {
+        grid-area: main;
+        display: flex;
+        flex-direction: column;
+        background: rgba(8, 20, 18, 0.72);
+        border: 1px solid rgba(126, 200, 188, 0.28);
+      }
+      .preview-layer.is-totem {
+        grid-area: totem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        background: rgba(16, 35, 44, 0.88);
+        border: 1px solid rgba(126, 200, 188, 0.28);
+        text-align: center;
+      }
+      .preview-layer.is-ticker {
+        grid-area: ticker;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 6px;
+        background: rgba(6, 12, 16, 0.86);
+        border: 1px solid rgba(126, 200, 188, 0.22);
+      }
+      .preview-layer-name {
+        position: absolute;
+        top: 3px;
+        left: 4px;
+        z-index: 2;
+        padding: 0 4px;
+        font-size: 8px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: #7ec8bc;
+        background: rgba(7, 17, 22, 0.7);
+      }
+      .preview-layer.is-fullscreen > .preview-layer-name,
+      .preview-screen > .preview-layer-name {
+        top: 3px;
+        right: 4px;
+        left: auto;
+      }
+      .preview-ticker-text {
+        overflow: hidden;
+        white-space: nowrap;
+        font-size: 9px;
+        color: #d5dee3;
+      }
+      .preview-ticker-text span {
+        display: inline-block;
+        padding-left: 100%;
+        animation: preview-ticker 8s linear infinite;
+      }
+      @keyframes preview-ticker {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-100%); }
+      }
+      @keyframes preview-shimmer {
+        0% { background-position: 0% 40%; }
+        100% { background-position: 100% 60%; }
+      }
+      .preview-hud {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 6px 0;
+        font-size: 9px;
+        letter-spacing: 0.04em;
+      }
+      .preview-live {
+        padding: 1px 5px;
+        border-radius: 2px;
+        background: #c62828;
+        color: #fff;
+        font-weight: 700;
+        animation: preview-live 1.4s ease-in-out infinite;
+      }
+      .preview-live.is-loop {
+        background: #1b5e55;
+        animation: none;
+      }
+      @keyframes preview-live {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.45; }
+      }
+      .preview-clock {
+        color: #7ec8bc;
+      }
+      .preview-center {
+        flex: 1;
+        display: grid;
+        place-items: center;
+        min-height: 0;
+        text-align: center;
+        padding: 0 6px;
+      }
+      .preview-teams {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+      }
+      .preview-score {
+        font-size: 18px;
+        color: #7ec8bc;
+      }
+      .preview-sponsor {
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        color: #7ec8bc;
+      }
+      .preview-sponsor-sub {
+        margin-top: 2px;
+        font-size: 10px;
+        color: #c5d4da;
+      }
+      .preview-now {
+        padding: 3px 6px 4px;
+        font-size: 9px;
+        color: #c5d4da;
+        background: rgba(0, 0, 0, 0.28);
+      }
+      .preview-caption {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 3px 6px;
+        font-size: 10px;
+        color: #8aa0ab;
+        background: #0c181f;
+      }
+      .preview-caption strong {
+        color: #d5dee3;
+        font-weight: 600;
+      }
+      .widget-body:has(.scheduler) {
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        background: #0a1014;
+      }
+      .scheduler {
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        min-height: 100%;
+        overflow: hidden;
+        color: #c5d4da;
+      }
+      .scheduler-stage {
+        flex: 0 0 auto;
+        min-width: 0;
+        min-height: min-content;
+        overflow: hidden;
+      }
+      .scheduler-group + .scheduler-group {
+        border-top: 1px solid rgba(126, 200, 188, 0.1);
+      }
+      .scheduler-group-title {
+        display: flex;
+        align-items: center;
+        height: 16px;
+        padding: 0 6px;
+        font-size: 10px;
+        font-weight: 600;
+        color: #7ec8bc;
+        background: #101a20;
+      }
+      .scheduler-row {
+        display: grid;
+        grid-template-columns: 78px 1fr;
+        min-height: 18px;
+      }
+      .scheduler-label {
+        display: flex;
+        align-items: center;
+        padding: 0 6px;
+        font-size: 10px;
+        color: #8aa0ab;
+        background: #0c1418;
+      }
+      .scheduler-track {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 2px;
+        padding: 2px 6px;
+        background: #11181c;
+        border-left: 1px solid rgba(255, 255, 255, 0.04);
+      }
+      .scheduler-clip {
+        position: relative;
+        display: flex;
+        align-items: center;
+        min-height: 12px;
+        overflow: hidden;
+        border-radius: 2px;
+        background: rgba(61, 154, 138, 0.28);
+        color: #d5eee9;
+        font-size: 9px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      .scheduler-clip-fill {
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: var(--progress, 0%);
+        background: #3d9a8a;
+      }
+      .scheduler-clip-title {
+        position: relative;
+        z-index: 1;
+        padding: 0 6px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .scheduler-empty {
+        display: grid;
+        place-items: center;
+        height: 100%;
+        font-size: 12px;
+        color: #8aa0ab;
+      }
+      .widget-body:has(.match) {
+        display: flex;
+        flex-direction: column;
+        padding: 6px 8px 8px;
+      }
+      .match {
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-width: 0;
+        min-height: 100%;
+        overflow: hidden;
+      }
+      .match-clock {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 22px;
+      }
+      .match-period {
+        padding: 1px 6px;
+        border: 1px solid rgba(126, 200, 188, 0.28);
+        border-radius: 3px;
+        background: #13242c;
+        color: #7ec8bc;
+        font-size: 10px;
+        cursor: pointer;
+      }
+      .match-time {
+        flex: 1;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        font-variant-numeric: tabular-nums;
+        color: #e8eef2;
+      }
+      .match-score {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        gap: 8px;
+      }
+      .match-team {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+      }
+      .match-team.is-away { align-items: end; text-align: right; }
+      .match-team-name {
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        color: #e8eef2;
+      }
+      .match-team-code { color: #8aa0ab; font-size: 10px; }
+      .match-team-acts {
+        display: flex;
+        gap: 4px;
+      }
+      .match-team.is-away .match-team-acts { justify-content: flex-end; }
+      .match-act {
+        display: inline-grid;
+        place-items: center;
+        min-width: 20px;
+        height: 18px;
+        padding: 0 5px;
+        border: 1px solid rgba(126, 200, 188, 0.25);
+        border-radius: 3px;
+        background: #13242c;
+        color: #7ec8bc;
+        font-size: 10px;
+        line-height: 1;
+        cursor: pointer;
+      }
+      .match-act.is-yellow { background: #f9a825; border-color: #c48810; color: #2a1c00; }
+      .match-act.is-red { background: #e53935; border-color: #b71c1c; color: #fff; }
+      .match-act:hover { filter: brightness(1.08); }
+      .match-act:disabled { opacity: 0.35; cursor: default; filter: none; }
+      .match-act.is-icon {
+        min-width: 22px;
+        width: 22px;
+        height: 22px;
+        padding: 0;
+      }
+      .match-act.is-icon md-icon {
+        font-size: 16px;
+        color: #7ec8bc;
+      }
+      .match-score-box {
+        display: flex;
+        align-items: baseline;
+        gap: 6px;
+        font-size: 22px;
+        font-weight: 700;
+        color: #7ec8bc;
+      }
+      .match-score-box span { min-width: 0.7em; text-align: center; }
+      .match-score-box em {
+        font-style: normal;
+        font-size: 14px;
+        color: #8aa0ab;
+      }
+      .match-officials {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        min-width: 0;
+      }
+      .match-officials-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 3px 8px;
+      }
+      .match-official {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        padding: 2px 4px;
+        background: #13242c;
+        border: 1px solid rgba(126, 200, 188, 0.18);
+        border-radius: 3px;
+      }
+      .match-official-role {
+        font-size: 8px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: #7ec8bc;
+      }
+      .match-official-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 11px;
+        color: #d5dee3;
+      }
+      .match-rosters {
+        flex: 1 0 auto;
+        min-height: min-content;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .match-roster-cols {
+        display: grid;
+        grid-template-columns: 1.15fr 1fr;
+        gap: 6px;
+        min-height: 0;
+      }
+      .match-roster.is-away .match-roster-cols {
+        grid-template-columns: 1fr 1.15fr;
+      }
+      .match-roster {
+        display: flex;
+        flex-direction: column;
+        min-height: min-content;
+      }
+      .match-roster.is-away { text-align: right; }
+      .match-roster-title {
+        padding: 2px 0;
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: #7ec8bc;
+      }
+      .match-player {
+        display: grid;
+        grid-template-columns: 16px 1fr;
+        align-items: center;
+        gap: 4px;
+        min-height: 13px;
+        font-size: 10px;
+        color: #d5dee3;
+      }
+      .match-roster.is-away .match-player {
+        grid-template-columns: 1fr 16px;
+      }
+      .match-player-num { color: #8aa0ab; }
+      .match-events {
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .match-event {
+        display: grid;
+        grid-template-columns: 28px 1fr auto;
+        gap: 6px;
+        align-items: center;
+        min-height: 16px;
+        font-size: 11px;
+        color: #d5dee3;
+      }
+      .match-event-min { color: #8aa0ab; }
+      .match-event-name {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .match-event-meta { color: #7ec8bc; font-size: 10px; }
+      .match-event.is-away { color: #c5d4da; }
+      .match-event.is-away .match-event-name { text-align: right; }
+      .widget-body:has(.palinsesto) {
+        display: flex;
+        flex-direction: column;
+        padding: 4px 4px 2px 6px;
+        scrollbar-gutter: stable;
+      }
+      .palinsesto {
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        width: 100%;
+        min-width: 0;
+        min-height: 100%;
+        overflow: hidden;
+        gap: 2px;
+        padding-right: 2px;
+      }
+      .palinsesto-row {
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 6px;
+        box-sizing: border-box;
+        width: 100%;
+        min-width: 0;
+        min-height: 32px;
+        padding: 4px 8px 4px 8px;
+        overflow: hidden;
+        border: 1px solid rgba(126, 200, 188, 0.28);
+        border-radius: 6px;
+        background: #1a3340;
+      }
+      .palinsesto-title {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 12px;
+        color: #d5dee3;
+      }
+      .palinsesto-layers {
+        display: flex;
+        flex: 0 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        gap: 3px;
+      }
+      .palinsesto-layer {
+        height: 18px;
+        padding: 0 5px;
+        border: 1px solid rgba(126, 200, 188, 0.22);
+        border-radius: 3px;
+        background: #13242c;
+        color: #8aa0ab;
+        font-size: 9px;
+        letter-spacing: 0.03em;
+        cursor: pointer;
+      }
+      .palinsesto-layer.is-on {
+        background: #1b3d38;
+        border-color: rgba(126, 200, 188, 0.45);
+        color: #7ec8bc;
+      }
+      .palinsesto-acts {
+        display: flex;
+        flex: 0 0 auto;
+        margin-left: auto;
+        gap: 2px;
+      }
+      .palinsesto-time {
+        width: 48px;
+        flex-shrink: 0;
+        font-size: 10px;
+        font-variant-numeric: tabular-nums;
+        color: #7ec8bc;
+        text-align: right;
+      }
+      .palinsesto-time.is-idle { color: #8aa0ab; }
+      .palinsesto-status {
+        width: 52px;
+        flex-shrink: 0;
+        font-size: 10px;
+        color: #7ec8bc;
+        text-align: right;
+      }
+      .palinsesto-status.is-idle { color: #8aa0ab; }
+      .palinsesto-status.is-paused { color: #f9a825; }
+      .widget-body:has(.rundown) {
+        display: flex;
+        flex-direction: column;
+        padding: 6px 8px 8px;
+      }
+      .rundown {
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+        min-height: 100%;
+        overflow: hidden;
+      }
+      .rundown-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 22px;
+      }
+      .rundown-name {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 12px;
+        font-weight: 600;
+        color: #e8eef2;
+      }
+      .rundown-empty {
+        display: grid;
+        place-items: center;
+        height: 100%;
+        font-size: 12px;
+        color: #8aa0ab;
+      }
+      .rundown-item {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        min-height: 26px;
+        padding: 3px 8px;
+        overflow: hidden;
+        border: 1px solid rgba(126, 200, 188, 0.22);
+        border-radius: 4px;
+        background: #13242c;
+        color: #c5d4da;
+      }
+      .rundown-item.is-past {
+        opacity: 0.48;
+      }
+      .rundown-item.is-now {
+        border-color: rgba(126, 200, 188, 0.55);
+        background: #1b3d38;
+        color: #e8eef2;
+      }
+      .rundown-item-fill {
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: var(--progress, 0%);
+        background: rgba(61, 154, 138, 0.35);
+      }
+      .rundown-item-role {
+        position: relative;
+        z-index: 1;
+        width: 42px;
+        flex-shrink: 0;
+        font-size: 9px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #8aa0ab;
+      }
+      .rundown-item.is-now .rundown-item-role { color: #7ec8bc; }
+      .rundown-item-title {
+        position: relative;
+        z-index: 1;
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 12px;
+      }
+      .rundown-item-time {
+        position: relative;
+        z-index: 1;
+        flex-shrink: 0;
+        font-size: 10px;
+        font-variant-numeric: tabular-nums;
+        color: #7ec8bc;
+      }
+      .rundown-item.is-past .rundown-item-time { color: #8aa0ab; }
+      .widget-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 20px;
+        font-size: 12px;
+        line-height: 1.25;
+        color: #d5dee3;
+      }
+      button.widget-dot {
+        padding: 0;
+        border: 0;
+        cursor: pointer;
+      }
+      .widget-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        background: #43a047;
+      }
+      .widget-dot.is-off { background: #e53935; }
+      .widget-dot.is-idle { background: #8aa0ab; }
+      .widget-dot.is-warn { background: #f9a825; }
+      .device-list .widget-dot {
+        width: 8px;
+        height: 8px;
+      }
+      .widget-row-name {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .widget-row-meta {
+        flex-shrink: 0;
+        font-size: 11px;
+        color: #7ec8bc;
+      }
+      .widget-row-meta.is-muted { color: #8aa0ab; }
+      .widget-card .grip {
+        position: absolute;
+        right: 2px;
+        bottom: 2px;
+        width: 18px;
+        height: 18px;
+        font-size: 18px;
+        line-height: 18px;
+        cursor: nwse-resize;
+        color: #7ec8bc;
+        pointer-events: auto;
+      }
+      .main-split {
+        display: flex;
+        height: 100%;
+        min-height: 0;
+        gap: 8px;
+      }
+      .nav-portion {
+        position: relative;
+        flex: 1;
+        min-width: 220px;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #2a4550;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #152832;
+      }
+      .splitter {
+        width: 6px;
+        flex-shrink: 0;
+        cursor: col-resize;
+        margin: 0 -7px;
+        position: relative;
+        z-index: 2;
+        background: transparent;
+      }
+      .splitter:hover,
+      .splitter.is-active { background: #3d9a8a; }
+      .workspace {
+        flex-shrink: 0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #2a4550;
+        border-radius: 8px;
+        overflow: hidden;
+        min-height: 0;
+        min-width: 280px;
+        background: #152832;
+      }
+      .workspace.is-full {
+        flex: 1;
+        width: auto;
+      }
+      .workspace-body {
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        justify-content: center;
+      }
+      .workspace-tab:first-child {
+        margin-left: 8px;
+      }
+      .work-grid {
+        display: block;
+        height: 100%;
+        color: rgba(126, 200, 188, 0.35);
+        --paper-grid-background-placeholder: rgba(126, 200, 188, 0.22);
+      }
+      .workspace-empty {
+        position: absolute;
+        inset: 12px;
+        z-index: 1;
+        pointer-events: none;
+        margin: 0;
+      }
+      .workspace-tabs {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        min-width: 0;
+        flex: 1;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .workspace-tabs::-webkit-scrollbar { display: none; }
+      .workspace-tab {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        flex: 0 0 auto;
+        height: 24px;
+        padding: 0 8px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        background: transparent;
+        color: #8aa0ab;
+        font-size: 12px;
+        line-height: 1;
+        cursor: pointer;
+      }
+      .workspace-tab.is-on {
+        background: #1a3340;
+        color: #e8eef2;
+        border-color: rgba(126, 200, 188, 0.28);
+      }
+      .workspace-tab-name {
+        max-width: 140px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .workspace-tab-close {
+        display: inline-grid;
+        place-items: center;
+        width: 14px;
+        height: 14px;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background: transparent;
+        color: #8aa0ab;
+        cursor: pointer;
+      }
+      .workspace-tab-close:hover { color: #e8eef2; }
+      .workspace-tab-add {
+        display: inline-grid;
+        place-items: center;
+        width: 24px;
+        height: 24px;
+        padding: 0;
+        border: 1px solid rgba(126, 200, 188, 0.22);
+        border-radius: 4px;
+        background: transparent;
+        color: #7ec8bc;
+        cursor: pointer;
+      }
+      .workspace-tab-add:hover { background: #1a3340; }
+      .login-screen {
+        display: grid;
+        place-items: center;
+        height: 100%;
+        background: #0f1c24;
+      }
+      .login-card {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        box-sizing: border-box;
+        width: min(380px, calc(100% - 32px));
+        padding: 28px 24px 24px;
+        border-radius: 12px;
+        background: #152832;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.36);
+        color: #e8eef2;
+      }
+      .login-card h1 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+      .login-card p {
+        margin: 0;
+        font-size: 13px;
+        color: #8aa0ab;
+      }
+      .login-card md-outlined-text-field,
+      .login-card md-filled-button,
+      .login-actions {
+        width: 100%;
+      }
+      .login-error {
+        min-height: 18px;
+        margin: 0;
+        font-size: 12px;
+        color: #ef9a9a;
+      }
+      .profile-menu {
+        position: absolute;
+        top: 52px;
+        right: 8px;
+        z-index: 30;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        box-sizing: border-box;
+        width: 260px;
+        padding: 16px 14px 8px;
+        border: 1px solid rgba(126, 200, 188, 0.18);
+        border-radius: 8px;
+        background: #152832;
+        color: #e8eef2;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        --md-sys-color-primary: #7ec8bc;
+        --md-sys-color-on-primary: #003732;
+        --md-sys-color-surface: #152832;
+        --md-sys-color-on-surface: #e8eef2;
+        --md-sys-color-on-surface-variant: #8aa0ab;
+        --md-sys-color-outline: rgba(126, 200, 188, 0.35);
+        --md-sys-color-outline-variant: rgba(126, 200, 188, 0.22);
+        --md-menu-container-color: #1c3540;
+        --md-menu-item-label-text-color: #e8eef2;
+        --md-outlined-select-text-field-container-shape: 4px;
+        --md-outlined-select-text-field-container-height: 36px;
+        --md-outlined-field-top-space: 4px;
+        --md-outlined-field-bottom-space: 4px;
+        --md-outlined-select-text-field-label-text-size: 11px;
+        --md-outlined-select-text-field-input-text-size: 12px;
+        --md-outlined-select-text-field-outline-color: rgba(126, 200, 188, 0.28);
+        --md-outlined-select-text-field-hover-outline-color: #7ec8bc;
+        --md-outlined-select-text-field-focus-outline-color: #7ec8bc;
+        --md-outlined-select-text-field-label-text-color: #8aa0ab;
+        --md-outlined-select-text-field-hover-label-text-color: #7ec8bc;
+        --md-outlined-select-text-field-focus-label-text-color: #7ec8bc;
+        --md-outlined-select-text-field-input-text-color: #e8eef2;
+        --md-outlined-select-text-field-trailing-icon-color: #7ec8bc;
+        --md-text-button-label-text-color: #7ec8bc;
+        --md-text-button-hover-label-text-color: #a6ddd4;
+        --md-text-button-pressed-label-text-color: #7ec8bc;
+        --md-text-button-focus-label-text-color: #7ec8bc;
+      }
+      .profile-avatar {
+        display: grid;
+        place-items: center;
+        width: 64px;
+        height: 64px;
+        margin: 2px auto 8px;
+        border-radius: 50%;
+        background: #3d9a8a;
+        color: #003732;
+        font-size: 22px;
+        font-weight: 700;
+      }
+      .profile-avatar md-icon {
+        color: #003732;
+        --md-icon-size: 36px;
+      }
+      .profile-name,
+      .profile-role,
+      .profile-email {
+        margin: 0;
+        text-align: center;
+      }
+      .profile-name {
+        font-size: 15px;
+        font-weight: 600;
+        color: #e8eef2;
+      }
+      .profile-role {
+        margin-top: 2px;
+        font-size: 13px;
+        color: #7ec8bc;
+      }
+      .profile-email {
+        margin: 4px 0 12px;
+        font-size: 11px;
+        color: #8aa0ab;
+      }
+      .profile-menu md-outlined-select {
+        width: 100%;
+        min-height: 36px;
+        margin-bottom: 6px;
+      }
+      .profile-menu md-text-button,
+      .profile-actions {
+        width: 100%;
+        --md-text-button-label-text-weight: 600;
+        --md-text-button-label-text-tracking: 0.08em;
+      }
+      .notes-field,
+      #workspace-name,
+      md-filled-text-field {
+        width: 100%;
+        --md-filled-text-field-container-color: #1a3340;
+        --md-filled-text-field-input-text-color: #e8eef2;
+        --md-filled-text-field-label-text-color: #8aa0ab;
+        --md-filled-text-field-hover-label-text-color: #7ec8bc;
+        --md-filled-text-field-focus-label-text-color: #7ec8bc;
+        --md-filled-text-field-caret-color: #7ec8bc;
+        --md-filled-text-field-active-indicator-color: rgba(126, 200, 188, 0.4);
+        --md-filled-text-field-hover-active-indicator-color: #7ec8bc;
+        --md-filled-text-field-focus-active-indicator-color: #7ec8bc;
+        --md-filled-text-field-container-shape: 4px;
+        --md-filled-text-field-input-text-size: 13px;
+        --md-filled-text-field-label-text-size: 12px;
+      }
+      dialog[open] {
+        margin: auto;
+      }
+      md-dialog {
+        --md-dialog-container-color: #152832;
+        --md-dialog-container-shape: 8px;
+        --md-dialog-headline-color: #e8eef2;
+        --md-dialog-headline-size: 15px;
+        --md-dialog-headline-line-height: 22px;
+        --md-dialog-headline-weight: 600;
+        --md-dialog-supporting-text-color: #8aa0ab;
+        --md-sys-color-primary: #7ec8bc;
+        --md-sys-color-on-primary: #003732;
+        --md-sys-color-surface: #152832;
+        --md-sys-color-on-surface: #e8eef2;
+        --md-sys-color-on-surface-variant: #8aa0ab;
+      }
+      md-dialog.add-dialog { --md-dialog-container-max-width: 480px; }
+      md-dialog.rename-dialog { --md-dialog-container-max-width: 420px; }
+      md-dialog .dialog-headline {
+        box-sizing: border-box;
+        min-height: 22px;
+        padding: 20px 20px 12px;
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 22px;
+        color: #e8eef2;
+      }
+      md-dialog .dialog-content {
+        box-sizing: border-box;
+        padding: 4px 20px 12px;
+      }
+      md-dialog .dialog-copy {
+        margin: 0 0 12px;
+        font-size: 13px;
+        line-height: 1.4;
+        color: #8aa0ab;
+      }
+      md-dialog .dialog-actions {
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        flex-wrap: nowrap;
+        width: 100%;
+        min-height: 36px;
+        padding: 8px 16px 16px;
+        gap: 8px;
+      }
+      md-dialog .dialog-actions > * {
+        flex: 0 0 auto;
+      }
+      md-dialog md-text-button,
+      md-dialog md-filled-button,
+      md-dialog md-filled-tonal-button {
+        flex: 0 0 auto;
+        width: auto;
+        min-width: max-content;
+        --md-text-button-container-height: 36px;
+        --md-filled-button-container-height: 36px;
+        --md-filled-tonal-button-container-height: 36px;
+        --md-text-button-container-shape: 4px;
+        --md-filled-button-container-shape: 4px;
+        --md-filled-tonal-button-container-shape: 4px;
+        --md-text-button-leading-space: 16px;
+        --md-text-button-trailing-space: 16px;
+        --md-filled-button-leading-space: 16px;
+        --md-filled-button-trailing-space: 16px;
+        --md-filled-tonal-button-leading-space: 16px;
+        --md-filled-tonal-button-trailing-space: 16px;
+        --md-text-button-label-text-size: 13px;
+        --md-filled-button-label-text-size: 13px;
+        --md-filled-tonal-button-label-text-size: 13px;
+        --md-text-button-label-text-color: #7ec8bc;
+        --md-filled-button-container-color: #3d9a8a;
+        --md-filled-button-label-text-color: #e8eef2;
+        --md-filled-tonal-button-container-color: #1c3540;
+        --md-filled-tonal-button-label-text-color: #7ec8bc;
+      }
+      md-list {
+        --md-list-container-color: transparent;
+        --md-list-item-label-text-color: #e8eef2;
+        --md-list-item-supporting-text-color: #8aa0ab;
+        --md-list-item-leading-icon-color: #7ec8bc;
+        --md-list-item-one-line-container-height: 48px;
+        --md-list-item-two-line-container-height: 56px;
+        --md-list-item-top-space: 8px;
+        --md-list-item-bottom-space: 8px;
+        --md-list-item-leading-space: 16px;
+        --md-list-item-trailing-space: 16px;
+        --md-list-item-hover-state-layer-color: #7ec8bc;
+        --md-list-item-hover-state-layer-opacity: 0.08;
+        margin: 0 -16px;
+        background: transparent;
+      }
+      md-list-item.is-on {
+        --md-list-item-label-text-color: #7ec8bc;
+        --md-list-item-leading-icon-color: #7ec8bc;
+      }
+      md-slider {
+        width: 100%;
+        min-height: 32px;
+        --md-slider-active-track-color: #3d9a8a;
+        --md-slider-inactive-track-color: #1a3340;
+        --md-slider-handle-color: #7ec8bc;
+        --md-slider-focus-handle-color: #7ec8bc;
+        --md-slider-pressed-handle-color: #7ec8bc;
+        --md-slider-label-container-color: #1a3340;
+        --md-slider-label-text-color: #e8eef2;
+        --md-slider-active-track-height: 4px;
+        --md-slider-inactive-track-height: 4px;
+        --md-slider-handle-width: 20px;
+        --md-slider-handle-height: 20px;
+      }
+      .workspace-toolbar-actions {
+        display: inline-flex;
+        align-items: center;
+        height: 32px;
+        margin-right: 4px;
+      }
+      .workspace-toolbar-actions md-text-button {
+        --md-text-button-container-height: 28px;
+        --md-text-button-label-text-size: 12px;
+        --md-text-button-label-text-weight: 500;
+        --md-text-button-icon-size: 16px;
+        --md-text-button-label-text-color: #7ec8bc;
+      }
+      .widget-row md-text-button {
+        --md-text-button-container-height: 24px;
+        --md-text-button-label-text-size: 12px;
+        --md-text-button-label-text-weight: 500;
+        --md-text-button-leading-space: 8px;
+        --md-text-button-trailing-space: 8px;
+        --md-text-button-label-text-color: #7ec8bc;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module">
+      import { html, render, nothing } from "lit";
+      import { classMap } from "lit/directives/class-map.js";
+      import { styleMap } from "lit/directives/style-map.js";
+      import "@fontsource/roboto/latin-400.css";
+      import "@fontsource/roboto/latin-500.css";
+      import "@fontsource/roboto/latin-600.css";
+      import "@fontsource/roboto/latin-700.css";
+      import "@mdi/font/css/materialdesignicons.css";
+      import "material-symbols/outlined.css";
+      import "@fluid-element/app-header";
+      import "@fluid-element/app-navigation-drawer";
+      import "@fluid-element/lit-grid";
+      import "@fluid-element/lit-pagination";
+      import "@fluid-element/lit-tooltip";
+      import "@material/web/icon/icon.js";
+      import "@material/web/iconbutton/icon-button.js";
+      import "@material/web/list/list.js";
+      import "@material/web/list/list-item.js";
+      import "@material/web/divider/divider.js";
+      import "@material/web/textfield/outlined-text-field.js";
+      import "@material/web/textfield/filled-text-field.js";
+      import "@material/web/button/filled-button.js";
+      import "@material/web/button/filled-tonal-button.js";
+      import "@material/web/button/text-button.js";
+      import "@material/web/select/outlined-select.js";
+      import "@material/web/select/select-option.js";
+      import "@material/web/dialog/dialog.js";
+      import "@material/web/slider/slider.js";
+
+      const proxied = new WeakMap();
+      let drawScheduled = false;
+      let drawView = null;
+      const mountFns = [];
+      const unmountFns = [];
+
+      function scheduleDraw() {
+        if (drawScheduled) return;
+        drawScheduled = true;
+        queueMicrotask(() => {
+          drawScheduled = false;
+          if (drawView) render(drawView(), document.getElementById("app"));
+        });
+      }
+
+      function reactive(value) {
+        if (value === null || typeof value !== "object") return value;
+        const cached = proxied.get(value);
+        if (cached) return cached;
+        const proxy = new Proxy(value, {
+          get(target, key, receiver) {
+            if (key === "__raw") return target;
+            const result = Reflect.get(target, key, receiver);
+            if (result && typeof result === "object") return reactive(result);
+            return result;
+          },
+          set(target, key, next) {
+            const prev = target[key];
+            const ok = Reflect.set(target, key, next);
+            if (!Object.is(prev, next)) scheduleDraw();
+            return ok;
+          },
+          deleteProperty(target, key) {
+            const ok = Reflect.deleteProperty(target, key);
+            scheduleDraw();
+            return ok;
+          },
+        });
+        proxied.set(value, proxy);
+        return proxy;
+      }
+
+      function computed(fn) {
+        return {
+          get value() {
+            return fn();
+          },
+        };
+      }
+
+      function nextTick(fn) {
+        return Promise.resolve().then(fn);
+      }
+
+      function onMounted(fn) {
+        mountFns.push(fn);
+      }
+
+      function onUnmounted(fn) {
+        unmountFns.push(fn);
+      }
+
+      function stop(handler) {
+        return (event) => {
+          event.stopPropagation();
+          handler(event);
+        };
+      }
+
+      function prevent(handler) {
+        return (event) => {
+          event.preventDefault();
+          handler(event);
+        };
+      }
+
+      const modules = [
+        { id: "host", name: "Dispositivi", icon: "mdi-desktop-classic", md: "computer", group: "Core" },
+        { id: "system", name: "System", icon: "mdi-monitor-screenshot", md: "screenshot_monitor", group: "Core" },
+        { id: "playlist", name: "Playlist", icon: "mdi-playlist-play", md: "playlist_play", group: "Core" },
+        { id: "standalone", name: "Standalone", icon: "mdi-play-box-outline", md: "play_circle", group: "Core" },
+        { id: "flows", name: "External flows", icon: "mdi-video-input-hdmi", md: "settings_input_hdmi", group: "Core" },
+        { id: "auth", name: "Autenticazione", icon: "mdi-shield-account-outline", md: "shield_person", group: "Toolbar" },
+        { id: "settings", name: "Settings", icon: "mdi-cog-outline", md: "settings", group: "Toolbar" },
+        { id: "communication", name: "Communication", icon: "mdi-access-point-network", md: "wifi_tethering", group: "Core" },
+        { id: "soccer", name: "Soccer", icon: "mdi-soccer", md: "sports_soccer", group: "Extra" },
+        { id: "volley", name: "Volley", icon: "mdi-volleyball", md: "sports_volleyball", group: "Extra" },
+        { id: "basket", name: "Basket", icon: "mdi-basketball", md: "sports_basketball", group: "Extra" },
+        { id: "palinsesto", name: "Palinsesto", icon: "mdi-calendar-clock", md: "calendar_clock", group: "Extra" },
+        { id: "nova", name: "Nova", icon: "mdi-wall", md: "wall_art", group: "Extra" },
+        { id: "streamdeck", name: "Stream Deck", icon: "mdi-keyboard-outline", md: "keyboard", group: "Extra" },
+        { id: "bertele", name: "Bertelè", icon: "mdi-audio-video", md: "speaker", group: "Extra" },
+      ];
+
+      const MIN_WIDGET_W = 6;
+      const MIN_WIDGET_H = 6;
+
+      const widgetCatalog = [
+        { type: "host", title: "Stato host", hint: "Hardware, rete e monitor", icon: "mdi-desktop-classic", md: "computer", w: 15, h: 12 },
+        { type: "preview", title: "Preview dispositivo", hint: "Finestre in uscita sul player", icon: "mdi-monitor-eye", md: "preview", w: 30, h: 16 },
+        { type: "match", title: "Partita", hint: "Gol, cartellini e formazioni", icon: "mdi-soccer", md: "sports_soccer", w: 30, h: 28 },
+        { type: "palinsesto", title: "Palinsesto", hint: "Play, pausa e stop sui layer", icon: "mdi-calendar-clock", md: "calendar_clock", w: 30, h: 16 },
+        { type: "rundown", title: "On air palinsesto", hint: "Contenuto in onda e coda", icon: "mdi-broadcast", md: "cell_tower", w: 22, h: 18 },
+        { type: "standalone", title: "Standalone", hint: "Lancio standalone sui layer", icon: "mdi-play-box-outline", md: "play_circle", w: 30, h: 16 },
+        { type: "scheduler", title: "Scheduler dispositivo", hint: "Risorse in corso sui layer", icon: "mdi-chart-timeline", md: "view_timeline", w: 30, h: 24 },
+        { type: "surfaces", title: "Superfici", hint: "Stato delle uscite video", icon: "mdi-monitor-screenshot", md: "screenshot_monitor", w: 30, h: 12 },
+        { type: "session", title: "Sessione", hint: "Tenant e sync locale", icon: "mdi-shield-account-outline", md: "shield_person", w: 15, h: 12 },
+        { type: "playlist", title: "Playlist", hint: "Coda e item corrente", icon: "mdi-playlist-play", md: "playlist_play", w: 15, h: 12 },
+        { type: "mixer", title: "Mixer", hint: "Livelli audio", icon: "mdi-tune-vertical", md: "tune", w: 15, h: 12 },
+        { type: "nova", title: "Nova", hint: "Processore e input", icon: "mdi-wall", md: "wall_art", w: 15, h: 12 },
+        { type: "notes", title: "Note", hint: "Appunti di regia", icon: "mdi-note-text-outline", md: "note_stack", w: 15, h: 16 },
+        { type: "shortcuts", title: "Scorciatoie", hint: "Apri i moduli", icon: "mdi-lightning-bolt-outline", md: "bolt", w: 15, h: 12 },
+      ];
+
+      let paneSeq = 1;
+      let widgetSeq = 9;
+      let workspaceSeq = 1;
+      let matchEventSeq = 8;
+
+      {
+          function getGridEl() {
+            return document.querySelector("lit-grid.work-grid");
+          }
+
+          const state = reactive(
+          {
+            workspaceOpen: true,
+            workspaceWidth: 720,
+            resizing: false,
+            navOpen: true,
+            activePane: "p1",
+            split: "single",
+            panes: [{ id: "p1", module: "host" }],
+            addOpen: false,
+            addStep: "peers",
+            addDeviceId: "maxischermo",
+            selectedDeviceId: "maxischermo",
+            activeWorkspaceId: "ws1",
+            workspaceEditOpen: false,
+            workspaceEditName: "",
+            workspaces: [
+              {
+                id: "ws1",
+                name: "Match day",
+                widgets: [
+                  { id: "w4", type: "preview", x: 0, y: 0, w: 22, h: 16, collapsed: false, deviceId: "maxischermo", systemId: "sansiro-calcio" },
+                  { id: "w6", type: "match", x: 22, y: 0, w: 26, h: 32, collapsed: false, deviceId: "maxischermo", systemId: "sansiro-calcio" },
+                  { id: "w8", type: "standalone", x: 48, y: 0, w: 20, h: 16, collapsed: false, deviceId: "maxischermo", systemId: "sansiro-calcio" },
+                  { id: "w5", type: "scheduler", x: 0, y: 16, w: 22, h: 18, collapsed: false, deviceId: "maxischermo", systemId: "sansiro-calcio" },
+                  { id: "w7", type: "palinsesto", x: 48, y: 16, w: 20, h: 16, collapsed: false, deviceId: "maxischermo", systemId: "sansiro-calcio" },
+                  { id: "w1", type: "host", x: 48, y: 32, w: 16, h: 12, collapsed: false, deviceId: "maxischermo", systemId: "sansiro-calcio" },
+                  { id: "w9", type: "rundown", x: 0, y: 34, w: 22, h: 18, collapsed: false, deviceId: "maxischermo", systemId: "sansiro-calcio" },
+                ],
+              },
+            ],
+            notes: "Dashboard peer-to-peer: più aree di lavoro, stessi host e widget per peer.",
+            mixer: 72,
+            host: { gpuName: "NVIDIA RTX 4070", gpuTotal: "12 GB", gpuUsage: 34, cpuUsage: 18, ramUsed: "6,2 GB", ramTotal: "32 GB", online: true },
+            authOpen: false,
+            authUser: "",
+            authPassword: "",
+            authError: "",
+            signedIn: false,
+            profileOpen: false,
+            sessionName: "Antonio Visalli",
+            sessionRole: "Super Admin",
+            sessionEmail: "a.visalli2@fluidnext.com",
+            sessionAvatar: "AV",
+            sessionLang: "it",
+            palinsestoPage: 1,
+            palinsestoPerPage: 28,
+            palinsesti: [
+              {
+                id: "pl1",
+                title: "Sfondo club",
+                layer: "background",
+                status: "running",
+                elapsed: 1847,
+                items: [
+                  { id: "pl1-1", title: "Bumper apertura", duration: 180 },
+                  { id: "pl1-2", title: "Sfondo club", duration: 420 },
+                  { id: "pl1-3", title: "Lineup home", duration: 240 },
+                  { id: "pl1-4", title: "Sponsor Fluid Next", duration: 200 },
+                  { id: "pl1-5", title: "Match day loop", duration: 360 },
+                  { id: "pl1-6", title: "Replay gol", duration: 180 },
+                  { id: "pl1-7", title: "Lower third", duration: 150 },
+                  { id: "pl1-8", title: "Sponsor rotazione", duration: 220 },
+                  { id: "pl1-9", title: "Nastro club", duration: 300 },
+                  { id: "pl1-10", title: "Formazioni", duration: 240 },
+                  { id: "pl1-11", title: "Credits fine gara", duration: 160 },
+                ],
+              },
+              {
+                id: "pl2",
+                title: "Primo tempo · loop",
+                layer: "default",
+                status: "idle",
+                elapsed: 0,
+                items: [
+                  { id: "pl2-1", title: "Countdown 1° tempo", duration: 200 },
+                  { id: "pl2-2", title: "Formazioni titolari", duration: 280 },
+                  { id: "pl2-3", title: "Ingresso squadre", duration: 180 },
+                  { id: "pl2-4", title: "Kick off loop", duration: 420 },
+                  { id: "pl2-5", title: "Replay azioni", duration: 240 },
+                  { id: "pl2-6", title: "Sponsor mid", duration: 160 },
+                  { id: "pl2-7", title: "Nastro live", duration: 300 },
+                ],
+              },
+              {
+                id: "pl3",
+                title: "Formazioni",
+                layer: "overlay",
+                status: "idle",
+                elapsed: 0,
+                items: [
+                  { id: "pl3-1", title: "Intro formazioni", duration: 120 },
+                  { id: "pl3-2", title: "Titolari casa", duration: 200 },
+                  { id: "pl3-3", title: "Titolari ospite", duration: 200 },
+                  { id: "pl3-4", title: "Panchine", duration: 160 },
+                  { id: "pl3-5", title: "Arbitri", duration: 120 },
+                  { id: "pl3-6", title: "Outro formazioni", duration: 100 },
+                ],
+              },
+              {
+                id: "pl4",
+                title: "Sponsor rotazione",
+                layer: "overlay",
+                status: "paused",
+                elapsed: 236,
+                items: [
+                  { id: "pl4-1", title: "Sponsor Fluid Next", duration: 150 },
+                  { id: "pl4-2", title: "Sponsor Puma", duration: 150 },
+                  { id: "pl4-3", title: "Sponsor Emirates", duration: 150 },
+                  { id: "pl4-4", title: "Sponsor Banco BPM", duration: 150 },
+                  { id: "pl4-5", title: "Sponsor BitMEX", duration: 150 },
+                  { id: "pl4-6", title: "Sponsor WeFox", duration: 150 },
+                ],
+              },
+              {
+                id: "pl5",
+                title: "Nastro club",
+                layer: "default",
+                status: "idle",
+                elapsed: 0,
+                items: [
+                  { id: "pl5-1", title: "News club", duration: 180 },
+                  { id: "pl5-2", title: "Prossime partite", duration: 200 },
+                  { id: "pl5-3", title: "Marcatori stagione", duration: 160 },
+                  { id: "pl5-4", title: "Social wall", duration: 220 },
+                  { id: "pl5-5", title: "Sponsor nastro", duration: 140 },
+                  { id: "pl5-6", title: "Loop club", duration: 300 },
+                ],
+              },
+            ],
+            standalonePage: 1,
+            standalonePerPage: 28,
+            standalonePageSizes: [10, 20, 28, 40],
+            standalones: [
+              { id: "st1", title: "Lineup home", layer: "overlay", status: "idle", elapsed: 0 },
+              { id: "st2", title: "Sponsor Fluid Next", layer: "overlay", status: "running", elapsed: 412 },
+              { id: "st3", title: "Replay gol", layer: "default", status: "idle", elapsed: 0 },
+              { id: "st4", title: "Sfondo night", layer: "background", status: "idle", elapsed: 0 },
+              { id: "st5", title: "Lower third", layer: "overlay", status: "paused", elapsed: 89 },
+              { id: "st6", title: "Lineup away", layer: "overlay", status: "idle", elapsed: 0 },
+              { id: "st7", title: "Formazioni titolari", layer: "default", status: "idle", elapsed: 0 },
+              { id: "st8", title: "Panchina casa", layer: "overlay", status: "idle", elapsed: 0 },
+              { id: "st9", title: "Panchina ospite", layer: "overlay", status: "idle", elapsed: 0 },
+              { id: "st10", title: "Arbitri e VAR", layer: "overlay", status: "idle", elapsed: 0 },
+              { id: "st11", title: "Tabellino 1° tempo", layer: "default", status: "idle", elapsed: 0 },
+              { id: "st12", title: "Tabellino 2° tempo", layer: "default", status: "idle", elapsed: 0 },
+              { id: "st13", title: "Marcatori serata", layer: "overlay", status: "idle", elapsed: 0 },
+              { id: "st14", title: "Cartellini gialli", layer: "overlay", status: "idle", elapsed: 0 },
+              { id: "st15", title: "Cartellini rossi", layer: "overlay", status: "idle", elapsed: 0 },
+              { id: "st16", title: "Sostituzioni live", layer: "overlay", status: "idle", elapsed: 0 },
+              { id: "st17", title: "Cronaca gol 12'", layer: "overlay", status: "idle", elapsed: 0 },
+              { id: "st18", title: "Cronaca gol 64'", layer: "overlay", status: "idle", elapsed: 0 },
+              { id: "st19", title: "Replay assist", layer: "default", status: "idle", elapsed: 0 },
+              { id: "st20", title: "Replay parata", layer: "default", status: "idle", elapsed: 0 },
+              { id: "st21", title: "Replay fuorigioco", layer: "default", status: "idle", elapsed: 0 },
+              { id: "st22", title: "Sfondo club day", layer: "background", status: "idle", elapsed: 0 },
+              { id: "st23", title: "Sfondo derby", layer: "background", status: "idle", elapsed: 0 },
+              { id: "st24", title: "Sfondo Champions", layer: "background", status: "idle", elapsed: 0 },
+              { id: "st25", title: "Nastro breaking", layer: "default", status: "idle", elapsed: 0 },
+              { id: "st26", title: "Nastro sponsor", layer: "default", status: "idle", elapsed: 0 },
+              { id: "st27", title: "Nastro meteo", layer: "default", status: "idle", elapsed: 0 },
+              { id: "st28", title: "Sponsor Puma", layer: "overlay", status: "idle", elapsed: 0 },
+              { id: "st29", title: "Sponsor Emirates", layer: "overlay", status: "idle", elapsed: 0 },
+              { id: "st30", title: "Sponsor Banco BPM", layer: "overlay", status: "idle", elapsed: 0 },
+              { id: "st31", title: "Welcome tifosi", layer: "overlay", status: "idle", elapsed: 0 },
+              { id: "st32", title: "Inno di squadra", layer: "default", status: "idle", elapsed: 0 },
+              { id: "st33", title: "Coreografia curva", layer: "background", status: "idle", elapsed: 0 },
+              { id: "st34", title: "Totem ingresso nord", layer: "default", status: "idle", elapsed: 0 },
+              { id: "st35", title: "Totem ingresso sud", layer: "default", status: "idle", elapsed: 0 },
+              { id: "st36", title: "Totem hospitality", layer: "overlay", status: "idle", elapsed: 0 },
+              { id: "st37", title: "Mappa stadio", layer: "default", status: "idle", elapsed: 0 },
+              { id: "st38", title: "Percorsi uscita", layer: "overlay", status: "idle", elapsed: 0 },
+              { id: "st39", title: "Allerta meteo", layer: "overlay", status: "idle", elapsed: 0 },
+              { id: "st40", title: "Countdown kickoff", layer: "overlay", status: "idle", elapsed: 0 },
+              { id: "st41", title: "Intervallo show", layer: "default", status: "idle", elapsed: 0 },
+              { id: "st42", title: "Statistiche possesso", layer: "overlay", status: "idle", elapsed: 0 },
+              { id: "st43", title: "Statistiche tiri", layer: "overlay", status: "idle", elapsed: 0 },
+              { id: "st44", title: "Heatmap casa", layer: "default", status: "idle", elapsed: 0 },
+              { id: "st45", title: "Man of the match", layer: "overlay", status: "idle", elapsed: 0 },
+              { id: "st46", title: "Classifica Serie A", layer: "default", status: "idle", elapsed: 0 },
+              { id: "st47", title: "Prossimo match", layer: "overlay", status: "idle", elapsed: 0 },
+              { id: "st48", title: "Biglietteria QR", layer: "overlay", status: "idle", elapsed: 0 },
+              { id: "st49", title: "Social wall", layer: "default", status: "idle", elapsed: 0 },
+              { id: "st50", title: "Credits fine gara", layer: "overlay", status: "idle", elapsed: 0 },
+            ],
+            activeMatchId: "m1",
+            matches: [
+              {
+                id: "m1",
+                title: "Milan — Inter",
+                nameCursor: { home: 0, away: 0 },
+                period: 0,
+                periods: ["1° tempo", "2° tempo", "1° extra", "2° extra", "Rigori"],
+                clock: 34 * 600 + 120,
+                running: false,
+                home: {
+                  name: "Milan",
+                  code: "MIL",
+                  starters: [
+                    { num: 16, name: "Maignan" },
+                    { num: 2, name: "Calabria" },
+                    { num: 23, name: "Tomori" },
+                    { num: 46, name: "Gabbia" },
+                    { num: 19, name: "Theo" },
+                    { num: 14, name: "Reijnders" },
+                    { num: 29, name: "Fofana" },
+                    { num: 11, name: "Pulisic" },
+                    { num: 10, name: "Leao" },
+                    { num: 80, name: "Musah" },
+                    { num: 9, name: "Giroud" },
+                  ],
+                  bench: [
+                    { num: 57, name: "Sportiello" },
+                    { num: 28, name: "Thiaw" },
+                    { num: 32, name: "Terracciano" },
+                    { num: 8, name: "Loftus-Cheek" },
+                    { num: 21, name: "Chukwueze" },
+                    { num: 7, name: "Adli" },
+                    { num: 90, name: "Okafor" },
+                  ],
+                },
+                away: {
+                  name: "Inter",
+                  code: "INT",
+                  starters: [
+                    { num: 1, name: "Sommer" },
+                    { num: 28, name: "Pavard" },
+                    { num: 6, name: "De Vrij" },
+                    { num: 95, name: "Bastoni" },
+                    { num: 32, name: "Dimarco" },
+                    { num: 23, name: "Barella" },
+                    { num: 20, name: "Calhanoglu" },
+                    { num: 22, name: "Mkhitaryan" },
+                    { num: 10, name: "Lautaro" },
+                    { num: 9, name: "Thuram" },
+                    { num: 7, name: "Frattesi" },
+                  ],
+                  bench: [
+                    { num: 12, name: "Di Gennaro" },
+                    { num: 31, name: "Bisseck" },
+                    { num: 36, name: "Darmian" },
+                    { num: 16, name: "Asllani" },
+                    { num: 8, name: "Arnautovic" },
+                    { num: 70, name: "Taremi" },
+                    { num: 11, name: "Jovic" },
+                  ],
+                },
+                officials: [
+                  { role: "Arbitro", name: "Orsato" },
+                  { role: "Assistente 1", name: "Carbone" },
+                  { role: "Assistente 2", name: "Giallatini" },
+                  { role: "Quarto ufficiale", name: "Di Bello" },
+                  { role: "VAR", name: "Irrati" },
+                  { role: "AVAR", name: "Rocchi" },
+                ],
+                events: [
+                  { id: "e1", team: "home", type: "goal", minute: "12'", text: "Leao" },
+                  { id: "e2", team: "away", type: "goal", minute: "28'", text: "Thuram" },
+                  { id: "e3", team: "home", type: "yellow", minute: "31'", text: "Calabria" },
+                  { id: "e4", team: "home", type: "goal", minute: "64'", text: "Pulisic" },
+                  { id: "e5", team: "away", type: "sub", minute: "67'", text: "Jovic → Thuram" },
+                ],
+              },
+              {
+                id: "m2",
+                title: "Juventus — Napoli",
+                nameCursor: { home: 0, away: 0 },
+                period: 1,
+                periods: ["1° tempo", "2° tempo", "1° extra", "2° extra", "Rigori"],
+                clock: 67 * 600 + 200,
+                running: false,
+                home: {
+                  name: "Juventus",
+                  code: "JUV",
+                  starters: [
+                    { num: 29, name: "Di Gregorio" },
+                    { num: 27, name: "Cambiaso" },
+                    { num: 3, name: "Bremer" },
+                    { num: 4, name: "Gatti" },
+                    { num: 6, name: "Danilo" },
+                    { num: 5, name: "Locatelli" },
+                    { num: 8, name: "McKennie" },
+                    { num: 19, name: "Koopmeiners" },
+                    { num: 7, name: "Chiesa" },
+                    { num: 9, name: "Vlahovic" },
+                    { num: 11, name: "Conceicao" },
+                  ],
+                  bench: [
+                    { num: 1, name: "Perin" },
+                    { num: 15, name: "Kalulu" },
+                    { num: 40, name: "Cabal" },
+                    { num: 16, name: "Thuram" },
+                    { num: 21, name: "Fagioli" },
+                    { num: 22, name: "Weah" },
+                    { num: 14, name: "Milik" },
+                  ],
+                },
+                away: {
+                  name: "Napoli",
+                  code: "NAP",
+                  starters: [
+                    { num: 1, name: "Meret" },
+                    { num: 22, name: "Di Lorenzo" },
+                    { num: 13, name: "Rrahmani" },
+                    { num: 4, name: "Buongiorno" },
+                    { num: 17, name: "Olivera" },
+                    { num: 99, name: "Anguissa" },
+                    { num: 68, name: "Lobotka" },
+                    { num: 8, name: "McTominay" },
+                    { num: 21, name: "Politano" },
+                    { num: 11, name: "Lukaku" },
+                    { num: 77, name: "Kvaratskhelia" },
+                  ],
+                  bench: [
+                    { num: 14, name: "Contini" },
+                    { num: 5, name: "Juan Jesus" },
+                    { num: 30, name: "Mazzocchi" },
+                    { num: 6, name: "Gilmour" },
+                    { num: 23, name: "Neres" },
+                    { num: 18, name: "Simeone" },
+                    { num: 81, name: "Raspadori" },
+                  ],
+                },
+                officials: [
+                  { role: "Arbitro", name: "Mariani" },
+                  { role: "Assistente 1", name: "Mastrodonato" },
+                  { role: "Assistente 2", name: "Bercigli" },
+                  { role: "Quarto ufficiale", name: "Doveri" },
+                  { role: "VAR", name: "Valeri" },
+                  { role: "AVAR", name: "Di Paolo" },
+                ],
+                events: [
+                  { id: "e6", team: "home", type: "goal", minute: "23'", text: "Chiesa" },
+                  { id: "e7", team: "away", type: "goal", minute: "51'", text: "Lukaku" },
+                ],
+              },
+              {
+                id: "m3",
+                title: "Roma — Lazio",
+                nameCursor: { home: 0, away: 0 },
+                period: 0,
+                periods: ["1° tempo", "2° tempo", "1° extra", "2° extra", "Rigori"],
+                clock: 0,
+                running: false,
+                home: {
+                  name: "Roma",
+                  code: "ROM",
+                  starters: [
+                    { num: 99, name: "Svilar" },
+                    { num: 19, name: "Celik" },
+                    { num: 23, name: "Mancini" },
+                    { num: 5, name: "Ndicka" },
+                    { num: 3, name: "Angelino" },
+                    { num: 4, name: "Cristante" },
+                    { num: 16, name: "Paredes" },
+                    { num: 7, name: "Pellegrini" },
+                    { num: 21, name: "Dybala" },
+                    { num: 11, name: "Dovbyk" },
+                    { num: 92, name: "El Shaarawy" },
+                  ],
+                  bench: [
+                    { num: 89, name: "Ryan" },
+                    { num: 15, name: "Hummels" },
+                    { num: 37, name: "Spinazzola" },
+                    { num: 61, name: "Pisilli" },
+                    { num: 18, name: "Soulé" },
+                    { num: 35, name: "Baldanzi" },
+                    { num: 14, name: "Shomurodov" },
+                  ],
+                },
+                away: {
+                  name: "Lazio",
+                  code: "LAZ",
+                  starters: [
+                    { num: 94, name: "Provedel" },
+                    { num: 77, name: "Marusic" },
+                    { num: 34, name: "Gila" },
+                    { num: 13, name: "Romagnoli" },
+                    { num: 30, name: "Tavares" },
+                    { num: 8, name: "Guendouzi" },
+                    { num: 6, name: "Rovella" },
+                    { num: 5, name: "Vecino" },
+                    { num: 10, name: "Zaccagni" },
+                    { num: 11, name: "Castellanos" },
+                    { num: 9, name: "Pedro" },
+                  ],
+                  bench: [
+                    { num: 35, name: "Mandas" },
+                    { num: 4, name: "Patric" },
+                    { num: 23, name: "Hysaj" },
+                    { num: 7, name: "Dele-Bashiru" },
+                    { num: 21, name: "Belahyane" },
+                    { num: 14, name: "Noslin" },
+                    { num: 19, name: "Dia" },
+                  ],
+                },
+                officials: [
+                  { role: "Arbitro", name: "Guida" },
+                  { role: "Assistente 1", name: "Bindoni" },
+                  { role: "Assistente 2", name: "Vecchi" },
+                  { role: "Quarto ufficiale", name: "Massa" },
+                  { role: "VAR", name: "Aureliano" },
+                  { role: "AVAR", name: "Di Martino" },
+                ],
+                events: [],
+              },
+              {
+                id: "m4",
+                title: "Milan Femminile — Juventus Femminile",
+                nameCursor: { home: 0, away: 0 },
+                period: 0,
+                periods: ["1° tempo", "2° tempo", "1° extra", "2° extra", "Rigori"],
+                clock: 12 * 600,
+                running: false,
+                home: {
+                  name: "Milan Femminile",
+                  code: "MIL",
+                  starters: [
+                    { num: 1, name: "Giuliani" },
+                    { num: 2, name: "Bergamaschi" },
+                    { num: 5, name: "Swaby" },
+                    { num: 6, name: "Piga" },
+                    { num: 3, name: "Bartoli" },
+                    { num: 8, name: "Grimshaw" },
+                    { num: 21, name: "Adami" },
+                    { num: 10, name: "Cernoia" },
+                    { num: 9, name: "Giacinti" },
+                    { num: 18, name: "Thomas" },
+                    { num: 11, name: "Asllani" },
+                  ],
+                  bench: [
+                    { num: 32, name: "Korenciova" },
+                    { num: 4, name: "Fusetti" },
+                    { num: 25, name: "Mesjasz" },
+                    { num: 7, name: "Marinelli" },
+                    { num: 14, name: "Rubio" },
+                    { num: 27, name: "Guagni" },
+                    { num: 20, name: "Laurent" },
+                  ],
+                },
+                away: {
+                  name: "Juventus Femminile",
+                  code: "JUV",
+                  starters: [
+                    { num: 16, name: "Peyraud-Magnin" },
+                    { num: 20, name: "Boattin" },
+                    { num: 4, name: "Salvai" },
+                    { num: 3, name: "Lenzini" },
+                    { num: 5, name: "Nilden" },
+                    { num: 8, name: "Caruso" },
+                    { num: 9, name: "Cantore" },
+                    { num: 10, name: "Girelli" },
+                    { num: 11, name: "Bonansea" },
+                    { num: 6, name: "Gunnarsdottir" },
+                    { num: 2, name: "Bergsvand" },
+                  ],
+                  bench: [
+                    { num: 1, name: "Durante" },
+                    { num: 14, name: "Cascarino" },
+                    { num: 23, name: "Lundorf" },
+                    { num: 21, name: "Schatzer" },
+                    { num: 18, name: "Beccari" },
+                    { num: 7, name: "Pedrol" },
+                    { num: 15, name: "Rosucci" },
+                  ],
+                },
+                officials: [
+                  { role: "Arbitro", name: "Di Monte" },
+                  { role: "Assistente 1", name: "Scatragli" },
+                  { role: "Assistente 2", name: "Lo Cicero" },
+                  { role: "Quarto ufficiale", name: "Marotta" },
+                  { role: "VAR", name: "Paganessi" },
+                  { role: "AVAR", name: "Garzelli" },
+                ],
+                events: [{ id: "e8", team: "home", type: "goal", minute: "9'", text: "Giacinti" }],
+              },
+            ],
+          }
+          );
+
+          const devices = reactive(
+          [
+            {
+              id: "maxischermo",
+              name: "Maxischermo",
+              ip: "192.168.10.21",
+              authenticated: true,
+              monitors: 2,
+              windows: [
+                {
+                  id: "f1",
+                  name: "Finestra 1",
+                  layout: "single",
+                  devices: [
+                    { id: "fullscreen", name: "FullScreen", theme: "led", live: true, time: "67'", item: "Match day · loop", home: "MILAN", away: "INTER", score: "2 — 1" },
+                  ],
+                },
+                {
+                  id: "f2",
+                  name: "Finestra 2",
+                  layout: "composite",
+                  devices: [
+                    { id: "fullscreen", name: "FullScreen", theme: "led", item: "Campo" },
+                    { id: "main", name: "Main", theme: "main", live: true, time: "67'", home: "MILAN", away: "INTER", score: "2 — 1", item: "Replay" },
+                    { id: "totem", name: "Totem", theme: "totem", title: "TOTEM", item: "Lineup" },
+                    { id: "ticker", name: "Ticker", theme: "ticker", item: "Gol 64' Leao · Prossimo: Pulisic" },
+                  ],
+                },
+              ],
+              scheduler: [
+                {
+                  id: "fullscreen",
+                  name: "FullScreen",
+                  background: [
+                    { id: "fs-bg", title: "Sfondo club · sempre in loop", duration: 180, elapsed: 120 },
+                  ],
+                  default: [
+                    { id: "fs-d1", title: "Match day · loop", duration: 90, elapsed: 40 },
+                    { id: "fs-d2", title: "Replay", duration: 30, elapsed: 12 },
+                  ],
+                  overlay: [
+                    { id: "fs-o1", title: "Sponsor logo", duration: 20, elapsed: 8 },
+                    { id: "fs-o2", title: "Lower third", duration: 15, elapsed: 5 },
+                  ],
+                },
+                {
+                  id: "main",
+                  name: "Main",
+                  background: [{ id: "mn-bg", title: "Campo", duration: 180, elapsed: 95 }],
+                  default: [
+                    { id: "mn-d1", title: "Formazioni", duration: 45, elapsed: 18 },
+                    { id: "mn-d2", title: "Replay", duration: 30, elapsed: 22 },
+                  ],
+                  overlay: [{ id: "mn-o1", title: "Sponsor rotazione", duration: 40, elapsed: 16 }],
+                },
+                {
+                  id: "totem",
+                  name: "Totem",
+                  background: [{ id: "tt-bg", title: "Sfondo totem", duration: 180, elapsed: 70 }],
+                  default: [
+                    { id: "tt-d1", title: "Lineup", duration: 60, elapsed: 24 },
+                    { id: "tt-d2", title: "Formazioni", duration: 45, elapsed: 10 },
+                  ],
+                  overlay: [{ id: "tt-o1", title: "Sponsor logo", duration: 20, elapsed: 14 }],
+                },
+                {
+                  id: "ticker",
+                  name: "Ticker",
+                  background: [],
+                  default: [
+                    { id: "tk-d1", title: "Nastro club", duration: 50, elapsed: 30 },
+                    { id: "tk-d2", title: "Sponsor rotazione nastro", duration: 40, elapsed: 12 },
+                  ],
+                  overlay: [
+                    { id: "tk-o1", title: "Gol 64' Leao · Prossimo: Pulisic", duration: 25, elapsed: 9 },
+                  ],
+                },
+              ],
+            },
+            {
+              id: "bordocampo",
+              name: "Bordocampo",
+              ip: "192.168.10.34",
+              authenticated: false,
+              monitors: 1,
+              windows: [
+                {
+                  id: "f1",
+                  name: "Finestra 1",
+                  layout: "single",
+                  devices: [
+                    { id: "fullscreen", name: "FullScreen", theme: "sideline", title: "LINEUP", subtitle: "Casa · titolari", item: "Lineup home", time: "00:09" },
+                  ],
+                },
+              ],
+              scheduler: [
+                {
+                  id: "fullscreen",
+                  name: "FullScreen",
+                  background: [{ id: "bc-bg", title: "Sfondo club · sempre in loop", duration: 180, elapsed: 90 }],
+                  default: [
+                    { id: "bc-d1", title: "Lineup home", duration: 60, elapsed: 20 },
+                    { id: "bc-d2", title: "Formazioni", duration: 45, elapsed: 12 },
+                  ],
+                  overlay: [{ id: "bc-o1", title: "Sponsor logo", duration: 20, elapsed: 7 }],
+                },
+              ],
+            },
+          ]
+          );
+
+          const systems = reactive(
+          [
+            { id: "sansiro-calcio", name: "Maxi schermo calcio Sansiro", deviceId: "maxischermo", active: true },
+            { id: "sansiro-eventi", name: "Maxi schermo Eventi Sansiro", deviceId: "maxischermo", active: false },
+            { id: "sansiro-femminile", name: "Maxi schermo Femminile Sansiro", deviceId: "maxischermo", active: false },
+          ]
+          );
+
+          // ── Peer (dispositivi) ──────────────────────────────────────────
+          // Più dispositivi possono essere autenticati contemporaneamente.
+          function setActiveDevice(device) {
+            if (!device?.authenticated) return;
+            state.selectedDeviceId = device.id;
+          }
+
+          function selectSystemDevice(event) {
+            const id = event?.target?.value || "";
+            const device = devices.find((d) => d.id === id);
+            if (!device?.authenticated) {
+              const select = event?.target;
+              if (select) select.value = selectedDevice.value?.id || "";
+              return;
+            }
+            setActiveDevice(device);
+          }
+
+          function toggleDeviceAuth(device) {
+            device.authenticated = !device.authenticated;
+            if (device.authenticated) {
+              state.selectedDeviceId = device.id;
+              return;
+            }
+            if (state.selectedDeviceId === device.id) {
+              state.selectedDeviceId = devices.find((item) => item.authenticated)?.id || "";
+            }
+          }
+
+          function deviceScreenCount(device) {
+            const n = Number(device.monitors) || 0;
+            return n === 1 ? "1 schermo" : `${n} schermi`;
+          }
+
+          function deviceScreenLabel(device) {
+            const screens = deviceScreenCount(device);
+            return device.ip ? `${screens} · ${device.ip}` : screens;
+          }
+
+          const connectedDevices = computed(() => devices.filter((d) => d.authenticated));
+
+          const selectedDevice = computed(
+            () =>
+              connectedDevices.value.find((d) => d.id === state.selectedDeviceId) ||
+              connectedDevices.value[0] ||
+              null,
+          );
+
+          const activeDevice = computed(
+            () => connectedDevices.value.find((d) => d.id === state.selectedDeviceId) || connectedDevices.value[0] || null,
+          );
+
+          const showDeviceBar = computed(() => {
+            const pane = state.panes.find((item) => item.id === state.activePane) || state.panes[0];
+            return Boolean(pane && pane.module !== "host");
+          });
+
+          function closeNavPortion() {
+            state.panes = [];
+            state.navOpen = false;
+            state.split = "single";
+          }
+
+          const systemPaneSystems = computed(() =>
+            selectedDevice.value ? deviceSystems(selectedDevice.value) : [],
+          );
+
+          // ── Sistemi ─────────────────────────────────────────────────────
+          function systemDevice(system) {
+            return devices.find((d) => d.id === system?.deviceId) || null;
+          }
+
+          function deviceSystems(device) {
+            return systems.filter((s) => s.deviceId === device.id);
+          }
+
+          // Nessun fallback al primo sistema: solo quello con active: true.
+          function deviceActiveSystem(device) {
+            return deviceSystems(device).find((s) => s.active) || null;
+          }
+
+          const activeSystems = computed(() => systems.filter((s) => s.active));
+          const connectedActiveSystems = computed(() => activeSystems.value.filter((s) => systemDevice(s)?.authenticated));
+          const activeSystem = computed(
+            () =>
+              connectedActiveSystems.value.find((s) => s.deviceId === activeDevice.value?.id) ||
+              connectedActiveSystems.value[0] ||
+              null,
+          );
+
+          // Un solo sistema attivo per dispositivo.
+          function setActiveSystem(system) {
+            systems.forEach((s) => {
+              if (s.deviceId === system.deviceId) s.active = s.id === system.id;
+            });
+          }
+
+          // ── Aree di lavoro ──────────────────────────────────────────────
+          const activeWorkspace = computed(
+            () => state.workspaces.find((w) => w.id === state.activeWorkspaceId) || state.workspaces[0],
+          );
+          const visibleWidgets = computed(() => activeWorkspace.value?.widgets || []);
+
+          function recomputeGrid() {
+            nextTick(() => getGridEl()?.computeStyles?.());
+          }
+
+          function selectWorkspace(id) {
+            if (state.activeWorkspaceId === id) return;
+            state.activeWorkspaceId = id;
+            recomputeGrid();
+          }
+
+          function createWorkspace() {
+            workspaceSeq += 1;
+            const ws = { id: "ws" + workspaceSeq, name: "Area " + workspaceSeq, widgets: [] };
+            state.workspaces.push(ws);
+            state.activeWorkspaceId = ws.id;
+            recomputeGrid();
+          }
+
+          function removeWorkspace(id) {
+            if (state.workspaces.length <= 1) return;
+            const index = state.workspaces.findIndex((w) => w.id === id);
+            if (index < 0) return;
+            state.workspaces.splice(index, 1);
+            if (state.activeWorkspaceId === id) {
+              const next = state.workspaces[Math.max(0, index - 1)];
+              state.activeWorkspaceId = next.id;
+            }
+            recomputeGrid();
+          }
+
+          function openRenameWorkspace(workspace) {
+            const ws = workspace || activeWorkspace.value;
+            if (!ws) return;
+            state.activeWorkspaceId = ws.id;
+            state.workspaceEditName = ws.name;
+            state.workspaceEditOpen = true;
+            nextTick(themeMdDialogs);
+          }
+
+          function saveRenameWorkspace() {
+            const name = (fieldValue("#workspace-name") || state.workspaceEditName).trim();
+            if (!name || !activeWorkspace.value) return;
+            state.workspaceEditName = name;
+            activeWorkspace.value.name = name;
+            state.workspaceEditOpen = false;
+          }
+
+          // ── Moduli e toolbar ────────────────────────────────────────────
+          function hasModuleItems(moduleId) {
+            if (moduleId === "host") return devices.length > 0;
+            if (moduleId === "system") return systems.length > 0;
+            if (moduleId === "standalone") return state.standalones.length > 0;
+            if (moduleId === "palinsesto") return state.palinsesti.length > 0;
+            if (moduleId === "soccer") return state.matches.length > 0;
+            return false;
+          }
+
+          const groups = computed(() =>
+            ["Core", "Extra"].map((name) => ({ name, items: modules.filter((m) => m.group === name) })),
+          );
+
+          const toolbarModules = computed(() =>
+            ["settings", "auth"].map((id) => modules.find((m) => m.id === id)).filter(Boolean),
+          );
+
+          function isModuleActive(moduleId) {
+            if (moduleId === "auth") return state.profileOpen;
+            return state.panes.some((p) => p.id === state.activePane && p.module === moduleId);
+          }
+
+          function moduleOf(moduleId) {
+            return modules.find((m) => m.id === moduleId) || modules[0];
+          }
+
+          function fieldValue(selector) {
+            const field = document.querySelector(selector);
+            return String(field?.value ?? "").trim();
+          }
+
+          function signIn() {
+            const user = fieldValue("#login-user") || state.authUser.trim();
+            const password = fieldValue("#login-password") || state.authPassword;
+            state.authUser = user;
+            state.authPassword = password;
+            if (!user || !password) {
+              state.authError = "Inserisci utente e password.";
+              return;
+            }
+            if (user !== "fluid" || password !== "fluid") {
+              state.authError = "Credenziali non valide.";
+              return;
+            }
+            state.signedIn = true;
+            state.profileOpen = false;
+            state.authPassword = "";
+            state.authError = "";
+            nextTick(() => {
+              bindHeaderActions();
+              fitWorkspaceWidth();
+              startClock();
+            });
+          }
+
+          function signOut() {
+            stopClock();
+            state.signedIn = false;
+            state.profileOpen = false;
+            state.authUser = "";
+            state.authPassword = "";
+            state.authError = "";
+          }
+
+          // ── Widget: peer / sistema / stato ──────────────────────────────
+          function widgetMeta(type) {
+            return widgetCatalog.find((w) => w.type === type);
+          }
+
+          function widgetSystem(widget) {
+            return systems.find((s) => s.id === widget.systemId) || null;
+          }
+
+          function widgetDevice(widget) {
+            return devices.find((d) => d.id === widget.deviceId) || systemDevice(widgetSystem(widget)) || activeDevice.value;
+          }
+
+          // Un widget è attivo se il peer è autenticato e, se ha un sistema,
+          // quel sistema è l'unico attivo del peer.
+          function isWidgetEnabled(widget) {
+            const device = widgetDevice(widget);
+            if (!device?.authenticated) return false;
+            const system = widgetSystem(widget);
+            return system ? system.active && system.deviceId === device.id : true;
+          }
+
+          function widgetDevices(widget) {
+            const device = widget ? widgetDevice(widget) : null;
+            return device ? [device] : [];
+          }
+
+          function widgetMonitorCount(widget) {
+            return widgetDevices(widget).reduce((sum, d) => sum + (d.monitors || 0), 0);
+          }
+
+          function widgetWindows(widget) {
+            return widgetDevices(widget).flatMap((device) => {
+              const online = device.authenticated;
+              if (device.windows?.length) {
+                return device.windows.map((w) => ({
+                  ...w,
+                  deviceName: device.name,
+                  online,
+                  devices: w.devices || [],
+                }));
+              }
+              return Array.from({ length: device.monitors || 0 }, (_, index) => ({
+                id: `${device.id}-${index}`,
+                name: `Finestra ${index + 1}`,
+                layout: "single",
+                deviceName: device.name,
+                online,
+                devices: [{ id: "fullscreen", name: "FullScreen", theme: "idle", item: "Nessun contenuto" }],
+              }));
+            });
+          }
+
+          function windowDevice(win, deviceId) {
+            return (win.devices || []).find((d) => d.id === deviceId);
+          }
+
+          function windowDeviceNames(win) {
+            return (win.devices || []).map((d) => d.name).join(" · ");
+          }
+
+          const schedulerLayers = [
+            { id: "background", name: "Background" },
+            { id: "default", name: "Default" },
+            { id: "overlay", name: "Overlay" },
+          ];
+
+          function widgetScheduler(widget) {
+            return widgetDevices(widget).flatMap((device) =>
+              (device.scheduler || []).map((entry) => ({ ...entry, hostName: device.name })),
+            );
+          }
+
+          function schedulerMaxDuration(widget) {
+            let max = 1;
+            for (const entry of widgetScheduler(widget)) {
+              for (const layer of schedulerLayers) {
+                for (const clip of entry[layer.id] || []) {
+                  max = Math.max(max, Number(clip.duration) || 0);
+                }
+              }
+            }
+            return max;
+          }
+
+          function clipStyle(clip, max) {
+            const duration = Number(clip.duration) || 1;
+            const elapsed = Number(clip.elapsed) || 0;
+            return {
+              width: Math.max(10, (duration / (max || duration)) * 100) + "%",
+              "--progress": Math.min(100, (elapsed / duration) * 100) + "%",
+            };
+          }
+
+          function widgetStatus(widget) {
+            const device = widgetDevice(widget);
+            if (device) return device.authenticated ? "peer online" : "peer offline";
+            if (widget.type === "mixer") return state.mixer + "%";
+            return "";
+          }
+
+          // ── Griglia condivisa dell'area di lavoro ───────────────────────
+          function gridColCount() {
+            return getGridEl()?.colCount ?? 40;
+          }
+
+          function rectsOverlap(a, b) {
+            return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+          }
+
+          function canPlace(rect, ignoreId) {
+            if (rect.x < 0 || rect.y < 0 || rect.w < MIN_WIDGET_W || rect.h < MIN_WIDGET_H || rect.x + rect.w > gridColCount()) {
+              return false;
+            }
+            return !visibleWidgets.value.some((w) => w.id !== ignoreId && rectsOverlap(rect, w));
+          }
+
+          function findFree(w, h) {
+            const cols = gridColCount();
+            const width = Math.min(Math.max(w, MIN_WIDGET_W), cols);
+            const height = Math.max(h, MIN_WIDGET_H);
+            const maxY = visibleWidgets.value.reduce((acc, item) => Math.max(acc, item.y + item.h), 0) + 16;
+            for (let y = 0; y <= maxY; y += 1) {
+              for (let x = 0; x <= cols - width; x += 1) {
+                const rect = { x, y, w: width, h: height };
+                if (canPlace(rect)) return rect;
+              }
+            }
+            return { x: 0, y: maxY, w: width, h: height };
+          }
+
+          function addWidgetRowHeight() {
+            const grid = getGridEl();
+            const headerPx = 36;
+            if (!grid) return 3;
+            const unit = (grid.cellHeight || 8) + (grid.cellMargin || 6);
+            return Math.max(1, Math.ceil((headerPx + (grid.cellMargin || 6)) / unit));
+          }
+
+          function toggleMinimize(widget) {
+            if (widget.collapsed) {
+              widget.collapsed = false;
+              widget.h = widget.expandedH || 12;
+            } else {
+              widget.expandedH = widget.h;
+              widget.collapsed = true;
+              widget.h = addWidgetRowHeight();
+            }
+            recomputeGrid();
+          }
+
+          function onGridCommit(event) {
+            const tile = event.detail?.tile ?? event.currentTarget;
+            if (!(tile instanceof HTMLElement)) return;
+            const widget = visibleWidgets.value.find((w) => w.id === tile.dataset.widgetId);
+            if (!widget) return;
+            widget.x = Number(tile.getAttribute("col"));
+            widget.y = Number(tile.getAttribute("row"));
+            widget.w = Number(tile.getAttribute("width"));
+            widget.h = Number(tile.getAttribute("height"));
+            if (!widget.collapsed) widget.expandedH = widget.h;
+          }
+
+          // ── Aggiunta widget: scelta peer connesso, poi tipo ─────────────
+          function themeMdDialogs() {
+            const css = [
+              ":host{height:auto!important;min-height:0!important;width:min(var(--md-dialog-container-max-width,480px),calc(100vw - 48px))!important;max-width:min(var(--md-dialog-container-max-width,480px),calc(100vw - 48px));max-height:min(560px,calc(100vh - 48px));}",
+              "dialog[open]{position:fixed;inset:auto;top:0;right:0;bottom:0;left:0;margin:auto;height:fit-content!important;max-height:min(560px,calc(100vh - 48px))!important;min-height:0!important;width:min(var(--md-dialog-container-max-width,480px),calc(100vw - 48px))!important;}",
+              ".container{display:flex!important;flex-direction:column!important;flex:none!important;max-height:min(560px,calc(100vh - 48px));overflow:hidden!important;border-radius:8px!important;border:1px solid rgba(126,200,188,.18);box-shadow:0 8px 24px rgba(0,0,0,.4);}",
+              ".scroller{flex:1 1 auto!important;min-height:0!important;overflow:auto!important;scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:#3d9a8a #13242c;}",
+              ".scroller::-webkit-scrollbar{width:8px;}",
+              ".scroller::-webkit-scrollbar-button{display:none;width:0;height:0;background:transparent;}",
+              ".scroller::-webkit-scrollbar-button:vertical:end:increment{display:block;width:8px;height:24px;background:#152832;}",
+              ".scroller::-webkit-scrollbar-track{background:#13242c;border-left:1px solid rgba(126,200,188,.16);}",
+              ".scroller::-webkit-scrollbar-thumb{background:#3d9a8a;border-radius:8px;border:2px solid #13242c;}",
+              ".scroller::-webkit-scrollbar-thumb:hover{background:#7ec8bc;}",
+              ".content{flex:none!important;height:auto!important;overflow:visible!important;}",
+              ".headline,.actions{flex:none!important;overflow:visible!important;}",
+              "slot[name=headline]::slotted(*){padding:20px 20px 12px!important;overflow:visible!important;}",
+              "slot[name=content]::slotted(*){padding:4px 20px 12px!important;overflow:visible!important;}",
+              "slot[name=actions]::slotted(*){padding:8px 16px 16px!important;overflow:visible!important;justify-content:flex-end!important;flex-wrap:nowrap!important;gap:8px!important;}",
+            ].join("");
+            const buttonCss = [
+              ":host{min-width:max-content!important;width:auto!important;padding-inline:16px!important;border-radius:4px!important;}",
+              ".label{overflow:visible!important;}",
+            ].join("");
+            document.querySelectorAll("md-dialog").forEach((dialog) => {
+              if (!dialog.shadowRoot) return;
+              let style = dialog.shadowRoot.querySelector("style[data-regista-dialog]");
+              if (!style) {
+                style = document.createElement("style");
+                style.dataset.registaDialog = "1";
+                dialog.shadowRoot.appendChild(style);
+              }
+              style.textContent = css;
+              dialog.querySelectorAll("md-text-button, md-filled-button, md-filled-tonal-button").forEach((button) => {
+                if (!button.shadowRoot) return;
+                let buttonStyle = button.shadowRoot.querySelector("style[data-regista-btn]");
+                if (!buttonStyle) {
+                  buttonStyle = document.createElement("style");
+                  buttonStyle.dataset.registaBtn = "1";
+                  button.shadowRoot.appendChild(buttonStyle);
+                }
+                buttonStyle.textContent = buttonCss;
+              });
+            });
+          }
+
+          function openAddWidget() {
+            state.addDeviceId = activeDevice.value?.id || connectedDevices.value[0]?.id || "";
+            state.addStep = "peers";
+            state.addOpen = true;
+            nextTick(() => {
+              themeMdDialogs();
+              requestAnimationFrame(themeMdDialogs);
+            });
+          }
+
+          function resetAddWidget() {
+            state.addStep = "peers";
+            state.addDeviceId = activeDevice.value?.id || connectedDevices.value[0]?.id || "";
+          }
+
+          function onAddDialogClosed() {
+            state.addOpen = false;
+            resetAddWidget();
+          }
+
+          function selectAddDevice(deviceId) {
+            state.addDeviceId = deviceId;
+          }
+
+          function goAddWidgetTypes() {
+            if (state.addDeviceId) state.addStep = "widgets";
+            nextTick(themeMdDialogs);
+          }
+
+          function addWidget(type) {
+            const device = connectedDevices.value.find((d) => d.id === state.addDeviceId);
+            if (!device) return;
+            const system = deviceActiveSystem(device);
+            const meta = widgetMeta(type);
+            const rect = findFree(meta.w, meta.h);
+            widgetSeq += 1;
+            activeWorkspace.value.widgets.push({
+              id: "w" + widgetSeq,
+              type,
+              collapsed: false,
+              deviceId: device.id,
+              systemId: system?.id || "",
+              ...rect,
+            });
+            state.addOpen = false;
+          }
+
+          function removeWidget(id) {
+            const ws = activeWorkspace.value;
+            if (!ws) return;
+            ws.widgets = ws.widgets.filter((w) => w.id !== id);
+          }
+
+          // ── Layout pannelli e area di lavoro ────────────────────────────
+          function openModule(moduleId) {
+            if (moduleId === "auth") {
+              state.profileOpen = !state.profileOpen;
+              return;
+            }
+            if (moduleId === "dashboard") {
+              state.workspaceOpen = true;
+              fitWorkspaceWidth();
+              return;
+            }
+            if (!state.navOpen || !state.panes.length) {
+              paneSeq += 1;
+              const pane = { id: "p" + paneSeq, module: moduleId };
+              state.panes = [pane];
+              state.activePane = pane.id;
+              state.split = "single";
+              state.navOpen = true;
+              return;
+            }
+            const pane = state.panes.find((p) => p.id === state.activePane) || state.panes[0];
+            pane.module = moduleId;
+          }
+
+          function fitWorkspaceWidth() {
+            nextTick(() => {
+              const split = document.querySelector(".main-split");
+              if (!split) return;
+              const total = split.getBoundingClientRect().width;
+              const max = Math.max(280, total - 240);
+              state.workspaceWidth = Math.min(Math.max(Math.round(total * 0.75), 280), max);
+            });
+          }
+
+          function startResize(event) {
+            event.preventDefault();
+            state.resizing = true;
+            const split = event.currentTarget.parentElement;
+            const onMove = (e) => {
+              const rect = split.getBoundingClientRect();
+              const width = rect.right - e.clientX;
+              const max = Math.max(280, rect.width - 240);
+              state.workspaceWidth = Math.min(Math.max(width, 280), max);
+            };
+            const onUp = () => {
+              state.resizing = false;
+              window.removeEventListener("mousemove", onMove);
+              window.removeEventListener("mouseup", onUp);
+            };
+            window.addEventListener("mousemove", onMove);
+            window.addEventListener("mouseup", onUp);
+          }
+
+          function applySplit(mode) {
+            const first = state.panes[0] || { module: "host" };
+            const count = mode === "quad" ? 4 : mode === "single" ? 1 : 2;
+            const next = [];
+            for (let i = 0; i < count; i += 1) {
+              if (state.panes[i]) {
+                next.push(state.panes[i]);
+              } else {
+                paneSeq += 1;
+                next.push({ id: "p" + paneSeq, module: first.module });
+              }
+            }
+            state.panes = next;
+            state.split = mode;
+            if (!next.find((p) => p.id === state.activePane)) state.activePane = next[0].id;
+          }
+
+          function splitBeside() {
+            if (state.panes.length >= 4 || state.split === "rows") return applySplit("quad");
+            applySplit(state.panes.length === 1 ? "cols" : "quad");
+          }
+
+          function splitBelow() {
+            if (state.panes.length >= 4 || state.split === "cols") return applySplit("quad");
+            applySplit(state.panes.length === 1 ? "rows" : "quad");
+          }
+
+          function closePane(id) {
+            state.panes = state.panes.filter((p) => p.id !== id);
+            if (!state.panes.length) {
+              state.navOpen = false;
+              state.split = "single";
+              return;
+            }
+            if (state.panes.length === 1) state.split = "single";
+            else if (state.panes.length === 2) state.split = state.split === "quad" ? "cols" : state.split;
+            if (state.activePane === id) state.activePane = state.panes[0].id;
+          }
+
+          function bindHeaderActions() {
+            const header = document.querySelector("app-header");
+            if (!header || header.dataset.bound === "1") return;
+            header.dataset.bound = "1";
+            header.querySelectorAll("[data-action]").forEach((el) => {
+              el.setAttribute("slot", "end");
+              if (el.dataset.action === "module:auth") return;
+              const target = el.querySelector("md-icon-button") ?? el;
+              target.addEventListener("click", () => {
+                const action = el.dataset.action;
+                if (action === "workspace") {
+                  state.workspaceOpen = !state.workspaceOpen;
+                  if (state.workspaceOpen) fitWorkspaceWidth();
+                  return;
+                }
+                if (action && action.startsWith("module:")) openModule(action.slice(7));
+              });
+            });
+          }
+
+          function onDocumentClick(event) {
+            if (!state.profileOpen) return;
+            const menu = document.querySelector(".profile-menu");
+            const auth = document.querySelector('[data-action="module:auth"]');
+            const path = event.composedPath();
+            if ((menu && path.includes(menu)) || (auth && path.includes(auth))) return;
+            state.profileOpen = false;
+          }
+
+          // ── Partite ─────────────────────────────────────────────────────
+          function currentMatch() {
+            return state.matches.find((m) => m.id === state.activeMatchId) || state.matches[0] || null;
+          }
+
+          const activeMatch = computed(() => currentMatch());
+
+          // Si cambia partita solo dal pallino verde/rosso nella lista.
+          function selectMatch(match) {
+            if (!match || state.activeMatchId === match.id) return;
+            state.activeMatchId = match.id;
+          }
+
+          function matchTitle(match) {
+            return match?.title || `${match?.home?.name || "—"} — ${match?.away?.name || "—"}`;
+          }
+
+          function widgetHint(widget) {
+            if (!widgetDevice(widget)?.authenticated) return "Peer disconnesso";
+            const system = widgetSystem(widget);
+            if (system && !system.active) return "Sistema non attivo";
+            if (widget.type === "match" && activeMatch.value) return `Partita corrente · ${matchTitle(activeMatch.value)}`;
+            return widgetMeta(widget.type).hint;
+          }
+
+          // Orologio in decimi di secondo.
+          function formatTenths(value) {
+            const tenths = Math.max(0, Number(value) || 0);
+            const minutes = String(Math.floor(tenths / 600)).padStart(2, "0");
+            const seconds = String(Math.floor((tenths % 600) / 10)).padStart(2, "0");
+            return `${minutes}:${seconds}.${tenths % 10}`;
+          }
+
+          function matchClockLabel(match) {
+            const m = match || currentMatch();
+            return formatTenths(m?.clock);
+          }
+
+          function matchMinuteLabel(match) {
+            const m = match || currentMatch();
+            return `${Math.floor((m?.clock || 0) / 600)}'`;
+          }
+
+          function matchScore(team, match) {
+            return ((match || currentMatch())?.events || []).filter((e) => e.team === team && e.type === "goal").length;
+          }
+
+          // Il nome viene preso a rotazione dai titolari della squadra.
+          function nextPlayerName(team) {
+            const match = currentMatch();
+            const starters = match?.[team]?.starters || [];
+            if (!starters.length) return "—";
+            if (!match.nameCursor) match.nameCursor = { home: 0, away: 0 };
+            const player = starters[match.nameCursor[team] % starters.length];
+            match.nameCursor[team] += 1;
+            return player.name;
+          }
+
+          function pushMatchEvent(team, type, text) {
+            const match = currentMatch();
+            if (!match) return;
+            matchEventSeq += 1;
+            match.events.push({ id: "e" + matchEventSeq, team, type, minute: matchMinuteLabel(match), text });
+          }
+
+          function addMatchGoal(team) {
+            pushMatchEvent(team, "goal", nextPlayerName(team));
+          }
+
+          function addMatchCard(team, type) {
+            pushMatchEvent(team, type, nextPlayerName(team));
+          }
+
+          function addMatchSub(team) {
+            const side = currentMatch()?.[team];
+            if (!side?.starters.length || !side.bench.length) return;
+            const out = side.starters[side.starters.length - 1];
+            const into = side.bench[0];
+            side.starters.splice(side.starters.length - 1, 1);
+            side.bench.splice(0, 1);
+            side.starters.push(into);
+            side.bench.push(out);
+            pushMatchEvent(team, "sub", `${out.name} → ${into.name}`);
+          }
+
+          function cycleMatchPeriod() {
+            const match = currentMatch();
+            if (!match) return;
+            match.period = (match.period + 1) % match.periods.length;
+            if (match.period === 0) match.clock = 0;
+            else if (match.period === 1) match.clock = 45 * 600;
+            else if (match.period === 2) match.clock = 90 * 600;
+            else if (match.period === 3) match.clock = 105 * 600;
+            else match.clock = 120 * 600;
+            match.running = false;
+          }
+
+          function toggleMatchClock() {
+            const match = currentMatch();
+            if (!match) return;
+            match.running = !match.running;
+          }
+
+          function matchEventLabel(type) {
+            if (type === "goal") return "gol";
+            if (type === "yellow") return "giallo";
+            if (type === "red") return "rosso";
+            return "sub";
+          }
+
+          function matchEventDot(type) {
+            if (type === "yellow") return "is-warn";
+            if (type === "red") return "is-off";
+            if (type === "sub") return "is-idle";
+            return "";
+          }
+
+          function recentMatchEvents(match) {
+            return ((match || currentMatch())?.events || []).slice(-3).reverse();
+          }
+
+          // ── Palinsesti e standalone ─────────────────────────────────────
+          const palinsestoLayers = [
+            { id: "background", name: "BG" },
+            { id: "default", name: "DEF" },
+            { id: "overlay", name: "OVR" },
+          ];
+
+          function palinsestoStatusLabel(status) {
+            if (status === "running") return "running";
+            if (status === "paused") return "pausa";
+            return "stop";
+          }
+
+          function palinsestoDot(status) {
+            if (status === "running") return "";
+            if (status === "paused") return "is-warn";
+            return "is-idle";
+          }
+
+          function setPalinsestoLayer(item, layer) {
+            item.layer = layer;
+          }
+
+          // Un solo palinsesto in onda: il play ferma gli altri in riproduzione.
+          function playPalinsesto(item) {
+            state.palinsesti.forEach((p) => {
+              if (p.id !== item.id && p.status === "running") {
+                p.status = "idle";
+                p.elapsed = 0;
+              }
+            });
+            if (item.status === "idle") item.elapsed = 0;
+            item.status = "running";
+          }
+
+          function pausePalinsesto(item) {
+            if (item.status === "running") item.status = "paused";
+          }
+
+          function stopPalinsesto(item) {
+            item.status = "idle";
+            item.elapsed = 0;
+          }
+
+          // In onda: quello in running, altrimenti quello in pausa.
+          function currentPalinsesto() {
+            return (
+              state.palinsesti.find((p) => p.status === "running") ||
+              state.palinsesti.find((p) => p.status === "paused") ||
+              null
+            );
+          }
+
+          // Rundown: 2 item prima, quello corrente e 3 dopo.
+          function palinsestoRundown(palinsesto) {
+            const items = palinsesto?.items || [];
+            if (!items.length) return { rows: [], current: null };
+            const total = items.reduce((sum, it) => sum + (Number(it.duration) || 0), 0) || 1;
+            const elapsed = Math.max(0, Number(palinsesto.elapsed) || 0) % total;
+            let acc = 0;
+            let index = 0;
+            let local = 0;
+            for (let i = 0; i < items.length; i += 1) {
+              const duration = Number(items[i].duration) || 0;
+              if (elapsed < acc + duration || i === items.length - 1) {
+                index = i;
+                local = Math.min(elapsed - acc, duration);
+                break;
+              }
+              acc += duration;
+            }
+            const current = items[index];
+            const currentDuration = Number(current.duration) || 1;
+            const from = Math.max(0, index - 2);
+            const to = Math.min(items.length, index + 4);
+            const rows = items.slice(from, to).map((item, offset) => {
+              const i = from + offset;
+              const role = i < index ? "prima" : i === index ? "on air" : "dopo";
+              return {
+                ...item,
+                role,
+                now: i === index,
+                past: i < index,
+                progress: i === index ? Math.min(100, (local / currentDuration) * 100) : 0,
+                local: i === index ? local : 0,
+              };
+            });
+            return { rows, current, local, index };
+          }
+
+          const onAirPalinsesto = computed(() => currentPalinsesto());
+          const onAirRundown = computed(() => palinsestoRundown(onAirPalinsesto.value));
+
+          const pagedPalinsesti = computed(() => {
+            const per = state.palinsestoPerPage;
+            const start = (state.palinsestoPage - 1) * per;
+            return state.palinsesti.slice(start, start + per);
+          });
+
+          function onPalinsestoPage(event) {
+            const page = Number(event.detail?.page);
+            if (Number.isFinite(page) && page >= 1) state.palinsestoPage = page;
+          }
+
+          const pagedStandalones = computed(() => {
+            const per = state.standalonePerPage;
+            const start = (state.standalonePage - 1) * per;
+            return state.standalones.slice(start, start + per);
+          });
+
+          function onStandalonePage(event) {
+            const page = Number(event.detail?.page);
+            if (Number.isFinite(page) && page >= 1) state.standalonePage = page;
+          }
+
+          function onStandalonePerPage(event) {
+            const perPage = Number(event.detail?.itemPerPage);
+            if (Number.isFinite(perPage) && perPage >= 1) state.standalonePerPage = perPage;
+          }
+
+          function setStandaloneLayer(item, layer) {
+            item.layer = layer;
+          }
+
+          function playStandalone(item) {
+            if (item.status === "idle") item.elapsed = 0;
+            item.status = "running";
+          }
+
+          function pauseStandalone(item) {
+            if (item.status === "running") item.status = "paused";
+          }
+
+          function stopStandalone(item) {
+            item.status = "idle";
+            item.elapsed = 0;
+          }
+
+          // ── Timer: clock in decimi di secondo (+1 ogni 100 ms) ──────────
+          let clockTimer = null;
+
+          function startClock() {
+            if (clockTimer) return;
+            clockTimer = setInterval(() => {
+              state.matches.forEach((m) => {
+                if (m.running) m.clock += 1;
+              });
+              state.palinsesti.forEach((p) => {
+                if (p.status === "running") p.elapsed += 1;
+              });
+              state.standalones.forEach((s) => {
+                if (s.status === "running") s.elapsed += 1;
+              });
+            }, 100);
+          }
+
+          function stopClock() {
+            clearInterval(clockTimer);
+            clockTimer = null;
+          }
+
+          onMounted(() => {
+            document.addEventListener("click", onDocumentClick);
+            nextTick(themeMdDialogs);
+            if (state.signedIn) {
+              bindHeaderActions();
+              fitWorkspaceWidth();
+              startClock();
+            }
+          });
+
+          onUnmounted(() => {
+            document.removeEventListener("click", onDocumentClick);
+            stopClock();
+          });
+
+          function view() {
+            if (!state.signedIn) {
+              return html`
+                <div class="login-screen">
+                  <form
+                    class="login-card"
+                    @submit=${prevent(signIn)}
+                    @keydown=${(event) => {
+                      if (event.key === "Enter") {
+                        event.preventDefault();
+                        signIn();
+                      }
+                    }}
+                  >
+                    <h1>Regista</h1>
+                    <p>Accedi per aprire la dashboard.</p>
+                    <md-outlined-text-field
+                      id="login-user"
+                      label="Utente"
+                      autocomplete="username"
+                      .value=${state.authUser}
+                      @input=${(event) => { state.authUser = event.target.value; }}
+                    ></md-outlined-text-field>
+                    <md-outlined-text-field
+                      id="login-password"
+                      label="Password"
+                      type="password"
+                      autocomplete="current-password"
+                      .value=${state.authPassword}
+                      @input=${(event) => { state.authPassword = event.target.value; }}
+                    ></md-outlined-text-field>
+                    <p class="login-error">${state.authError}</p>
+                    <div class="login-actions" @click=${signIn}>
+                      <md-filled-button type="button">Accedi</md-filled-button>
+                    </div>
+                  </form>
+                </div>
+              `;
+            }
+            return html`
+          <div class="regista-shell">
+            <app-navigation-drawer permanent rail rail-width="48" width="256" elevation="1" location="start" color="#152832">
+              <nav class="nav">
+                ${groups.value.map((group, gi) => html`
+                  ${gi > 0 ? html`<md-divider class="rail-group-divider"></md-divider>` : nothing}
+                  ${group.items.map((mod) => html`<button type="button" class=${classMap({ 'nav-btn': true, 'is-active': isModuleActive(mod.id) })} title=${mod.name} aria-label=${mod.name} aria-pressed=${isModuleActive(mod.id) ? 'true' : 'false'} @click=${() => { openModule(mod.id); }}
+                  >
+                    <md-icon>${mod.md}</md-icon>
+                  </button>`)}
+                `)}
+              </nav>
+            </app-navigation-drawer>
+
+            <div class="regista-column">
+            <app-header title="Regista" fixed elevation="2" density="compact" color="#152832">
+              <span data-action="workspace">
+                <md-icon-button class=${classMap({ 'workspace-btn': true, 'is-on': state.workspaceOpen })} title="Area di lavoro" aria-label="Area di lavoro">
+                  <md-icon>dashboard</md-icon>
+                </md-icon-button>
+              </span>
+              ${toolbarModules.value.map((mod) => html`<span data-action=${'module:' + mod.id} @click=${stop(() => mod.id === 'auth' && openModule('auth'))}
+              >
+                <md-icon-button class=${classMap({ 'is-on': isModuleActive(mod.id) })} title=${mod.name} aria-label=${mod.name}>
+                  <md-icon>${mod.id === 'auth' ? 'account_circle' : mod.md}</md-icon>
+                </md-icon-button>
+              </span>`)}
+            </app-header>
+            ${state.profileOpen ? html`<div class="profile-menu" @click=${(event) => event.stopPropagation()}
+            >
+              <div class="profile-avatar" aria-hidden="true">
+                ${state.sessionAvatar ? html`<span>${state.sessionAvatar}</span>` : html`<md-icon>account_circle</md-icon>`}
+              </div>
+              <p class="profile-name">${state.sessionName}</p>
+              <p class="profile-role">${state.sessionRole}</p>
+              <p class="profile-email">${state.sessionEmail}</p>
+              <md-outlined-select label="Seleziona lingua" .value=${state.sessionLang} @change=${(event) => { state.sessionLang = event.target.value; }}
+              >
+                <md-select-option value="it">
+                  <div slot="headline">Italiano</div>
+                </md-select-option>
+                <md-select-option value="en">
+                  <div slot="headline">English</div>
+                </md-select-option>
+              </md-outlined-select>
+              <div class="profile-actions" @click=${signOut}>
+                <md-text-button type="button">Logout</md-text-button>
+              </div>
+            </div>` : nothing}
+
+            <div class="regista-main bg-background">
+              <div class="pa-2" style="height: 100%; box-sizing: border-box;">
+                <div class="main-split">
+                  ${state.navOpen ? html`<div class="nav-portion">
+                    <button type="button" class="nav-portion-close" title="Chiudi" aria-label="Chiudi" @click=${stop(closeNavPortion)}>
+                      <md-icon>close</md-icon>
+                    </button>
+                    ${showDeviceBar.value ? html`<div class="system-device-bar">
+                      <md-outlined-select label="Dispositivo" .value=${selectedDevice.value?.id || ''} ?disabled=${!connectedDevices.value.length} @change=${selectSystemDevice}>
+                        ${devices.map((device) => html`<md-select-option .value=${device.id} ?disabled=${!device.authenticated}>
+                          <div slot="headline">${device.authenticated ? device.name : device.name + ' · non connesso'}</div>
+                        </md-select-option>`)}
+                      </md-outlined-select>
+                      <div class=${classMap({ 'system-device-assoc': true, 'is-on': !!deviceActiveSystem(selectedDevice.value) })}>
+                        <span class=${classMap({ 'widget-dot': true, 'is-off': !deviceActiveSystem(selectedDevice.value) })}></span>
+                        <span>${selectedDevice.value ? (deviceActiveSystem(selectedDevice.value)?.name || 'Nessun sistema associato') : 'Nessun dispositivo connesso'}</span>
+                      </div>
+                    </div>` : nothing}
+                    <div class=${classMap({ 'pane-grid': true, 'cols-1': state.split === 'single', 'cols-2': state.split === 'cols', 'rows-2': state.split === 'rows', 'quad': state.split === 'quad', })}>
+                      ${state.panes.map((pane) => html`<div class=${classMap({ 'pane': true, 'is-active': state.activePane === pane.id })} @click=${() => { state.activePane = pane.id; }}
+                      >
+                        <app-header class="pane-toolbar" density="compact" color="#152832" elevation="0" flat>
+                          <md-icon slot="start" class="pane-title-icon">${moduleOf(pane.module).md}</md-icon>
+                          <span class="pane-title">${moduleOf(pane.module).name}</span>
+                          ${pane.module === 'standalone' && hasModuleItems(pane.module) ? html`
+                            <lit-pagination slot="end" class="pane-pager" position="right" view-page-range="3" total-items=${state.standalones.length} item-per-page=${state.standalonePerPage} page=${state.standalonePage} .listNumberPerPage=${state.standalonePageSizes} hide-page-element next-icon="chevron_right" previous-icon="chevron_left" @page-changed=${onStandalonePage} @item-per-page-changed=${onStandalonePerPage}></lit-pagination>
+                          ` : nothing}
+                        </app-header>
+                        <div class=${classMap({ 'pane-body': true, 'pa-3': true, 'is-paged': pane.module === 'standalone' || pane.module === 'palinsesto' })}>
+                          ${pane.module === 'host' && hasModuleItems(pane.module) ? html`<div class="device-list">
+                            ${devices.map((device) => html`<div class=${classMap({ 'list-row': true, 'is-on': device.authenticated })}>
+                              <button type="button" class="list-row-data" @pointerdown=${() => { setActiveDevice(device); }}>
+                                <span class=${classMap({ 'widget-dot': true, 'is-off': !device.authenticated })} title=${device.authenticated ? 'Impianto attivo' : 'Non attivo'} aria-label=${device.authenticated ? 'Impianto attivo' : 'Non attivo'}></span>
+                                <span class="list-row-name">${device.name}</span>
+                                ${deviceActiveSystem(device) ? html`<span class="list-row-meta">${deviceActiveSystem(device).name}</span>` : nothing}
+                                <span class="list-row-meta">${deviceScreenCount(device)}</span>
+                                ${device.ip ? html`<span class="list-row-meta">${device.ip}</span>` : nothing}
+                              </button>
+                              <div class="list-row-acts">
+                                <button type="button" class="device-action" title=${device.authenticated ? 'Disconnetti' : 'Connetti'} aria-label=${device.authenticated ? 'Disconnetti' : 'Connetti'} @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => toggleDeviceAuth(device))}
+                                >
+                                  <md-icon>${device.authenticated ? 'logout' : 'login'}</md-icon>
+                                </button>
+                              </div>
+                            </div>`)}
+                          </div>                          ` : pane.module === 'standalone' && hasModuleItems(pane.module) ? html`
+                            <div class="device-list pane-list-scroll">
+                            ${pagedStandalones.value.map((item) => html`<div class=${classMap({ 'list-row': true, 'is-on': item.status === 'running' })}>
+                              <div class="list-row-data">
+                                <span class=${'widget-dot ' + (palinsestoDot(item.status) || '')} title=${palinsestoStatusLabel(item.status)} aria-label=${palinsestoStatusLabel(item.status)}></span>
+                                <span class="list-row-name">${item.title}</span>
+                                <span class="list-row-meta">${palinsestoLayers.find((layer) => layer.id === item.layer)?.name}</span>
+                                <span class=${classMap({ 'list-row-meta': true, 'is-muted': item.status === 'idle' })}>${formatTenths(item.elapsed)}</span>
+                                <span class="list-row-meta">${palinsestoStatusLabel(item.status)}</span>
+                              </div>
+                              <div class="list-row-acts">
+                                <button type="button" class="device-action" title="Lancia" aria-label=${'Lancia ' + item.title} ?disabled=${item.status === 'running'} @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => playStandalone(item))}
+                                >
+                                  <md-icon>play_arrow</md-icon>
+                                </button>
+                                <button type="button" class="device-action" title="Pausa" aria-label=${'Pausa ' + item.title} ?disabled=${item.status !== 'running'} @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => pauseStandalone(item))}
+                                >
+                                  <md-icon>pause</md-icon>
+                                </button>
+                                <button type="button" class="device-action" title="Stop" aria-label=${'Stop ' + item.title} ?disabled=${item.status === 'idle'} @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => stopStandalone(item))}
+                                >
+                                  <md-icon>stop</md-icon>
+                                </button>
+                              </div>
+                            </div>`)}
+                            </div>
+                          ` : pane.module === 'palinsesto' && hasModuleItems(pane.module) ? html`
+                            <lit-pagination class="pane-pager" total-items=${state.palinsesti.length} item-per-page=${state.palinsestoPerPage} page=${state.palinsestoPage} hide-number-element next-icon="chevron_right" previous-icon="chevron_left" @page-changed=${onPalinsestoPage}></lit-pagination>
+                            <div class="device-list pane-list-scroll">
+                            ${pagedPalinsesti.value.map((item) => html`<div class=${classMap({ 'list-row': true, 'is-on': item.status === 'running' })}>
+                              <div class="list-row-data">
+                                <span class=${'widget-dot ' + (palinsestoDot(item.status) || '')} title=${palinsestoStatusLabel(item.status)} aria-label=${palinsestoStatusLabel(item.status)}></span>
+                                <span class="list-row-name">${item.title}</span>
+                                <span class="list-row-meta">${palinsestoLayers.find((layer) => layer.id === item.layer)?.name}</span>
+                                <span class=${classMap({ 'list-row-meta': true, 'is-muted': item.status === 'idle' })}>${formatTenths(item.elapsed)}</span>
+                                <span class="list-row-meta">${palinsestoStatusLabel(item.status)}</span>
+                              </div>
+                              <div class="list-row-acts">
+                                <button type="button" class="device-action" title="Lancia" aria-label=${'Lancia ' + item.title} ?disabled=${item.status === 'running'} @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => playPalinsesto(item))}
+                                >
+                                  <md-icon>play_arrow</md-icon>
+                                </button>
+                                <button type="button" class="device-action" title="Pausa" aria-label=${'Pausa ' + item.title} ?disabled=${item.status !== 'running'} @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => pausePalinsesto(item))}
+                                >
+                                  <md-icon>pause</md-icon>
+                                </button>
+                                <button type="button" class="device-action" title="Stop" aria-label=${'Stop ' + item.title} ?disabled=${item.status === 'idle'} @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => stopPalinsesto(item))}
+                                >
+                                  <md-icon>stop</md-icon>
+                                </button>
+                              </div>
+                            </div>`)}
+                            </div>
+                          ` : pane.module === 'soccer' && hasModuleItems(pane.module) ? html`<div class="device-list">
+                            <div class="text-caption text-medium-emphasis mb-2">
+                              I widget Partita sono agganciati alla partita corrente.
+                            </div>
+                            ${state.matches.map((item) => html`<div class=${classMap({ 'list-row': true, 'is-on': item.id === state.activeMatchId })}>
+                              <div class="list-row-data">
+                                <button type="button" class=${classMap({ 'widget-dot': true, 'is-off': item.id !== state.activeMatchId })} title=${item.id === state.activeMatchId ? 'Partita corrente' : 'Imposta come corrente'} aria-label=${item.id === state.activeMatchId ? 'Partita corrente' : 'Imposta come corrente ' + matchTitle(item)} @click=${() => { selectMatch(item); }}
+                                ></button>
+                                <span class="list-row-name">${matchTitle(item)}</span>
+                                <span class="list-row-meta">${matchScore('home', item)} — ${matchScore('away', item)}</span>
+                                <span class="list-row-meta">${item.periods[item.period]}</span>
+                                <span class=${classMap({ 'list-row-meta': true, 'is-muted': !item.running })}>${matchClockLabel(item)}</span>
+                              </div>
+                            </div>`)}
+                          </div>` : pane.module === 'system' && systemPaneSystems.value.length ? html`<div class="device-list">
+                            ${systemPaneSystems.value.map((system) => html`<div class=${classMap({ 'list-row': true, 'is-on': system.active })}>
+                              <button type="button" class="list-row-data" @pointerdown=${() => { setActiveSystem(system); }}>
+                                <span class=${classMap({ 'widget-dot': true, 'is-idle': !system.active })} title=${system.active ? 'Sistema attivo' : 'Non attivo'} aria-label=${system.active ? 'Sistema attivo' : 'Non attivo'}></span>
+                                <span class="list-row-name">${system.name}</span>
+                                <span class="list-row-meta">${systemDevice(system)?.name}</span>
+                                <span class="list-row-meta">${system.active ? 'Attivo' : 'Non attivo'}</span>
+                              </button>
+                              <div class="list-row-acts">
+                                <button type="button" class="device-action" title=${system.active ? 'Sistema attivo' : 'Attiva sistema'} aria-label=${system.active ? 'Sistema attivo' : 'Attiva sistema'} @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => setActiveSystem(system))}
+                                >
+                                  <md-icon>${system.active ? 'check_circle' : 'radio_button_unchecked'}</md-icon>
+                                </button>
+                              </div>
+                            </div>`)}
+                          </div>` : html`<div class="module-empty">
+                            <md-icon>inbox</md-icon>
+                            <div class="module-empty-title">
+                              ${pane.module === 'system' ? 'Nessun sistema associato' : 'Nessun contenuto caricato'}
+                            </div>
+                          </div>`}
+                        </div>
+                      </div>`)}
+                    </div>
+                  </div>` : nothing}
+                  ${state.workspaceOpen && state.navOpen ? html`<div class=${classMap({ 'splitter': true, 'is-active': state.resizing })} @mousedown=${startResize}></div>` : nothing}
+                  ${state.workspaceOpen ? html`<div class=${classMap({ 'workspace': true, 'is-full': !state.navOpen })} style=${state.navOpen ? ("width: " + state.workspaceWidth + "px") : nothing}>
+                    <app-header class="workspace-toolbar" density="compact" color="#152832" elevation="0" flat>
+                      <div class="workspace-tabs">
+                        ${state.workspaces.map((workspace) => html`<div class=${classMap({ 'workspace-tab': true, 'is-on': workspace.id === state.activeWorkspaceId })} title=${workspace.name} @click=${() => { selectWorkspace(workspace.id); }}
+                          @dblclick=${stop(() => openRenameWorkspace(workspace))}
+                        >
+                          <span class="workspace-tab-name">${workspace.name}</span>
+                          ${state.workspaces.length > 1 ? html`<button
+                            type="button"
+                            class="workspace-tab-close"
+                            title="Elimina area"
+                            aria-label="Elimina area"
+                            @click=${stop(() => removeWorkspace(workspace.id))}
+                          >×</button>` : nothing}
+                        </div>`)}
+                        <button type="button" class="workspace-tab-add" title="Nuova area di lavoro" aria-label="Nuova area di lavoro" @click=${createWorkspace}>+</button>
+                      </div>
+                      <span slot="end" class="workspace-toolbar-actions" @click=${openAddWidget}>
+                        <md-text-button type="button">
+                          <md-icon slot="icon">add</md-icon>
+                          Widget
+                        </md-text-button>
+                      </span>
+                    </app-header>
+                    <div class="workspace-body">
+                      ${!visibleWidgets.value.length ? html`<p class="workspace-empty text-medium-emphasis text-body-2">
+                        Nessun widget in area di lavoro. Connettiti a un dispositivo e aggiungine uno.
+                      </p>` : nothing}
+                      <lit-grid ref="gridEl" class="work-grid" col-autogrow row-autogrow col-no-scroll row-no-scroll resizable draggable show-grid cell-width="8" cell-height="8" cell-margin="6" widget-min-width="70" widget-min-height="70">
+                        ${visibleWidgets.value.map((widget) => html`<div class=${classMap({ 'widget-item': true, 'is-min': widget.collapsed, 'is-off': !isWidgetEnabled(widget) })} data-widget-id=${widget.id} col=${widget.x} row=${widget.y} width=${widget.w} height=${widget.h} ?collapsed=${widget.collapsed} @move=${onGridCommit} @resize=${onGridCommit}>
+                        <div class="widget-card">
+                          <div class="widget-head">
+                            <span class="widget-head-icon-wrap" aria-label=${widgetMeta(widget.type).title}>
+                              <md-icon>${widgetMeta(widget.type).md}</md-icon>
+                              <lit-tooltip position="bottom">${widgetMeta(widget.type).title}</lit-tooltip>
+                            </span>
+                            <div class="widget-head-copy">
+                              <div class="widget-head-devices">
+                                <span class="widget-head-device">
+                                  <span class=${classMap({ 'widget-dot': true, 'is-off': !isWidgetEnabled(widget), 'is-idle': isWidgetEnabled(widget) && !widgetSystem(widget)?.active })}></span>
+                                  <span class="widget-head-device-name">${widgetSystem(widget)?.name || widgetDevice(widget)?.name}</span>
+                                  ${widgetSystem(widget) && widgetDevice(widget)?.name ? html`<span class="widget-head-host">${widgetDevice(widget).name}</span>` : nothing}
+                                </span>
+                              </div>
+                              <div class="widget-head-desc">${widgetHint(widget)}</div>
+                            </div>
+                            <div class="widget-traffic">
+                              <button class="widget-light is-min" type="button" aria-label=${widget.collapsed ? 'Ripristina widget' : 'Riduci widget'} @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => toggleMinimize(widget))}
+                              ></button>
+                              <button class="widget-light is-close" type="button" aria-label="Chiudi widget" @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => removeWidget(widget.id))}
+                              ></button>
+                            </div>
+                          </div>
+                          <div class="widget-body" ?inert=${!isWidgetEnabled(widget) || undefined}>
+                            ${widget.type === 'standalone' ? html`
+                              <div class="palinsesto">
+                                ${state.standalones.map((item) => html`<div class="palinsesto-row">
+                                  <span class=${'widget-dot ' + (palinsestoDot(item.status) || '')}></span>
+                                  <span class="palinsesto-title">${item.title}</span>
+                                  <div class="palinsesto-layers">
+                                    ${palinsestoLayers.map((layer) => html`<button class=${classMap({ 'palinsesto-layer': true, 'is-on': item.layer === layer.id })} type="button" title=${layer.id} @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => setStandaloneLayer(item, layer.id))}
+                                    >${layer.name}</button>`)}
+                                  </div>
+                                  <span class=${classMap({ 'palinsesto-time': true, 'is-idle': item.status === 'idle' })}>${formatTenths(item.elapsed)}</span>
+                                  <span class=${'palinsesto-status ' + ('is-' + item.status || '')}>
+                                    ${palinsestoStatusLabel(item.status)}
+                                  </span>
+                                  <div class="palinsesto-acts">
+                                    <button class="match-act is-icon" type="button" title="Lancia" ?disabled=${item.status === 'running'} @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => playStandalone(item))}
+                                    ><md-icon>play_arrow</md-icon></button>
+                                    <button class="match-act is-icon" type="button" title="Pausa" ?disabled=${item.status !== 'running'} @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => pauseStandalone(item))}
+                                    ><md-icon>pause</md-icon></button>
+                                    <button class="match-act is-icon" type="button" title="Stop" ?disabled=${item.status === 'idle'} @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => stopStandalone(item))}
+                                    ><md-icon>stop</md-icon></button>
+                                  </div>
+                                </div>`)}
+                              </div>
+                            ` : widget.type === 'palinsesto' ? html`
+                              <div class="palinsesto">
+                                ${state.palinsesti.map((item) => html`<div class="palinsesto-row">
+                                  <span class=${'widget-dot ' + (palinsestoDot(item.status) || '')}></span>
+                                  <span class="palinsesto-title">${item.title}</span>
+                                  <div class="palinsesto-layers">
+                                    ${palinsestoLayers.map((layer) => html`<button class=${classMap({ 'palinsesto-layer': true, 'is-on': item.layer === layer.id })} type="button" title=${layer.id} @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => setPalinsestoLayer(item, layer.id))}
+                                    >${layer.name}</button>`)}
+                                  </div>
+                                  <span class=${classMap({ 'palinsesto-time': true, 'is-idle': item.status === 'idle' })}>${formatTenths(item.elapsed)}</span>
+                                  <span class=${'palinsesto-status ' + ('is-' + item.status || '')}>
+                                    ${palinsestoStatusLabel(item.status)}
+                                  </span>
+                                  <div class="palinsesto-acts">
+                                    <button class="match-act is-icon" type="button" title="Lancia" ?disabled=${item.status === 'running'} @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => playPalinsesto(item))}
+                                    ><md-icon>play_arrow</md-icon></button>
+                                    <button class="match-act is-icon" type="button" title="Pausa" ?disabled=${item.status !== 'running'} @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => pausePalinsesto(item))}
+                                    ><md-icon>pause</md-icon></button>
+                                    <button class="match-act is-icon" type="button" title="Stop" ?disabled=${item.status === 'idle'} @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => stopPalinsesto(item))}
+                                    ><md-icon>stop</md-icon></button>
+                                  </div>
+                                </div>`)}
+                              </div>
+                            ` : widget.type === 'rundown' ? html`
+                              ${onAirPalinsesto.value ? html`<div class="rundown">
+                                <div class="rundown-head">
+                                  <span class=${'widget-dot ' + (palinsestoDot(onAirPalinsesto.value.status) || '')}></span>
+                                  <span class="rundown-name">${onAirPalinsesto.value.title}</span>
+                                  <span class=${classMap({ 'palinsesto-time': true, 'is-idle': onAirPalinsesto.value.status === 'idle' })}>
+                                    ${formatTenths(onAirPalinsesto.value.elapsed)}
+                                  </span>
+                                  <span class=${'palinsesto-status ' + ('is-' + onAirPalinsesto.value.status || '')}>
+                                    ${palinsestoStatusLabel(onAirPalinsesto.value.status)}
+                                  </span>
+                                </div>
+                                ${onAirRundown.value.rows.map((item) => html`<div class=${classMap({ 'rundown-item': true, 'is-now': item.now, 'is-past': item.past })} style=${"--progress: " + item.progress + "%"}>
+                                  <span class="rundown-item-fill"></span>
+                                  <span class="rundown-item-role">${item.role}</span>
+                                  <span class="rundown-item-title">${item.title}</span>
+                                  <span class="rundown-item-time">
+                                    ${item.now ? formatTenths(item.local) + ' / ' + formatTenths(item.duration) : formatTenths(item.duration)}
+                                  </span>
+                                </div>`)}
+                              </div>` : html`<div class="rundown-empty">Nessun palinsesto in onda</div>`}
+                            ` : widget.type === 'match' ? html`
+                              ${activeMatch.value ? html`<div class="match">
+                                <div class="match-clock">
+                                  <span class=${classMap({ 'widget-dot': true, 'is-off': !activeMatch.value.running, 'is-warn': activeMatch.value.running })}></span>
+                                  <button class="match-period" type="button" @pointerdown=${(event) => event.stopPropagation()} @click=${stop(cycleMatchPeriod)}>
+                                    ${activeMatch.value.periods[activeMatch.value.period]}
+                                  </button>
+                                  <span class="match-time">${matchClockLabel()}</span>
+                                  <button class="match-act" type="button" @pointerdown=${(event) => event.stopPropagation()} @click=${stop(toggleMatchClock)}>
+                                    ${activeMatch.value.running ? 'Pausa' : 'Avvia'}
+                                  </button>
+                                </div>
+                                <div class="match-score">
+                                  <div class="match-team">
+                                    <span class="match-team-name">${activeMatch.value.home.name}</span>
+                                    <span class="match-team-code">${activeMatch.value.home.code}</span>
+                                    <div class="match-team-acts">
+                                      <button class="match-act" type="button" title="Gol" @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => addMatchGoal('home'))}>Gol</button>
+                                      <button class="match-act is-yellow" type="button" title="Giallo" @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => addMatchCard('home', 'yellow'))}>G</button>
+                                      <button class="match-act is-red" type="button" title="Rosso" @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => addMatchCard('home', 'red'))}>R</button>
+                                      <button class="match-act" type="button" title="Sostituzione" @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => addMatchSub('home'))}>Sub</button>
+                                    </div>
+                                  </div>
+                                  <div class="match-score-box">
+                                    <span>${matchScore('home')}</span>
+                                    <em>—</em>
+                                    <span>${matchScore('away')}</span>
+                                  </div>
+                                  <div class="match-team is-away">
+                                    <span class="match-team-name">${activeMatch.value.away.name}</span>
+                                    <span class="match-team-code">${activeMatch.value.away.code}</span>
+                                    <div class="match-team-acts">
+                                      <button class="match-act" type="button" title="Gol" @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => addMatchGoal('away'))}>Gol</button>
+                                      <button class="match-act is-yellow" type="button" title="Giallo" @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => addMatchCard('away', 'yellow'))}>G</button>
+                                      <button class="match-act is-red" type="button" title="Rosso" @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => addMatchCard('away', 'red'))}>R</button>
+                                      <button class="match-act" type="button" title="Sostituzione" @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => addMatchSub('away'))}>Sub</button>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="match-officials">
+                                  <div class="match-roster-title">Arbitri</div>
+                                  <div class="match-officials-grid">
+                                    ${activeMatch.value.officials.map((official) => html`<div class="match-official">
+                                      <span class="match-official-role">${official.role}</span>
+                                      <span class="match-official-name">${official.name}</span>
+                                    </div>`)}
+                                  </div>
+                                </div>
+                                <div class="match-rosters">
+                                  <div class="match-roster">
+                                    <div class="match-roster-cols">
+                                      <div>
+                                        <div class="match-roster-title">Titolari</div>
+                                        ${activeMatch.value.home.starters.map((player) => html`<div class="match-player">
+                                          <span class="match-player-num">${player.num}</span>
+                                          <span>${player.name}</span>
+                                        </div>`)}
+                                      </div>
+                                      <div>
+                                        <div class="match-roster-title">Panchina</div>
+                                        ${activeMatch.value.home.bench.map((player) => html`<div class="match-player">
+                                          <span class="match-player-num">${player.num}</span>
+                                          <span>${player.name}</span>
+                                        </div>`)}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="match-roster is-away">
+                                    <div class="match-roster-cols">
+                                      <div>
+                                        <div class="match-roster-title">Panchina</div>
+                                        ${activeMatch.value.away.bench.map((player) => html`<div class="match-player">
+                                          <span>${player.name}</span>
+                                          <span class="match-player-num">${player.num}</span>
+                                        </div>`)}
+                                      </div>
+                                      <div>
+                                        <div class="match-roster-title">Titolari</div>
+                                        ${activeMatch.value.away.starters.map((player) => html`<div class="match-player">
+                                          <span>${player.name}</span>
+                                          <span class="match-player-num">${player.num}</span>
+                                        </div>`)}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="match-events">
+                                  ${recentMatchEvents().map((event) => html`<div class=${classMap({ 'match-event': true, 'is-away': event.team === 'away' })}>
+                                    <span class="match-event-min">${event.minute}</span>
+                                    <span class="match-event-name">
+                                      <span class=${'widget-dot ' + (matchEventDot(event.type) || '')}></span>
+                                      ${event.text}
+                                    </span>
+                                    <span class="match-event-meta">${matchEventLabel(event.type)}</span>
+                                  </div>`)}
+                                </div>
+                              </div>` : nothing}
+                            ` : widget.type === 'scheduler' ? html`
+                              <div class="scheduler">
+                                ${widgetScheduler(widget).length ? html`<div class="scheduler-stage">
+                                  ${widgetScheduler(widget).map((output) => html`<div class="scheduler-group">
+                                    <div class="scheduler-group-title">${output.name}</div>
+                                    ${schedulerLayers.map((layer) => html`<div class="scheduler-row">
+                                      <div class="scheduler-label">${layer.name}</div>
+                                      <div class="scheduler-track">
+                                        ${output[layer.id].map((clip) => html`<div class="scheduler-clip" style=${styleMap(clipStyle(clip, schedulerMaxDuration(widget)))}>
+                                          <span class="scheduler-clip-fill"></span>
+                                          <span class="scheduler-clip-title">${clip.title}</span>
+                                        </div>`)}
+                                      </div>
+                                    </div>`)}
+                                  </div>`)}
+                                </div>` : html`<div class="scheduler-empty">Nessun contenuto sul peer</div>`}
+                              </div>
+                            ` : widget.type === 'preview' ? html`
+                              ${widgetWindows(widget).length ? html`<div class="preview-stage">
+                                ${widgetWindows(widget).map((win) => html`<div class=${classMap({ 'preview-window': true, 'is-off': !win.online })}>
+                                  <div class="preview-bezel">
+                                    ${win.layout === 'composite' ? html`<div class="preview-screen is-composite">
+                                      <div class="preview-layer is-fullscreen">
+                                        <span class="preview-layer-name">${windowDevice(win, 'fullscreen').name}</span>
+                                      </div>
+                                      <div class="preview-composite">
+                                        <div class="preview-layer is-main">
+                                          <span class="preview-layer-name">${windowDevice(win, 'main').name}</span>
+                                          <div class="preview-hud">
+                                            <span class="preview-live">LIVE</span>
+                                            <span class="preview-clock">${windowDevice(win, 'main').time}</span>
+                                          </div>
+                                          <div class="preview-center">
+                                            <div class="preview-teams">
+                                              <span>${windowDevice(win, 'main').home}</span>
+                                              <span class="preview-score">${windowDevice(win, 'main').score}</span>
+                                              <span>${windowDevice(win, 'main').away}</span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="preview-layer is-totem">
+                                          <span class="preview-layer-name">${windowDevice(win, 'totem').name}</span>
+                                          <div class="preview-sponsor">${windowDevice(win, 'totem').title}</div>
+                                          <div class="preview-sponsor-sub">${windowDevice(win, 'totem').item}</div>
+                                        </div>
+                                        <div class="preview-layer is-ticker">
+                                          <span class="preview-layer-name">${windowDevice(win, 'ticker').name}</span>
+                                          <div class="preview-ticker-text">
+                                            <span>${windowDevice(win, 'ticker').item}</span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>` : html`<div class=${'preview-screen ' + ('is-' + (windowDevice(win, 'fullscreen').theme || 'idle') || '')}>
+                                      <span class="preview-layer-name">${windowDevice(win, 'fullscreen').name}</span>
+                                      <div class="preview-hud">
+                                        ${windowDevice(win, 'fullscreen').live ? html`<span class="preview-live">LIVE</span>` : html`<span class="preview-live is-loop">LOOP</span>`}
+                                        <span class="preview-clock">${windowDevice(win, 'fullscreen').time}</span>
+                                      </div>
+                                      <div class="preview-center">
+                                        ${windowDevice(win, 'fullscreen').theme === 'led' ? html`<div class="preview-teams">
+                                          <span>${windowDevice(win, 'fullscreen').home}</span>
+                                          <span class="preview-score">${windowDevice(win, 'fullscreen').score}</span>
+                                          <span>${windowDevice(win, 'fullscreen').away}</span>
+                                        </div>` : html`<div>
+                                          <div class="preview-sponsor">${windowDevice(win, 'fullscreen').title}</div>
+                                          <div class="preview-sponsor-sub">${windowDevice(win, 'fullscreen').subtitle}</div>
+                                        </div>`}
+                                      </div>
+                                      <div class="preview-now">${windowDevice(win, 'fullscreen').item}</div>
+                                    </div>`}
+                                  </div>
+                                  <div class="preview-caption">
+                                    <strong>${win.name}</strong>
+                                    <span>${windowDeviceNames(win)}</span>
+                                  </div>
+                                </div>`)}
+                              </div>` : html`<div class="preview-empty">Nessuna finestra sul peer</div>`}
+                            ` : widget.type === 'host' ? html`
+                              <div class="widget-row">
+                                <span class="widget-dot"></span>
+                                <span class="widget-row-name">GPU · ${state.host.gpuName}</span>
+                                <span class="widget-row-meta">${state.host.gpuUsage}% · ${state.host.gpuTotal}</span>
+                              </div>
+                              <div class="widget-row">
+                                <span class="widget-dot"></span>
+                                <span class="widget-row-name">CPU totale</span>
+                                <span class="widget-row-meta">${state.host.cpuUsage}%</span>
+                              </div>
+                              <div class="widget-row">
+                                <span class="widget-dot"></span>
+                                <span class="widget-row-name">Memoria fisica</span>
+                                <span class="widget-row-meta">${state.host.ramUsed} / ${state.host.ramTotal}</span>
+                              </div>
+                              <div class="widget-row">
+                                <span class=${classMap({ 'widget-dot': true, 'is-off': !state.host.online })}></span>
+                                <span class="widget-row-name">Internet</span>
+                                <span class=${classMap({ 'widget-row-meta': true, 'is-muted': !state.host.online })}>
+                                  ${state.host.online ? 'connesso' : 'non connesso'}
+                                </span>
+                              </div>
+                              <div class="widget-row">
+                                <span class=${classMap({ 'widget-dot': true, 'is-idle': !widgetDevice(widget)?.ip })}></span>
+                                <span class="widget-row-name">IP</span>
+                                <span class=${classMap({ 'widget-row-meta': true, 'is-muted': !widgetDevice(widget)?.ip })}>
+                                  ${widgetDevice(widget)?.ip || '—'}
+                                </span>
+                              </div>
+                              <div class="widget-row">
+                                <span class=${classMap({ 'widget-dot': true, 'is-idle': widgetMonitorCount(widget) === 0 })}></span>
+                                <span class="widget-row-name">Monitor</span>
+                                <span class=${classMap({ 'widget-row-meta': true, 'is-muted': widgetMonitorCount(widget) === 0 })}>
+                                  ${widgetMonitorCount(widget)}
+                                </span>
+                              </div>
+                            ` : widget.type === 'surfaces' ? html`
+                              <div class="widget-row">
+                                <span class="widget-dot"></span>
+                                <span class="widget-row-name">Milan Maxi</span>
+                                <span class="widget-row-meta">online</span>
+                              </div>
+                              <div class="widget-row">
+                                <span class="widget-dot"></span>
+                                <span class="widget-row-name">Milan Sideline</span>
+                                <span class="widget-row-meta">rifolto</span>
+                              </div>
+                              <div class="widget-row">
+                                <span class="widget-dot is-idle"></span>
+                                <span class="widget-row-name">Bordocampo Fila 1</span>
+                                <span class="widget-row-meta is-muted">—</span>
+                              </div>
+                              <div class="widget-row">
+                                <span class="widget-dot"></span>
+                                <span class="widget-row-name">Bordocampo Fila 2</span>
+                                <span class="widget-row-meta">pronta</span>
+                              </div>
+                            ` : widget.type === 'session' ? html`
+                              <div class="widget-row">
+                                <span class="widget-dot"></span>
+                                <span class="widget-row-name">Tenant Fluid Next</span>
+                                <span class="widget-row-meta">attiva</span>
+                              </div>
+                              <div class="widget-row">
+                                <span class="widget-dot"></span>
+                                <span class="widget-row-name">Sync locale</span>
+                                <span class="widget-row-meta is-muted">ok</span>
+                              </div>
+                            ` : widget.type === 'playlist' ? html`
+                              <div class="widget-row">
+                                <span class="widget-dot"></span>
+                                <span class="widget-row-name">Match day · loop</span>
+                                <span class="widget-row-meta">4 / 12</span>
+                              </div>
+                              <div class="widget-row">
+                                <span class="widget-dot is-warn"></span>
+                                <span class="widget-row-name">Item corrente</span>
+                                <span class="widget-row-meta is-muted">00:42</span>
+                              </div>
+                            ` : widget.type === 'mixer' ? html`
+                              <md-slider min="0" max="100" labeled .value=${state.mixer} @input=${(event) => { state.mixer = Number(event.target.value); }}
+                                @pointerdown=${(event) => event.stopPropagation()}
+                              ></md-slider>
+                            ` : widget.type === 'nova' ? html`
+                              <div class="widget-row">
+                                <span class="widget-dot"></span>
+                                <span class="widget-row-name">Processore collegato</span>
+                                <span class="widget-row-meta">online</span>
+                              </div>
+                              <div class="widget-row">
+                                <span class="widget-dot"></span>
+                                <span class="widget-row-name">Input 2</span>
+                                <span class="widget-row-meta is-muted">80%</span>
+                              </div>
+                            ` : widget.type === 'notes' ? html`
+                              <md-filled-text-field class="notes-field" type="textarea" rows="3" label="Note" .value=${state.notes} @input=${(event) => { state.notes = event.target.value; }}
+                                @pointerdown=${(event) => event.stopPropagation()}
+                              ></md-filled-text-field>
+                            ` : html`
+                              <div class="widget-row">
+                                <span class="widget-dot"></span>
+                                <span class="widget-row-name">System</span>
+                                <span @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => openModule('system'))}>
+                                  <md-text-button type="button">Apri</md-text-button>
+                                </span>
+                              </div>
+                              <div class="widget-row">
+                                <span class="widget-dot"></span>
+                                <span class="widget-row-name">Playlist</span>
+                                <span @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => openModule('playlist'))}>
+                                  <md-text-button type="button">Apri</md-text-button>
+                                </span>
+                              </div>
+                              <div class="widget-row">
+                                <span class="widget-dot"></span>
+                                <span class="widget-row-name">Nova</span>
+                                <span @pointerdown=${(event) => event.stopPropagation()} @click=${stop(() => openModule('nova'))}>
+                                  <md-text-button type="button">Apri</md-text-button>
+                                </span>
+                              </div>
+                            `}
+                          </div>
+                          <i class="mdi mdi-resize-bottom-right grip" resize="bottom-right"></i>
+                        </div>
+                        </div>`)}
+                        <div placeholder></div>
+                      </lit-grid>
+                    </div>
+                  </div>` : nothing}
+                </div>
+              </div>
+            </div>
+            </div>
+
+            <md-dialog class="add-dialog" .open=${state.addOpen} @closed=${onAddDialogClosed}>
+              <div slot="headline" class="dialog-headline">
+                ${state.addStep === 'widgets' ? 'Scegli widget' : 'Aggiungi widget'}
+              </div>
+              <div slot="content" class="dialog-content">
+                ${!connectedDevices.value.length ? html`
+                  <p class="dialog-copy">
+                    Connettiti a un dispositivo per creare e comandare i widget di quel peer.
+                  </p>
+                ` : state.addStep === 'peers' ? html`
+                  <p class="dialog-copy">Scegli il peer connesso a cui associare il widget.</p>
+                  <md-list>
+                    ${connectedDevices.value.map((device) => html`<md-list-item type="button" class=${classMap({ 'is-on': state.addDeviceId === device.id })} @click=${() => { selectAddDevice(device.id); }}
+                    >
+                      <md-icon slot="start">${state.addDeviceId === device.id ? 'radio_button_checked' : 'radio_button_unchecked'}</md-icon>
+                      <div slot="headline">${device.name}</div>
+                      <div slot="supporting-text">${deviceActiveSystem(device)?.name || 'Nessun sistema associato'}</div>
+                    </md-list-item>`)}
+                  </md-list>
+                ` : html`<md-list>
+                  ${widgetCatalog.map((item) => html`<md-list-item type="button" @click=${() => { addWidget(item.type); }}
+                  >
+                    <md-icon slot="start">${item.md}</md-icon>
+                    <div slot="headline">${item.title}</div>
+                  </md-list-item>`)}
+                </md-list>`}
+              </div>
+              <div slot="actions" class="dialog-actions">
+                ${state.addStep === 'widgets' ? html`<md-text-button type="button" @click=${() => { state.addStep = 'peers'; }}
+                >Indietro</md-text-button>` : nothing}
+                <md-text-button type="button" @click=${() => { state.addOpen = false; }}>
+                  ${connectedDevices.value.length ? 'Annulla' : 'Chiudi'}
+                </md-text-button>
+                ${!connectedDevices.value.length ? html`<md-filled-tonal-button type="button" @click=${() => { openModule('host'); state.addOpen = false; }}
+                >Vai a Dispositivi</md-filled-tonal-button>` : state.addStep === 'peers' ? html`<md-filled-button type="button" ?disabled=${!state.addDeviceId} @click=${goAddWidgetTypes}>Avanti</md-filled-button>` : nothing}
+              </div>
+            </md-dialog>
+            <md-dialog class="rename-dialog" .open=${state.workspaceEditOpen} @closed=${() => { state.workspaceEditOpen = false; }}
+            >
+              <div slot="headline" class="dialog-headline">Rinomina area di lavoro</div>
+              <div slot="content" class="dialog-content">
+                <md-filled-text-field id="workspace-name" label="Nome" .value=${state.workspaceEditName} @input=${(event) => { state.workspaceEditName = event.target.value; }}
+                  @keydown=${(event) => { if (event.key === "Enter") { event.preventDefault(); saveRenameWorkspace(); } }}
+                ></md-filled-text-field>
+              </div>
+              <div slot="actions" class="dialog-actions">
+                <md-text-button type="button" @click=${() => { state.workspaceEditOpen = false; }}>Annulla</md-text-button>
+                <md-filled-button type="button" ?disabled=${!state.workspaceEditName.trim()} @click=${saveRenameWorkspace}>Salva</md-filled-button>
+              </div>
+            </md-dialog>
+          </div>
+            `;
+          }
+
+          drawView = view;
+          scheduleDraw();
+          queueMicrotask(() => mountFns.forEach((fn) => fn()));
+          window.addEventListener("beforeunload", () => unmountFns.forEach((fn) => fn()));
+      }
+    </script>
+  </body>
+</html>

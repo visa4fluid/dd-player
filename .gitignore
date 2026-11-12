@@ -3,8 +3,9 @@ node_modules/
 
 # Build outputs
 dist/
-player/*/dist/
-player/*/pkg/
+target/*/dist/
+target/*/dist-electron/
+target/*/pkg/
 *.ipk
 *.wgt
 *.apk
@@ -37,12 +38,12 @@ yarn-error.log*
 Thumbs.db
 
 # Android Gradle
-player/android/native/.gradle/
-player/android/native/build/
-player/android/native/app/build/
-player/android/native/local.properties
-player/android/native/app/src/main/assets/public/**
-!player/android/native/app/src/main/assets/public/.gitkeep
+target/android/native/.gradle/
+target/android/native/build/
+target/android/native/app/build/
+target/android/native/local.properties
+target/android/native/app/src/main/assets/public/**
+!target/android/native/app/src/main/assets/public/.gitkeep
 
 # Editors
 .idea/

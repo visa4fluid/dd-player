@@ -1,0 +1,156 @@
+:root {
+  color: #e8eef2;
+  background: #0f1c24;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  --md-sys-color-primary: #7ec8bc;
+  --md-sys-color-on-primary: #003732;
+  --md-sys-color-surface: #152832;
+  --md-sys-color-on-surface: #e8eef2;
+  --md-sys-color-on-surface-variant: #9bb6b0;
+  --md-sys-color-outline: #4a6a72;
+  --md-sys-color-outline-variant: #2a4550;
+  --md-sys-color-surface-container: #122028;
+  --md-sys-color-surface-container-high: #1a3038;
+  --md-sys-color-surface-container-highest: #1e3a44;
+  --md-icon-font: "Material Symbols Outlined";
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 56px;
+  padding: 0 12px;
+  background: #152832;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  position: relative;
+  z-index: 8;
+}
+
+.brand {
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.page {
+  flex: 1;
+  min-width: 0;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 24px 20px 96px;
+}
+
+h1,
+h2 {
+  font-weight: 600;
+}
+
+.lead,
+.hint,
+.aside-note {
+  color: #9bb6b0;
+  line-height: 1.5;
+}
+
+.panel {
+  margin: 28px 0;
+  padding: 16px;
+  border: 1px solid #2a4550;
+  border-radius: 12px;
+  background: #122028;
+  display: grid;
+  gap: 16px;
+}
+
+.field,
+.color-field,
+.switch-row {
+  display: grid;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+
+.switch-row {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+}
+
+.color-field input[type="color"] {
+  width: 48px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid #2a4550;
+  border-radius: 8px;
+  background: transparent;
+}
+
+.nav {
+  --md-list-container-color: transparent;
+  background: transparent;
+}
+
+.nav-item.is-active {
+  --md-list-item-label-text-color: #7ec8bc;
+  background: rgba(61, 154, 138, 0.18);
+}
+
+#drawer:not([permanent]) {
+  --app-navigation-drawer-top: 56px;
+}
+
+app-navigation-drawer[location='end'],
+app-navigation-drawer[location='right'] {
+  order: 2;
+}
+
+app-navigation-drawer[rail]:not([data-expanded]) md-list-item {
+  --md-list-item-leading-space: 16px;
+  --md-list-item-trailing-space: 16px;
+}
+
+app-navigation-drawer[rail]:not([data-expanded]) .nav-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.aside-note {
+  margin: 16px;
+}
+
+md-outlined-text-field,
+md-outlined-select,
+md-slider {
+  width: 100%;
+}
+
+md-filled-tonal-button {
+  justify-self: start;
+}
+
+.toolbar md-icon-button,
+.toolbar md-icon,
+app-navigation-drawer md-icon {
+  --md-icon-button-icon-color: #7ec8bc;
+  color: #7ec8bc;
+}

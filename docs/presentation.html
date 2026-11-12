@@ -1,0 +1,962 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fluid Player — Requisiti per lo sviluppo</title>
+    <style>
+      @page {
+        size: 13.333in 7.5in;
+        margin: 0;
+      }
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: #0f1c24;
+        color: #e8eef2;
+        font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
+      .slide {
+        width: 13.333in;
+        height: 7.5in;
+        padding: 0.7in 0.85in;
+        page-break-after: always;
+        break-after: page;
+        position: relative;
+        background: #0f1c24;
+        overflow: hidden;
+      }
+      .slide:last-child { page-break-after: auto; }
+      .slide::before {
+        content: "";
+        position: absolute;
+        left: 0; top: 0; bottom: 0;
+        width: 10px;
+        background: #3d9a8a;
+      }
+      .kicker {
+        color: #7ec8bc;
+        font-size: 18px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        margin: 0 0 0.22in;
+        font-weight: 600;
+      }
+      h1 {
+        margin: 0 0 0.22in;
+        font-size: 56px;
+        font-weight: 650;
+        line-height: 1.15;
+      }
+      h2 {
+        margin: 0 0 0.22in;
+        font-size: 38px;
+        font-weight: 650;
+        line-height: 1.15;
+      }
+      p.lead {
+        font-size: 22px;
+        line-height: 1.4;
+        color: #c5d2d8;
+        margin: 0 0 0.24in;
+        max-width: 11in;
+      }
+      p.lead strong { color: #7ec8bc; font-weight: 650; }
+      ol.index, ul.points { margin: 0; padding: 0; list-style: none; }
+      ol.index li, ul.points li {
+        font-size: 24px;
+        line-height: 1.35;
+        margin: 0 0 0.16in;
+        padding-left: 0.55in;
+        position: relative;
+      }
+      ol.index { counter-reset: item; }
+      ol.index a {
+        color: inherit;
+        text-decoration: none;
+      }
+      ol.index li { counter-increment: item; }
+      ol.index li::before {
+        content: counter(item, decimal-leading-zero);
+        position: absolute;
+        left: 0; top: 0;
+        color: #3d9a8a;
+        font-weight: 700;
+        font-size: 20px;
+        letter-spacing: 0.04em;
+      }
+      ul.points li::before {
+        content: "";
+        position: absolute;
+        left: 0.12in;
+        top: 0.42em;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #3d9a8a;
+      }
+      .title-slide h1 { font-size: 62px; margin-top: 1.1in; }
+      .title-slide .lead { font-size: 26px; max-width: 11.2in; }
+      .footer {
+        position: absolute;
+        left: 1.45in;
+        right: 1.45in;
+        bottom: 0.38in;
+        display: flex;
+        justify-content: space-between;
+        color: #7a8d96;
+        font-size: 14px;
+        letter-spacing: 0.04em;
+      }
+      .nav-btn {
+        position: absolute;
+        bottom: 0.28in;
+        width: 0.42in;
+        height: 0.42in;
+        border: 1px solid #3d9a8a;
+        border-radius: 6px;
+        color: #7ec8bc;
+        text-decoration: none;
+        font-size: 22px;
+        line-height: 0.4in;
+        text-align: center;
+        background: #152832;
+      }
+      .nav-btn.prev { left: 0.85in; }
+      .nav-btn.next { right: 0.85in; }
+      .nav-btn.off {
+        opacity: 0.28;
+        pointer-events: none;
+        border-color: #2a4550;
+        color: #7a8d96;
+      }
+      .modules {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 0.28in;
+        margin-top: 0.08in;
+      }
+      .mod-col h3 {
+        margin: 0 0 0.16in;
+        font-size: 18px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #7ec8bc;
+      }
+      .mod-col a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .mod-col ul { margin: 0; padding: 0; list-style: none; }
+      .mod-col li {
+        font-size: 18px;
+        line-height: 1.3;
+        margin: 0 0 0.08in;
+        text-transform: uppercase;
+        padding-left: 0.4in;
+        position: relative;
+      }
+      .mod-col li::before {
+        content: "";
+        position: absolute;
+        left: 0.08in;
+        top: 0.42em;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #3d9a8a;
+      }
+      .names {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: 0.18in;
+        margin-top: 0.15in;
+      }
+      .name-card {
+        border: 1px solid #2a4550;
+        border-radius: 8px;
+        padding: 0.28in 0.2in;
+        background: #152832;
+        min-height: 2.5in;
+      }
+      .name-card h3 {
+        margin: 0 0 0.16in;
+        font-size: 26px;
+        font-weight: 650;
+        color: #7ec8bc;
+      }
+      .name-card p {
+        margin: 0;
+        font-size: 20px;
+        line-height: 1.4;
+        color: #c5d2d8;
+      }
+      .layer-demo {
+        display: grid;
+        grid-template-columns: 1.35fr 1fr;
+        gap: 0.4in;
+        align-items: center;
+      }
+      .dev {
+        border: 2px solid #3d9a8a;
+        border-radius: 6px;
+        padding: 0.12in 0.14in 0.14in;
+        color: #e8eef2;
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .dev.root { background: #1a3340; min-height: 2.35in; }
+      .dev.mid { margin-top: 0.18in; background: #21485a; min-height: 1.45in; }
+      .dev.top { margin-top: 0.16in; background: #2d6b62; min-height: 0.45in; }
+      .dev span {
+        display: block;
+        font-weight: 400;
+        font-size: 14px;
+        color: #b7c8cf;
+        margin-top: 0.04in;
+      }
+      .stack { display: flex; flex-direction: column; gap: 0.12in; }
+      .stack-item {
+        border-radius: 6px;
+        padding: 0.16in 0.18in;
+        font-size: 18px;
+        line-height: 1.3;
+      }
+      .stack-item.front { background: #2d6b62; }
+      .stack-item.mid { background: #21485a; }
+      .stack-item.back { background: #1a3340; }
+      .stack-item small {
+        display: block;
+        color: #b7c8cf;
+        font-size: 14px;
+        font-weight: 400;
+        margin-top: 0.04in;
+      }
+      .split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.4in;
+      }
+      .gantt-head, .gantt-row {
+        display: grid;
+        grid-template-columns: 3.0in 1.6in 2.3in 4.0in;
+        gap: 0.08in;
+        align-items: center;
+      }
+      .gantt-head {
+        margin: 0.1in 0 0.14in;
+        color: #7ec8bc;
+        font-size: 14px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+      .gantt-row { margin-bottom: 0.12in; }
+      .gantt-label {
+        font-size: 16px;
+        line-height: 1.25;
+        padding-right: 0.1in;
+      }
+      .gantt-label small {
+        display: block;
+        margin-top: 0.03in;
+        color: #7ec8bc;
+        font-size: 13px;
+        font-weight: 400;
+        letter-spacing: 0.02em;
+      }
+      .gantt-bar {
+        height: 0.38in;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .gantt-bar.fixed { background: #2d6b62; }
+      .gantt-bar.variable {
+        background: repeating-linear-gradient(
+          90deg, #21485a, #21485a 10px, #2a5a6e 10px, #2a5a6e 20px
+        );
+        border: 1px dashed #7ec8bc;
+      }
+      .gantt-bar.short { width: 42%; justify-self: start; }
+      .gantt-bar.mid { width: 62%; justify-self: start; }
+      .schema-slide h2 { margin-bottom: 0.1in; }
+      .schema-svg { display: block; width: 11.6in; height: 5.85in; }
+    </style>
+  </head>
+  <body>
+    <section class="slide title-slide" id="s1">
+    <a class="nav-btn next" href="#s2">›</a>
+      <p class="kicker">Introduzione</p>
+      <h1>Requisiti per lo sviluppo</h1>
+      <p class="lead">
+        In questa presentazione sono elencati i <strong>requisiti funzionali</strong>
+        e i <strong>requisiti operativi</strong> per lo sviluppo del nuovo player.
+      </p>
+      <div class="footer">
+        <span>Fluid Next</span>
+        <span>1 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s2">
+    <a class="nav-btn prev" href="#s1">‹</a>
+    <a class="nav-btn next" href="#s3">›</a>
+      <p class="kicker">Nome</p>
+      <h2>Come chiamiamo il software?</h2>
+      <p class="lead">Quattro proposte. Il nome attuale nel repository è Fluid Player.</p>
+      <div class="names">
+        <div class="name-card">
+          <h3>FluidFlow</h3>
+          <p>Enfatizza i flussi video e l’orchestrazione su più schermi.</p>
+        </div>
+        <div class="name-card">
+          <h3>FluidStudio</h3>
+          <p>Enfatizza la regia: ambiente di lavoro per lanciare e personalizzare i contenuti.</p>
+        </div>
+        <div class="name-card">
+          <h3>Fluid Player</h3>
+          <p>Enfatizza il runtime di riproduzione sul device (nome già in uso nel progetto).</p>
+        </div>
+        <div class="name-card">
+          <h3>Regista</h3>
+          <p>Enfatizza il ruolo di chi dirige i flussi in sala, come in una regia.</p>
+        </div>
+      </div>
+      <div class="footer">
+        <span>Fluid Next</span>
+        <span>2 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s3">
+    <a class="nav-btn prev" href="#s2">‹</a>
+    <a class="nav-btn next" href="#s4">›</a>
+      <p class="kicker">Indice</p>
+      <h2>Requisiti funzionali</h2>
+      <ol class="index">
+        <li><a href="#s4">Definizione delle piattaforme target (Windows, Linux, macOS, webOS, Tizen, Android)</a></li>
+        <li><a href="#s5">Online e offline</a></li>
+        <li><a href="#s6">Gestione di più flussi video con hardware dedicato</a></li>
+        <li><a href="#s7">Personalizzazione della matrice colore e gestione dei flussi audio</a></li>
+        <li><a href="#s8">Struttura modulare</a></li>
+        <li><a href="#s9">Integrazione di sistemi esterni (Nova, Stream Deck, Bertelè)</a></li>
+        <li><a href="#s10">Schema strutturale</a></li>
+      </ol>
+      <div class="footer">
+        <span>Fluid Next · requisito funzionale</span>
+        <span>3 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s4">
+    <a class="nav-btn prev" href="#s3">‹</a>
+    <a class="nav-btn next" href="#s5">›</a>
+      <p class="kicker">01 · Piattaforme target</p>
+      <h2>Dove gira il player</h2>
+      <ul class="points">
+        <li>Windows</li>
+        <li>Linux</li>
+        <li>macOS</li>
+        <li>webOS</li>
+        <li>Tizen</li>
+        <li>Android</li>
+      </ul>
+      <div class="footer">
+        <span>Fluid Next · requisito funzionale</span>
+        <span>4 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s5">
+    <a class="nav-btn prev" href="#s4">‹</a>
+    <a class="nav-btn next" href="#s6">›</a>
+      <p class="kicker">02 · Online e offline</p>
+      <h2>Il player può usare il cloud, oppure lavorare senza</h2>
+      <ul class="points">
+        <li>Senza rete: riproduzione e regia usano solo ciò che è già sul dispositivo.</li>
+        <li>Con rete ma senza login: il player resta operativo; nessun accesso ai dati cloud dell’organizzazione.</li>
+        <li>Con rete e login: l’utente vede e sincronizza i dati del proprio tenant. La riproduzione resta sulla cache locale.</li>
+        <li>Se la rete cade dopo un sync, si continua offline sui dati già scaricati.</li>
+      </ul>
+      <div class="footer">
+        <span>Fluid Next · requisito funzionale</span>
+        <span>5 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s6">
+    <a class="nav-btn prev" href="#s5">‹</a>
+    <a class="nav-btn next" href="#s7">›</a>
+      <p class="kicker">03 · Flussi video</p>
+      <h2>Gestione di più flussi video con hardware dedicato</h2>
+      <p class="lead">Su schermi diversi o sullo stesso schermo.</p>
+      <ul class="points">
+        <li>Play / pause / stop indipendenti per flusso.</li>
+        <li>Sorgenti: file in cache, stream, ingressi di regia.</li>
+      </ul>
+      <div class="footer">
+        <span>Fluid Next · requisito funzionale</span>
+        <span>6 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s7">
+    <a class="nav-btn prev" href="#s6">‹</a>
+    <a class="nav-btn next" href="#s8">›</a>
+      <p class="kicker">04 · Colore e audio</p>
+      <h2>Regolazione colore e audio</h2>
+      <p class="lead">Applicata al lancio su quello schermo, non allo schermo intero.</p>
+      <ul class="points">
+        <li>Matrice colore (RGB, luminosità / contrasto) per quel lancio.</li>
+        <li>Canali audio: volume, mute, bilanciamento, routing verso le uscite.</li>
+        <li>Lo stesso file su due schermi può avere colore e mix diversi.</li>
+      </ul>
+      <div class="footer">
+        <span>Fluid Next · requisito funzionale</span>
+        <span>7 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s8">
+    <a class="nav-btn prev" href="#s7">‹</a>
+    <a class="nav-btn next" href="#s9">›</a>
+      <p class="kicker">05 · Struttura modulare</p>
+      <h2>Core e moduli extra a runtime</h2>
+      <p class="lead">
+        La struttura modulare permette di aggiungere funzionalità al player
+        senza dover rilasciare una versione nuova.
+      </p>
+      <div class="modules">
+        <div class="mod-col">
+          <h3>Core</h3>
+          <ul>
+            <li><a href="#s11">device — host fisico</a></li>
+            <li><a href="#s12">system — superfici</a></li>
+            <li><a href="#s14">auth — identità</a></li>
+            <li><a href="#s15">playlist / standalone</a></li>
+            <li><a href="#s16">external flows</a></li>
+            <li><a href="#s17">settings</a></li>
+            <li><a href="#s18">communication — layer comandi</a></li>
+          </ul>
+        </div>
+        <div class="mod-col">
+          <h3>Extra</h3>
+          <ul>
+            <li><a href="#s19">soccer</a></li>
+            <li><a href="#s20">volley</a></li>
+            <li><a href="#s21">basket</a></li>
+            <li><a href="#s22">palinsesto</a></li>
+            <li><a href="#s23">Nova</a></li>
+            <li><a href="#s24">Stream Deck</a></li>
+            <li><a href="#s25">Bertelè</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer">
+        <span>Fluid Next · requisito funzionale</span>
+        <span>8 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s9">
+    <a class="nav-btn prev" href="#s8">‹</a>
+    <a class="nav-btn next" href="#s10">›</a>
+      <p class="kicker">06 · Sistemi esterni</p>
+      <h2>Integrazione di sistemi esterni</h2>
+      <p class="lead">Hardware e software di regia / controllo collegati al player.</p>
+      <ul class="points">
+        <li>Nova</li>
+        <li>Stream Deck</li>
+        <li>Bertelè</li>
+      </ul>
+      <div class="footer">
+        <span>Fluid Next · requisito funzionale</span>
+        <span>9 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide schema-slide" id="s10">
+    <a class="nav-btn prev" href="#s9">‹</a>
+    <a class="nav-btn next" href="#s26">›</a>
+      <h2>Schema strutturale dell’architettura</h2>
+      <svg class="schema-svg" viewBox="0 0 1440 560" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <style>
+            .ln { stroke: #3d9a8a; stroke-width: 2; fill: none; }
+            .stadio { fill: #12262e; stroke: #3d9a8a; stroke-width: 1.6; }
+            .internet { fill: #0d1a20; stroke: #7ec8bc; stroke-width: 1.6; }
+            .pc { fill: #152832; stroke: #3d9a8a; stroke-width: 1.5; }
+            .plant { fill: #1a3340; stroke: #2a4550; stroke-width: 1; }
+            .nova { fill: #2d6b62; stroke: #7ec8bc; stroke-width: 1; }
+            .wall { fill: #21485a; stroke: #7ec8bc; stroke-width: 1.5; }
+            .side { fill: #1a3340; stroke: #7ec8bc; stroke-width: 1.5; }
+            .phone { fill: #152832; stroke: #7ec8bc; stroke-width: 1.6; }
+            .phone-screen { fill: #1a3340; stroke: #2a4550; stroke-width: 1; }
+            .cloud { fill: #21485a; stroke: #7ec8bc; stroke-width: 1.8; }
+            .t { fill: #e8eef2; font-family: "Segoe UI", Helvetica, Arial, sans-serif; text-anchor: middle; }
+            .tl { fill: #7ec8bc; font-family: "Segoe UI", Helvetica, Arial, sans-serif; text-anchor: middle; letter-spacing: 0.08em; }
+          </style>
+        </defs>
+
+        <rect class="stadio" x="100" y="4" width="520" height="352" rx="10"/>
+        <text class="tl" x="360" y="28" font-size="14" font-weight="700">STADIO SAN SIRO</text>
+        <rect class="stadio" x="636" y="4" width="780" height="352" rx="10"/>
+        <text class="tl" x="1026" y="28" font-size="14" font-weight="700">STADIO SAN SIRO</text>
+
+        <rect class="internet" x="100" y="418" width="1316" height="130" rx="10"/>
+        <text class="tl" x="118" y="536" font-size="14" font-weight="700" style="text-anchor:start">INTERNET</text>
+
+        <path class="ln" d="M758 435 V 400 H 230 V 324"/>
+        <path class="ln" d="M758 400 H 490 V 324"/>
+        <path class="ln" d="M758 400 H 766 V 324"/>
+        <path class="ln" d="M758 400 H 1026 V 324"/>
+        <path class="ln" d="M758 400 H 1286 V 324"/>
+        <rect x="680" y="406" width="156" height="22" rx="4" fill="#0f1c24" stroke="#3d9a8a" stroke-width="1"/>
+        <text class="tl" x="758" y="422" font-size="12" font-weight="700">autenticazione</text>
+        <path class="ln" d="M70 277 H 120"/>
+        <g transform="translate(95 277)">
+          <rect x="-11" y="-52" width="22" height="104" rx="3" fill="#0f1c24" stroke="#3d9a8a" stroke-width="1"/>
+          <text class="tl" font-size="10" font-weight="700" transform="rotate(-90)" dy="4">autenticazione</text>
+        </g>
+        <path class="ln" d="M230 228 V 154"/>
+        <path class="ln" d="M490 228 V 154"/>
+        <path class="ln" d="M766 228 V 154"/>
+        <path class="ln" d="M1026 228 V 154"/>
+        <path class="ln" d="M1286 228 V 154"/>
+        <path class="ln" d="M230 118 V 92"/>
+        <path class="ln" d="M490 118 V 84"/>
+        <path class="ln" d="M766 118 V 92"/>
+        <path class="ln" d="M1026 118 V 84"/>
+        <path class="ln" d="M1286 118 V 84"/>
+
+        <rect class="phone" x="2" y="230" width="68" height="94" rx="10"/>
+        <rect class="phone-screen" x="9" y="242" width="54" height="58" rx="4"/>
+        <text class="t" x="36" y="266" font-size="11" font-weight="700">App</text>
+        <text class="tl" x="36" y="282" font-size="8" font-weight="600">CONTROLLO</text>
+        <text class="tl" x="36" y="294" font-size="8" font-weight="600">REMOTO</text>
+        <rect x="28" y="306" width="16" height="6" rx="3" fill="#7ec8bc"/>
+
+        <rect class="wall" x="130" y="42" width="200" height="50" rx="6"/>
+        <text class="t" x="230" y="73" font-size="16" font-weight="600">Maxischermo</text>
+
+        <rect class="side" x="390" y="52" width="200" height="32" rx="4"/>
+        <text class="t" x="490" y="74" font-size="15" font-weight="600">Bordocampo</text>
+
+        <rect class="wall" x="666" y="42" width="200" height="50" rx="6"/>
+        <text class="t" x="766" y="73" font-size="16" font-weight="600">Maxischermo</text>
+
+        <rect class="side" x="926" y="52" width="200" height="32" rx="4"/>
+        <text class="t" x="1026" y="74" font-size="13" font-weight="600">Bordocampo Fila 1</text>
+
+        <rect class="side" x="1186" y="52" width="200" height="32" rx="4"/>
+        <text class="t" x="1286" y="74" font-size="13" font-weight="600">Bordocampo Fila 2</text>
+
+        <rect class="nova" x="188" y="118" width="84" height="36" rx="6"/>
+        <text class="t" x="230" y="142" font-size="15" font-weight="700">Nova</text>
+        <rect class="nova" x="448" y="118" width="84" height="36" rx="6"/>
+        <text class="t" x="490" y="142" font-size="15" font-weight="700">Nova</text>
+        <rect class="nova" x="724" y="118" width="84" height="36" rx="6"/>
+        <text class="t" x="766" y="142" font-size="15" font-weight="700">Nova</text>
+        <rect class="nova" x="984" y="118" width="84" height="36" rx="6"/>
+        <text class="t" x="1026" y="142" font-size="15" font-weight="700">Nova</text>
+        <rect class="nova" x="1244" y="118" width="84" height="36" rx="6"/>
+        <text class="t" x="1286" y="142" font-size="15" font-weight="700">Nova</text>
+
+        <rect class="pc" x="120" y="228" width="220" height="96" rx="8"/>
+        <text class="tl" x="230" y="250" font-size="11" font-weight="700">PC · FLUID PLAYER</text>
+        <rect class="plant" x="135" y="260" width="190" height="48" rx="6"/>
+        <text class="t" x="230" y="290" font-size="15" font-weight="600">Milan Maxi</text>
+
+        <rect class="pc" x="380" y="228" width="220" height="96" rx="8"/>
+        <text class="tl" x="490" y="250" font-size="11" font-weight="700">PC · FLUID PLAYER</text>
+        <rect class="plant" x="395" y="260" width="190" height="48" rx="6"/>
+        <text class="t" x="490" y="290" font-size="15" font-weight="600">Milan Sideline</text>
+
+        <rect class="pc" x="656" y="228" width="220" height="96" rx="8"/>
+        <text class="tl" x="766" y="250" font-size="11" font-weight="700">PC · FLUID PLAYER</text>
+        <rect class="plant" x="671" y="260" width="190" height="48" rx="6"/>
+        <text class="t" x="766" y="290" font-size="15" font-weight="600">Milan Maxi</text>
+
+        <rect class="pc" x="916" y="228" width="220" height="96" rx="8"/>
+        <text class="tl" x="1026" y="250" font-size="11" font-weight="700">PC · FLUID PLAYER</text>
+        <rect class="plant" x="931" y="260" width="190" height="48" rx="6"/>
+        <text class="t" x="1026" y="290" font-size="15" font-weight="600">Milan Sideline</text>
+
+        <rect class="pc" x="1176" y="228" width="220" height="96" rx="8"/>
+        <text class="tl" x="1286" y="250" font-size="11" font-weight="700">PC · FLUID PLAYER</text>
+        <rect class="plant" x="1191" y="260" width="190" height="48" rx="6"/>
+        <text class="t" x="1286" y="290" font-size="15" font-weight="600">Milan Sideline</text>
+
+        <rect class="cloud" x="448" y="435" width="620" height="96" rx="10"/>
+        <text class="tl" x="758" y="457" font-size="12" font-weight="700">APPLICAZIONE CLOUD</text>
+        <rect class="plant" x="464" y="467" width="286" height="48" rx="6"/>
+        <text class="t" x="607" y="497" font-size="15" font-weight="600">Controllo remoto</text>
+        <rect class="plant" x="766" y="467" width="286" height="48" rx="6"/>
+        <text class="t" x="909" y="497" font-size="15" font-weight="600">Diagnostica PC</text>
+      </svg>
+      <div class="footer">
+        <span>Fluid Next · requisito funzionale</span>
+        <span>10 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s11">
+    <a class="nav-btn prev" href="#s10">‹</a>
+    <a class="nav-btn next" href="#s12">›</a>
+      <p class="kicker">Core · host</p>
+      <h2>Host fisico</h2>
+      <p class="lead">Profilo della macchina. Non è il system logico (schermi / superfici).</p>
+      <ul class="points">
+        <li>CRUD del profilo device (id, piattaforma, modello, firmware).</li>
+        <li>Snapshot HW: CPU, RAM, storage, display / capability AV.</li>
+        <li>Identificativo univoco e monitoraggio sul cloud.</li>
+        <li>Comandi host: reboot, accensione/spegnimento del display, volume.</li>
+      </ul>
+      <div class="footer">
+        <span>Fluid Next · requisito funzionale</span>
+        <span>11 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s12">
+    <a class="nav-btn prev" href="#s11">‹</a>
+    <a class="nav-btn next" href="#s13">›</a>
+      <p class="kicker">Core · system</p>
+      <h2>Sistema e suddivisione di una o più finestre in device e sottodevice</h2>
+      <p class="lead">Dove i contenuti vanno in onda.</p>
+      <ul class="points">
+        <li>CRUD del system e degli schermi / superfici.</li>
+        <li>System Manager: quale system è attivo, elenco schermi.</li>
+        <li>Play / pause / stop in modo uniforme su ogni superficie.</li>
+        <li>Il device è una superficie: vi si possono visualizzare più contenuti sovrapposti (video, audio, immagini, HTML, PDF, flussi video acquisiti).</li>
+        <li>I device si possono annidare: un sistema a layer. Il contenuto di un device può oscurare o meno quelli sotto, in base alla posizione del layer.</li>
+      </ul>
+      <div class="footer">
+        <span>Fluid Next · requisito funzionale</span>
+        <span>12 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s13">
+    <a class="nav-btn prev" href="#s12">‹</a>
+    <a class="nav-btn next" href="#s14">›</a>
+      <p class="kicker">Core · system · layer</p>
+      <h2>Device annidati</h2>
+      <p class="lead">Un device contiene altri device. Chi sta più in alto nel layer può coprire chi sta sotto.</p>
+      <div class="layer-demo">
+        <div class="dev root">
+          Device A
+          <span>video a tutto schermo · layer di fondo</span>
+          <div class="dev mid">
+            Device B
+            <span>HTML / overlay · layer intermedio</span>
+            <div class="dev top">
+              Device C
+              <span>ticker / logo · layer frontale</span>
+            </div>
+          </div>
+        </div>
+        <div class="stack">
+          <div class="stack-item front">
+            Layer 3 · Device C
+            <small>Primo piano: sempre visibile</small>
+          </div>
+          <div class="stack-item mid">
+            Layer 2 · Device B
+            <small>Visibile dove C è trasparente; oscura A</small>
+          </div>
+          <div class="stack-item back">
+            Layer 1 · Device A
+            <small>Sfondo: oscurato da B e C</small>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <span>Fluid Next · requisito funzionale</span>
+        <span>13 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s14">
+    <a class="nav-btn prev" href="#s13">‹</a>
+    <a class="nav-btn next" href="#s15">›</a>
+      <p class="kicker">Core · auth</p>
+      <h2>Identità e sessioni</h2>
+      <p class="lead">Fonte di verità per credenziali e token.</p>
+      <ul class="points">
+        <li>CRUD di account, credenziali e associazione del device.</li>
+        <li>Login / logout verso Fluid Next; refresh e scadenza sessione.</li>
+        <li>Manager della sessione corrente e dell’ambito organizzazione (tenant).</li>
+        <li>Senza sessione valida il canale cloud resta chiuso.</li>
+      </ul>
+      <div class="footer">
+        <span>Fluid Next · requisito funzionale</span>
+        <span>14 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s15">
+    <a class="nav-btn prev" href="#s14">‹</a>
+    <a class="nav-btn next" href="#s16">›</a>
+      <p class="kicker">Core · playlist / standalone</p>
+      <h2>Contenuti in sequenza o singoli</h2>
+      <div class="split">
+        <ul class="points">
+          <li>CRUD playlist, item, timing, loop.</li>
+          <li>Playlist Manager: scheduler che invia a system la sequenza di contenuti da mostrare sui device.</li>
+          <li>Ogni playlist gira su un solo device. Più playlist possono essere associate e lanciate insieme.</li>
+        </ul>
+        <ul class="points">
+          <li>CRUD dei contenuti standalone.</li>
+          <li>Standalone Manager: scheduler che decide quale standalone lanciare sul device.</li>
+          <li>Uno standalone gira su un singolo device. Più standalone possono essere associati insieme e lanciati nello stesso momento.</li>
+        </ul>
+      </div>
+      <div class="footer">
+        <span>Fluid Next · requisito funzionale</span>
+        <span>15 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s16">
+    <a class="nav-btn prev" href="#s15">‹</a>
+    <a class="nav-btn next" href="#s17">›</a>
+      <p class="kicker">Core · external flows</p>
+      <h2>Flussi AV esterni</h2>
+      <p class="lead">Ingressi e uscite di regia, oltre ai file in cache.</p>
+      <ul class="points">
+        <li>CRUD dei flussi (sorgente, destinazione, stato).</li>
+        <li>Manager: quali flussi sono attivi in contemporanea.</li>
+        <li>Routing ingressi / uscite verso le superfici.</li>
+        <li>Play / pause / stop del singolo flusso (via system).</li>
+      </ul>
+      <div class="footer">
+        <span>Fluid Next · requisito funzionale</span>
+        <span>16 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s17">
+    <a class="nav-btn prev" href="#s16">‹</a>
+    <a class="nav-btn next" href="#s18">›</a>
+      <p class="kicker">Core · settings</p>
+      <h2>Configurazione locale</h2>
+      <p class="lead">Un unico posto per le impostazioni globali e quelle dei singoli moduli.</p>
+      <ul class="points">
+        <li>CRUD delle impostazioni e dei preset.</li>
+        <li>Manager: definisce quale tipo di impostazione applicare sull’applicazione.</li>
+        <li>Estendibile dagli altri moduli: configurazioni globali e dei singoli moduli sono centralizzate.</li>
+      </ul>
+      <div class="footer">
+        <span>Fluid Next · requisito funzionale</span>
+        <span>17 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s18">
+    <a class="nav-btn prev" href="#s17">‹</a>
+    <a class="nav-btn next" href="#s19">›</a>
+      <p class="kicker">Core · communication</p>
+      <h2>Comunicazione</h2>
+      <p class="lead">
+        Layer di comunicazione astratto per i comandi che il software implementa.
+        Il layer di definizione dei comandi si riutilizza per veicolare gli stessi comandi su canali diversi.
+      </p>
+      <ul class="points">
+        <li>I moduli usano l’astrazione del comando per comunicare tra loro: non sono vincolati al canale, ma al comando.</li>
+        <li>Canali: rete, seriale, Unix socket.</li>
+      </ul>
+      <div class="footer">
+        <span>Fluid Next · requisito funzionale</span>
+        <span>18 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s19">
+    <a class="nav-btn prev" href="#s18">‹</a>
+    <a class="nav-btn next" href="#s20">›</a>
+      <p class="kicker">Extra · soccer</p>
+      <h2>Partita di calcio</h2>
+      <p class="lead">Modulo runtime. Responsabile del dominio calcio. Overlay via system.</p>
+      <ul class="points">
+        <li>CRUD della partita e degli eventi.</li>
+        <li>Partita corrente: punteggio, tempo, stato live.</li>
+        <li>Eventi: goal, autogol, ammonizione, espulsione, sostituzione, angolo, rigore, fine tempo, VAR.</li>
+        <li>Download partita da Fluid Next solo con login.</li>
+      </ul>
+      <div class="footer">
+        <span>Fluid Next · requisito funzionale</span>
+        <span>19 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s20">
+    <a class="nav-btn prev" href="#s19">‹</a>
+    <a class="nav-btn next" href="#s21">›</a>
+      <p class="kicker">Extra · volley</p>
+      <h2>Partita di pallavolo</h2>
+      <p class="lead">Modulo runtime. Responsabile del dominio pallavolo. Overlay via system.</p>
+      <ul class="points">
+        <li>CRUD della partita e degli eventi.</li>
+        <li>Partita corrente: punteggio, set, stato live.</li>
+        <li>Eventi: punto, set vinto, timeout, sostituzione, cambio servizio, cartellino, tie-break.</li>
+        <li>Download partita da Fluid Next solo con login.</li>
+      </ul>
+      <div class="footer">
+        <span>Fluid Next · requisito funzionale</span>
+        <span>20 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s21">
+    <a class="nav-btn prev" href="#s20">‹</a>
+    <a class="nav-btn next" href="#s22">›</a>
+      <p class="kicker">Extra · basket</p>
+      <h2>Partita di basket</h2>
+      <p class="lead">Modulo runtime. Responsabile del dominio basket. Overlay via system.</p>
+      <ul class="points">
+        <li>CRUD della partita e degli eventi.</li>
+        <li>Partita corrente: punteggio, quarto, stato live.</li>
+        <li>Eventi: canestro 1/2/3, fallo, tecnico, timeout, sostituzione, overtime.</li>
+        <li>Download partita da Fluid Next solo con login.</li>
+      </ul>
+      <div class="footer">
+        <span>Fluid Next · requisito funzionale</span>
+        <span>21 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s22">
+    <a class="nav-btn prev" href="#s21">‹</a>
+    <a class="nav-btn next" href="#s23">›</a>
+      <p class="kicker">Extra · palinsesto</p>
+      <h2>Palinsesto</h2>
+      <p class="lead">Modulo runtime. Responsabile della griglia di programmazione. I lanci vanno a system.</p>
+      <ul class="points">
+        <li>CRUD del palinsesto: fasce, slot, contenuti associati.</li>
+        <li>Scheduler: cosa va in onda e quando, inviato a system per i device.</li>
+        <li>Più palinsesti possono essere associati e lanciati insieme su device distinti.</li>
+        <li>Download della griglia da Fluid Next solo con login.</li>
+      </ul>
+      <div class="footer">
+        <span>Fluid Next · requisito funzionale</span>
+        <span>22 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s23">
+    <a class="nav-btn prev" href="#s22">‹</a>
+    <a class="nav-btn next" href="#s24">›</a>
+      <p class="kicker">Extra · Nova</p>
+      <h2>Nova</h2>
+      <p class="lead">Modulo runtime. Integrazione con controller e wall LED Nova.</p>
+      <ul class="points">
+        <li>CRUD di layout, ingressi e preset del wall.</li>
+        <li>Manager: quale uscita / porzione è attiva sul processore Nova.</li>
+        <li>Comandi verso Nova (luminosità, input, routing) via layer di communication.</li>
+        <li>Si carica a runtime, senza nuova versione del player.</li>
+      </ul>
+      <div class="footer">
+        <span>Fluid Next · requisito funzionale</span>
+        <span>23 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s24">
+    <a class="nav-btn prev" href="#s23">‹</a>
+    <a class="nav-btn next" href="#s25">›</a>
+      <p class="kicker">Extra · Stream Deck</p>
+      <h2>Stream Deck</h2>
+      <p class="lead">Modulo runtime. Superficie di controllo hardware per la regia.</p>
+      <ul class="points">
+        <li>CRUD delle pagine e dei tasti (azione, icona, stato).</li>
+        <li>Manager: mapping tasto → comando astratto del player.</li>
+        <li>Invio comandi a system / playlist / standalone, indipendente dal canale.</li>
+        <li>Si carica a runtime, senza nuova versione del player.</li>
+      </ul>
+      <div class="footer">
+        <span>Fluid Next · requisito funzionale</span>
+        <span>24 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s25">
+    <a class="nav-btn prev" href="#s8">‹</a>
+    <a class="nav-btn next" href="#s9">›</a>
+      <p class="kicker">Extra · Bertelè</p>
+      <h2>Bertelè</h2>
+      <p class="lead">Modulo runtime. Integrazione con i sistemi AV / controllo Bertelè.</p>
+      <ul class="points">
+        <li>CRUD di dispositivi, matrici e preset Bertelè.</li>
+        <li>Manager: routing e stato delle uscite collegate al player.</li>
+        <li>Comandi verso Bertelè via layer di communication (rete, seriale, socket).</li>
+        <li>Si carica a runtime, senza nuova versione del player.</li>
+      </ul>
+      <div class="footer">
+        <span>Fluid Next · requisito funzionale</span>
+        <span>25 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s26">
+    <a class="nav-btn prev" href="#s10">‹</a>
+    <a class="nav-btn next" href="#s27">›</a>
+      <p class="kicker">Indice</p>
+      <h2>Requisiti operativi</h2>
+      <ol class="index">
+        <li><a href="#s27">Convalida dei requisiti funzionali e specifica più dettagliata dei comandi da implementare</a></li>
+        <li><a href="#s27">Studio delle UIX di software di regia (OBS) e generazione di mockup per proporre soluzioni grafiche</a></li>
+        <li><a href="#s27">Definizione delle tecnologie e dell’architettura</a></li>
+        <li><a href="#s27">Sviluppo agile del player e adeguamento delle API cloud</a></li>
+      </ol>
+      <div class="footer">
+        <span>Fluid Next · requisito operativo</span>
+        <span>26 / 27</span>
+      </div>
+    </section>
+
+    <section class="slide" id="s27">
+    <a class="nav-btn prev" href="#s26">‹</a>
+      <p class="kicker">Operativi · piano</p>
+      <h2>Gantt</h2>
+      <div class="gantt-head">
+        <span></span>
+        <span>1 settimana</span>
+        <span>In parallelo</span>
+        <span>Variabile</span>
+      </div>
+      <div class="gantt-row">
+        <div class="gantt-label">01 · Convalida dei funzionali e dei comandi<small>Dev, Project Manager</small></div>
+        <div class="gantt-bar fixed">1 sett.</div>
+        <div></div>
+        <div></div>
+      </div>
+      <div class="gantt-row">
+        <div class="gantt-label">02 · Studio UIX (OBS) e mockup<small>UIX Designer</small></div>
+        <div></div>
+        <div class="gantt-bar variable mid">tempo variabile</div>
+        <div></div>
+      </div>
+      <div class="gantt-row">
+        <div class="gantt-label">03 · Tecnologie e architettura<small>Dev</small></div>
+        <div></div>
+        <div class="gantt-bar fixed short">1 sett.</div>
+        <div></div>
+      </div>
+      <div class="gantt-row">
+        <div class="gantt-label">04 · Sviluppo agile e API cloud<small>Dev, Tester, Project Manager</small></div>
+        <div></div>
+        <div></div>
+        <div class="gantt-bar variable">tempo variabile</div>
+      </div>
+      <div class="footer">
+        <span>Fluid Next · requisito operativo</span>
+        <span>27 / 27</span>
+      </div>
+    </section>
+  </body>
+</html>

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>lit-pagination — demo</title>
+    <link rel="stylesheet" href="./demo.css" />
+    <script type="module" src="./demo.ts"></script>
+  </head>
+  <body>
+    <main class="page">
+      <h1>lit-pagination</h1>
+      <p class="lead">
+        Componente Lit equivalente a Polymer <code>paper-pagination</code>
+        (<code>@fluidnext-polymer/paper-pagination</code>).
+        Frecce, numeri di pagina, salto pagina e selettore elementi per pagina.
+      </p>
+
+      <section class="panel">
+        <h2>Lista</h2>
+        <p id="status" class="hint"></p>
+        <div id="list" class="list"></div>
+        <lit-pagination
+          id="pager"
+          total-items="48"
+          item-per-page="10"
+          page="1"
+          view-page-range="5"
+          position="right"
+          current-page-label="di "
+          next-icon="chevron_right"
+          previous-icon="chevron_left"
+        ></lit-pagination>
+      </section>
+
+      <section class="panel">
+        <h2>Proprietà</h2>
+        <div class="controls">
+          <label>
+            Allineamento
+            <select id="position">
+              <option value="left">left</option>
+              <option value="center">center</option>
+              <option value="right" selected>right</option>
+            </select>
+          </label>
+          <label>
+            Numeri di pagina visibili
+            <input id="view-page-range" type="number" min="1" max="10" value="5" />
+          </label>
+          <label>
+            Elementi totali
+            <input id="total-items" type="number" min="0" max="48" value="48" />
+          </label>
+          <label>
+            Etichetta pagina
+            <input id="page-label" type="text" value="di " />
+          </label>
+          <label class="check">
+            <input id="hide-page" type="checkbox" />
+            Nascondi il salto pagina
+          </label>
+          <label class="check">
+            <input id="hide-number" type="checkbox" />
+            Nascondi gli elementi per pagina
+          </label>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

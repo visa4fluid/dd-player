@@ -12,7 +12,7 @@ src/module/<nome>/
 └── test/unit/{domain,application,infrastructure}/
 ```
 
-Presentation / UIX: fuori dal core, in `player/`.
+Presentation / UIX: fuori dal core, in `target/`.
 
 Allineato a [MODULE_CORE.md](../../docs/MODULE_CORE.md). Naming: [CONVENTIONS.md](../../docs/CONVENTIONS.md).
 

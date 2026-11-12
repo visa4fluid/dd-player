@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>lit-grid — demo</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+    <link rel="stylesheet" href="./demo.css" />
+    <script type="module" src="./demo.ts"></script>
+  </head>
+  <body>
+    <main class="page">
+      <h1>lit-grid</h1>
+      <p class="lead">
+        Componente Lit equivalente a Polymer <code>paper-grid</code>
+        (<a href="https://github.com/fluidnext/paper-grid">@fluidnext-polymer/paper-grid</a>).
+        I controlli della demo usano Material Web.
+      </p>
+
+      <section class="panel">
+        <h2>Proprietà</h2>
+        <div class="controls">
+          <label class="switch-row">
+            <md-switch id="draggable" selected></md-switch>
+            <span class="prop">
+              <span class="prop-name">draggable</span>
+              <span class="prop-desc">Abilita il trascinamento delle tile.</span>
+            </span>
+          </label>
+          <label class="switch-row">
+            <md-switch id="resizable" selected></md-switch>
+            <span class="prop">
+              <span class="prop-name">resizable</span>
+              <span class="prop-desc">Abilita il ridimensionamento dalle maniglie <code>resize</code>.</span>
+            </span>
+          </label>
+          <label class="switch-row">
+            <md-switch id="overlappable"></md-switch>
+            <span class="prop">
+              <span class="prop-name">overlappable</span>
+              <span class="prop-desc">Permette alle tile di sovrapporsi invece di evitare le collisioni.</span>
+            </span>
+          </label>
+          <label class="switch-row">
+            <md-switch id="animated"></md-switch>
+            <span class="prop">
+              <span class="prop-name">animated</span>
+              <span class="prop-desc">Anima spostamenti e resize dopo il drop.</span>
+            </span>
+          </label>
+          <label class="switch-row">
+            <md-switch id="col-autogrow"></md-switch>
+            <span class="prop">
+              <span class="prop-name">col-autogrow</span>
+              <span class="prop-desc">Aggiunge colonne quando una tile esce dal bordo destro. Con col-no-scroll le colonne crescono fino a occupare il contenitore, senza scroll.</span>
+            </span>
+          </label>
+          <label class="switch-row">
+            <md-switch id="row-autogrow"></md-switch>
+            <span class="prop">
+              <span class="prop-name">row-autogrow</span>
+              <span class="prop-desc">Aggiunge righe quando una tile esce dal bordo basso. Con row-no-scroll le righe crescono fino a occupare il contenitore, senza scroll.</span>
+            </span>
+          </label>
+          <label class="switch-row">
+            <md-switch id="col-no-scroll"></md-switch>
+            <span class="prop">
+              <span class="prop-name">col-no-scroll</span>
+              <span class="prop-desc">Blocca il drag sull’asse X e non apre lo scroll. Con col-autogrow aggiunge colonne per riempire la larghezza del contenitore.</span>
+            </span>
+          </label>
+          <label class="switch-row">
+            <md-switch id="row-no-scroll"></md-switch>
+            <span class="prop">
+              <span class="prop-name">row-no-scroll</span>
+              <span class="prop-desc">Blocca il drag sull’asse Y e non apre lo scroll. Con row-autogrow aggiunge righe per riempire l’altezza del contenitore.</span>
+            </span>
+          </label>
+          <label class="switch-row">
+            <md-switch id="show-grid" selected></md-switch>
+            <span class="prop">
+              <span class="prop-name">show-grid</span>
+              <span class="prop-desc">Mostra il reticolato a puntini delle celle, allineato a cell-width, cell-height e cell-margin.</span>
+            </span>
+          </label>
+          <label class="field">
+            <span class="prop">
+              <span class="prop-name">cell-width <span id="cell-width-value">80</span></span>
+              <span class="prop-desc">Larghezza in pixel di una cella.</span>
+            </span>
+            <md-slider id="cell-width" min="8" max="160" step="2" value="80" labeled></md-slider>
+          </label>
+          <label class="field">
+            <span class="prop">
+              <span class="prop-name">cell-height <span id="cell-height-value">64</span></span>
+              <span class="prop-desc">Altezza in pixel di una cella.</span>
+            </span>
+            <md-slider id="cell-height" min="8" max="160" step="2" value="64" labeled></md-slider>
+          </label>
+          <label class="field">
+            <span class="prop">
+              <span class="prop-name">cell-margin <span id="cell-margin-value">8</span></span>
+              <span class="prop-desc">Spazio in pixel tra una cella e l’altra.</span>
+            </span>
+            <md-slider id="cell-margin" min="0" max="24" step="2" value="8" labeled></md-slider>
+          </label>
+          <label class="field">
+            <span class="prop">
+              <span class="prop-name">col-count</span>
+              <span class="prop-desc">Numero di colonne della griglia.</span>
+            </span>
+            <md-outlined-text-field id="col-count" label="col-count" type="number" value="8" min="2"></md-outlined-text-field>
+          </label>
+          <label class="field">
+            <span class="prop">
+              <span class="prop-name">row-count</span>
+              <span class="prop-desc">Numero di righe della griglia.</span>
+            </span>
+            <md-outlined-text-field id="row-count" label="row-count" type="number" value="6" min="2"></md-outlined-text-field>
+          </label>
+          <label class="field">
+            <span class="prop">
+              <span class="prop-name">widget-min-width</span>
+              <span class="prop-desc">Larghezza minima in pixel dei componenti. A runtime i widget più stretti vengono portati a questo valore. Non modifica la griglia.</span>
+            </span>
+            <md-outlined-text-field id="widget-min-width" label="widget-min-width" type="number" value="0" min="0"></md-outlined-text-field>
+          </label>
+          <label class="field">
+            <span class="prop">
+              <span class="prop-name">widget-min-height</span>
+              <span class="prop-desc">Altezza minima in pixel dei componenti. A runtime i widget più bassi vengono portati a questo valore. Non modifica la griglia.</span>
+            </span>
+            <md-outlined-text-field id="widget-min-height" label="widget-min-height" type="number" value="0" min="0"></md-outlined-text-field>
+          </label>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Griglia</h2>
+        <p class="hint">Trascina le tile. Il grip in basso a destra ridimensiona. Con autogrow + *-no-scroll la griglia riempie il contenitore e le tile non escono dalla viewport.</p>
+        <div class="stage">
+          <lit-grid
+            id="grid"
+            draggable
+            resizable
+            cell-width="80"
+            cell-height="64"
+            cell-margin="8"
+            col-count="8"
+            row-count="6"
+            show-grid
+          >
+            <div class="tile" col="0" row="0" width="2" height="2">Host</div>
+            <div class="tile" col="2" row="0" width="3" height="1">Playlist</div>
+            <div class="tile" col="5" row="0" width="2" height="1">Nova</div>
+            <div class="tile" col="2" row="1" width="2" height="2">
+              Mixer
+              <i class="mdi mdi-resize-bottom-right grip" resize="bottom-right"></i>
+            </div>
+            <div class="tile" col="0" row="2" width="2" height="1">
+              Session
+              <i class="mdi mdi-resize-bottom-right grip" resize="bottom-right"></i>
+            </div>
+            <div placeholder></div>
+          </lit-grid>
+        </div>
+        <pre id="dump" class="dump"></pre>
+      </section>
+    </main>
+  </body>
+</html>

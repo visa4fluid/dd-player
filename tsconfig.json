@@ -18,5 +18,5 @@
     "exactOptionalPropertyTypes": true
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "dist", "player", "src/**/test/**"]
+  "exclude": ["node_modules", "dist", "target", "src/**/test/**"]
 }

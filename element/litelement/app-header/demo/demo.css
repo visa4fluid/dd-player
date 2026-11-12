@@ -1,0 +1,102 @@
+:root {
+  color: #e8eef2;
+  background: #0f1c24;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+.page {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 24px 20px 80px;
+}
+
+h1,
+h2 {
+  font-weight: 600;
+}
+
+.lead,
+.hint {
+  color: #9bb6b0;
+  line-height: 1.5;
+}
+
+.panel {
+  margin: 28px 0;
+  padding: 16px;
+  border: 1px solid #2a4550;
+  border-radius: 12px;
+  background: #122028;
+  display: grid;
+  gap: 12px;
+}
+
+label {
+  display: grid;
+  gap: 4px;
+  font-size: 0.9rem;
+}
+
+label.check {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+}
+
+input,
+select,
+button {
+  font: inherit;
+  color: inherit;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+  background: #152832;
+  border: 1px solid #2a4550;
+  border-radius: 8px;
+  padding: 6px 8px;
+}
+
+.icon,
+.chip,
+.tabs button {
+  background: transparent;
+  border: 0;
+  color: #7ec8bc;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.icon:hover,
+.tabs button:hover {
+  background: rgba(61, 154, 138, 0.2);
+}
+
+.chip {
+  background: rgba(61, 154, 138, 0.2);
+  font-size: 0.8rem;
+}
+
+.scroller {
+  height: 220px;
+  overflow: auto;
+  border: 1px solid #2a4550;
+  border-radius: 8px;
+  background: #0f1c24;
+}
+
+.scroller p {
+  margin: 16px;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  padding: 0 8px 8px;
+}

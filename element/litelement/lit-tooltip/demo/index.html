@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>lit-tooltip — demo</title>
+    <link rel="stylesheet" href="./demo.css" />
+    <script type="module" src="./demo.ts"></script>
+  </head>
+  <body>
+    <main class="page">
+      <h1>lit-tooltip</h1>
+      <p class="lead">
+        Componente Lit equivalente a Polymer
+        <code>paper-tooltip</code>
+        (<a href="https://github.com/PolymerElements/paper-tooltip">PolymerElements/paper-tooltip</a>).
+        Compare su hover e focus, oppure via <code>show</code> / <code>hide</code>.
+      </p>
+
+      <section class="panel">
+        <h2>Ancora per id</h2>
+        <div class="row">
+          <button id="heart" class="chip" type="button">&lt;3</button>
+          <button id="alarm" class="chip" type="button">sveglia</button>
+          <button id="help" class="chip" type="button">aiuto</button>
+          <button id="cat" class="chip" type="button">gatto</button>
+        </div>
+        <lit-tooltip for="heart">&lt;3 &lt;3 &lt;3</lit-tooltip>
+        <lit-tooltip for="alarm">wake up!</lit-tooltip>
+        <lit-tooltip for="help">help I am trapped in a tooltip</lit-tooltip>
+        <lit-tooltip for="cat">meow!</lit-tooltip>
+      </section>
+
+      <section class="panel">
+        <h2>Ancora sul genitore</h2>
+        <div class="row">
+          <span class="dino">
+            allosaurus
+            <lit-tooltip>the name means "different lizard"</lit-tooltip>
+          </span>
+          <span class="dino">
+            brontosaurus
+            <lit-tooltip>the name means "thunder lizard"</lit-tooltip>
+          </span>
+          <span class="dino">
+            megalosaurus
+            <lit-tooltip>the name means "roof lizard"</lit-tooltip>
+          </span>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Direzioni</h2>
+        <div class="cross">
+          <button id="left" class="icon" type="button">👈</button>
+          <button id="right" class="icon" type="button">👉</button>
+          <button id="top" class="icon" type="button">👍</button>
+          <button id="bottom" class="icon" type="button">👎</button>
+        </div>
+        <lit-tooltip for="left" position="left">sinistra</lit-tooltip>
+        <lit-tooltip for="right" position="right">destra</lit-tooltip>
+        <lit-tooltip for="top" position="top">sopra</lit-tooltip>
+        <lit-tooltip for="bottom" position="bottom">sotto</lit-tooltip>
+      </section>
+
+      <section class="panel">
+        <h2>Testo ricco e tema</h2>
+        <button id="rich" class="chip" type="button">Regista</button>
+        <lit-tooltip for="rich" class="custom">
+          <strong>Regista</strong>
+          <span> — dashboard peer to peer</span>
+        </lit-tooltip>
+      </section>
+
+      <section class="panel">
+        <h2>Animazione scale</h2>
+        <button id="grow" class="chip" type="button">Cresce</button>
+        <lit-tooltip
+          for="grow"
+          animation-entry="scale-up-animation"
+          animation-exit="scale-down-animation"
+        >
+          This grows rather than fades in
+        </lit-tooltip>
+      </section>
+
+      <section class="panel">
+        <h2>Manuale — playAnimation</h2>
+        <p class="hint">
+          <code>manual-mode</code> ignora hover. I pulsanti chiamano
+          <code>playAnimation('entry'|'exit')</code> e <code>cancelAnimation()</code>.
+        </p>
+        <div class="row">
+          <button id="manual-target" class="chip" type="button">Target lento</button>
+          <button id="start-show" type="button">Start Animation Show</button>
+          <button id="start-hide" type="button">Start Animation Hide</button>
+          <button id="cancel" type="button">Animation Cancel</button>
+        </div>
+        <lit-tooltip
+          id="manual-tooltip"
+          class="slowmo"
+          for="manual-target"
+          manual-mode
+        >
+          Slow motion tooltip, 5 seconds.
+        </lit-tooltip>
+      </section>
+
+      <section class="panel">
+        <h2>fit-to-visible-bounds</h2>
+        <div class="edge">
+          <button id="edge" class="chip" type="button">Bordo</button>
+          <lit-tooltip for="edge" position="right" fit-to-visible-bounds>
+            resta dentro la viewport
+          </lit-tooltip>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
